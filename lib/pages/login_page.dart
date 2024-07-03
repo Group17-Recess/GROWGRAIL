@@ -85,7 +85,7 @@ class LoginPage extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.account_circle),
                     onPressed: () {
-                      // apple sign in logic
+                      // Apple sign in logic
                     },
                   ),
                 ],
