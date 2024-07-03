@@ -75,7 +75,7 @@ flutter:
   fonts:
      - family: Anton
        fonts:
-        - asset: fonts/Anton-Regular.ttf
+         - asset: fonts/Anton-Regular.ttf
  
   #
   # For details regarding fonts from package dependencies,
