@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:growgrail/pages/targetpage.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -13,23 +14,23 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // logo
-              Icon(
+              const Icon(
                 Icons.lock,
                 size: 100,
               ),
-              SizedBox(height: 20), // spacing
+              const SizedBox(height: 20), // spacing
               // welcome text
-              Text(
+              const Text(
                 'Welcome to Financial Freedom, we have missed you',
                 style: TextStyle(
                   fontSize: 20,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20), // spacing
+              const SizedBox(height: 20), // spacing
               // username textfield
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -37,10 +38,10 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 10), // spacing
+              const SizedBox(height: 10), // spacing
               // password textfield
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 25.0),
                 child: TextField(
                   obscureText: true,
                   decoration: InputDecoration(
@@ -49,51 +50,57 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 20), // spacing
+              const SizedBox(height: 20),
+               // spacing
               // sign in button
-              ElevatedButton(
+              
+              
+               ElevatedButton(
                 onPressed: () {
-                  // sign in logic
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const Targetpage()),
+                  );
                 },
-                child: Text('Sign In'),
+                child: const Text('Sign In'),
               ),
-              SizedBox(height: 20), // spacing
+              const SizedBox(height: 20), // spacing
               // or continue with
-              Text('Or continue with'),
-              SizedBox(height: 10), // spacing
+              const Text('Or continue with'),
+              const SizedBox(height: 10), // spacing
               // google + apple sign in buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // google button
                   IconButton(
-                    icon: Icon(Icons.account_circle),
+                    icon: const Icon(Icons.account_circle),
                     onPressed: () {
                       // google sign in logic
                     },
                   ),
                   // spacing between buttons
-                  SizedBox(width: 10),
+                  const SizedBox(width: 10),
                   // apple button
                   IconButton(
-                    icon: Icon(Icons.account_circle),
+                    icon: const Icon(Icons.account_circle),
                     onPressed: () {
-                      // apple sign in logic
+                      // Apple sign in logic
                     },
                   ),
                 ],
               ),
-              SizedBox(height: 20), // spacing
+              const SizedBox(height: 20), // spacing
               // not a member? register
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Not a member?'),
+                  const Text('Not a member?'),
                   TextButton(
                     onPressed: () {
                       // registration logic
                     },
-                    child: Text('Register now'),
+                    child: const Text('Register now'),
                   ),
                 ],
               ),
@@ -103,4 +110,8 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
+}
+
+class HomePage {
+  const HomePage();
 }
