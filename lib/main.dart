@@ -16,3 +16,6 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// emulator -avd <avd_name> -read-only
+

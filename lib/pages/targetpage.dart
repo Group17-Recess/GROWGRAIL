@@ -1,40 +1,58 @@
 import 'package:flutter/material.dart';
-import 'deposit.dart';
 
-class Targetpage extends StatelessWidget {
-  const Targetpage({super.key});
+
+class TargetPage extends StatelessWidget {
+  const TargetPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        backgroundColor: Colors.blue[200],
+        title: const Text('WHAT WOULD YOU WANT TO SAVE FOR?'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         centerTitle: true,
-        title: const Text(
-          'WHAT WOULD YOU WANT TO SAVE FOR?',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontFamily: 'Poppins',
-          ),
-        ),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            OptionContainer(
-                text: 'Gadgets', onTap: () => navigateToDepositPage(context)),
-            OptionContainer(
-                text: 'Shopping', onTap: () => navigateToDepositPage(context)),
-            OptionContainer(
-                text: 'Tuition', onTap: () => navigateToDepositPage(context)),
-            OptionContainer(
-                text: 'Starting A Business',
-                onTap: () => navigateToDepositPage(context)),
-            OptionContainer(
-                text: 'Others', onTap: () => showOthersDialog(context)),
-          ],
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                OptionContainer(
+                  imagePath: 'images/gadgets.jpg',
+                  title: 'Gadgets',
+                  subtitle: 'Save for new gadgets',
+                  onTap: () => navigateToDepositPage(context),
+                ),
+                OptionContainer(
+                  imagePath: 'images/shopping.jpg',
+                  title: 'Shopping',
+                  subtitle: 'Save for shopping',
+                  onTap: () => navigateToDepositPage(context),
+                ),
+                OptionContainer(
+                  imagePath: 'images/tuition.jpg',
+                  title: 'Tuition',
+                  subtitle: 'Save for tuition fees',
+                  onTap: () => navigateToDepositPage(context),
+                ),
+                OptionContainer(
+                  imagePath: 'images/business.jpg',
+                  title: 'Starting A Business',
+                  subtitle: 'Save for starting a business',
+                  onTap: () => navigateToDepositPage(context),
+                ),
+                OptionContainer(
+                  imagePath: 'images/others.jpg',
+                  title: 'Others',
+                  subtitle: 'Specify your savings goal',
+                  onTap: () => showOthersDialog(context),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -43,7 +61,7 @@ class Targetpage extends StatelessWidget {
   void navigateToDepositPage(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => DepositPage()),
+      MaterialPageRoute(builder: (context) => const DepositPage()),
     );
   }
 
@@ -64,6 +82,7 @@ class Targetpage extends StatelessWidget {
               onPressed: () {
                 // Handle the submit action here
                 Navigator.of(context).pop();
+                navigateToDepositPage(context);
               },
             ),
           ],
@@ -74,35 +93,52 @@ class Targetpage extends StatelessWidget {
 }
 
 class OptionContainer extends StatelessWidget {
-  final String text;
+  final String imagePath;
+  final String title;
+  final String subtitle;
   final VoidCallback onTap;
 
-  const OptionContainer({required this.text, required this.onTap, super.key});
+  const OptionContainer({
+    required this.imagePath,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
-        padding: const EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          color: Colors.blueGrey,
-          borderRadius: BorderRadius.circular(10.0),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              offset: Offset(0, 4),
-              blurRadius: 5.0,
-            ),
-          ],
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 20.0,
-            fontFamily: 'Poppins',
-            color: Colors.white,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundImage: AssetImage(imagePath),
+                radius: 25,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, color: Colors.grey),
+            ],
           ),
         ),
       ),
@@ -111,6 +147,8 @@ class OptionContainer extends StatelessWidget {
 }
 
 class DepositPage extends StatefulWidget {
+  const DepositPage({super.key});
+
   @override
   _DepositPageState createState() => _DepositPageState();
 }
@@ -131,13 +169,13 @@ class _DepositPageState extends State<DepositPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Enter Phone Number'),
+          title: const Text('Enter Phone Number'),
           content: TextField(
             controller: _phoneNumberController,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
               hintText: 'Phone Number',
-              prefixIcon: Icon(Icons.phone),
+              prefixIcon: const Icon(Icons.phone),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -148,17 +186,17 @@ class _DepositPageState extends State<DepositPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 // Handle the deposit process here
               },
-              child: Text('Deposit'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
               ),
+              child: const Text('Deposit'),
             ),
           ],
         );
@@ -170,7 +208,7 @@ class _DepositPageState extends State<DepositPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Deposit Money'),
+        title: const Text('Deposit Money'),
         backgroundColor: Colors.green,
       ),
       body: Padding(
@@ -178,38 +216,39 @@ class _DepositPageState extends State<DepositPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               'Enter Amount to Deposit',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               controller: _amountController,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
                 hintText: 'Amount',
-                prefixIcon: Icon(Icons.money),
+                prefixIcon: const Icon(Icons.money),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 _showPhoneNumberDialog();
               },
-              child: Text('Next'),
               style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                textStyle: TextStyle(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                textStyle: const TextStyle(
                   fontSize: 18,
                 ),
                 backgroundColor: Colors.green,
               ),
+              child: const Text('Next'),
             ),
           ],
         ),
