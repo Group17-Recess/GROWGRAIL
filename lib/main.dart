@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'pages/login_page.dart';
+import 'package:provider/provider.dart';
+import 'pages/userprovider.dart';
+
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class  MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Savings App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: LoginPage(),
     );
   }
 }
-
 // emulator -avd <avd_name> -read-only
 
