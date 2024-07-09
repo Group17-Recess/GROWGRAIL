@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'pages/login_page.dart';
+import 'package:growgrail/pages/splash.dart';
+import 'package:growgrail/pages/login_page.dart';
 import 'package:provider/provider.dart';
-import 'pages/userprovider.dart';
-
+import 'package:growgrail/pages/userprovider.dart';
 
 void main() {
   runApp(
@@ -13,7 +13,7 @@ void main() {
   );
 }
 
-class  MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,9 +22,7 @@ class  MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LoginPage(),
+      home: SplashScreen(), // Set SplashScreen as the initial screen
     );
   }
 }
-// emulator -avd <avd_name> -read-only
-
