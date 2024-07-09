@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'login_page.dart'; // Import your login page here
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -35,6 +36,17 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to LoginPage
+              );
+            },
+            child: Text(
+              'Login/Signup',
+              style: TextStyle(color: Colors.black), // Set text color to black
+            ),
+          ),
           IconButton(
             icon: Icon(Icons.search),
             onPressed: () {
