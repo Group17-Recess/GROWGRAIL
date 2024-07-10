@@ -1,22 +1,5 @@
 import 'package:flutter/material.dart';
 
-//void main() {
-//runApp(GrowRailApp());
-//}
-
-//class GrowRailApp extends StatelessWidget {
-// @override
-//Widget build(BuildContext context) {
-//return MaterialApp(
-//title: 'GrowRail',
-// theme: ThemeData(
-// primarySwatch: Colors.blue,
-//),
-//home: UserDashboard(),
-//);
-//}
-//}
-
 class UserDashboard extends StatelessWidget {
   const UserDashboard({Key? key}) : super(key: key);
 
@@ -113,28 +96,26 @@ class UserDashboard extends StatelessWidget {
                   color: const Color.fromARGB(255, 47, 125, 121),
                   borderRadius: BorderRadius.circular(15),
                 ),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15),
-                      child: row,
-                    ),
-                    const SizedBox(height: 7),
-                    const Row(
-                      children: [
-                        Text(
-                          '\$ 2,957',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                            color: Colors.white,
-                          ),
+                child: Column(children: [
+                  const SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: row,
+                  ),
+                  const SizedBox(height: 7),
+                  const Row(
+                    children: [
+                      Text(
+                        '\$ UGX 1000',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Colors.white,
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ]),
               ),
             ),
             const Positioned(
