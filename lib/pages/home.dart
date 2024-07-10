@@ -12,43 +12,53 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final TextEditingController _searchController = TextEditingController();
   final List<Map<String, String>> imgList = [
-    {'image': 'images/money.jpg', 'caption': 'Save with no pressure'},
-    {'image': 'images/car.webp', 'caption': 'Own it from your pocket change'},
-    {'image': 'images/moneygrow.jpg', 'caption': 'Grow your money with ease'},
-    {'image': 'images/laptop.jpg', 'caption': 'Save for your favorite gadget'},
+    {
+      'image': 'images/person3.webp',
+      'caption': 'You are all set to build wealth',
+      'progress': '40'
+    },
+    {
+      'image': 'images/person4.webp',
+      'caption': 'Save consistently with ease',
+      'progress': '20'
+    },
+    {
+      'image': 'images/moneygrow.jpg',
+      'caption': 'Grow your money with ease',
+      'progress': '10'
+    },
   ];
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
-  }
-
-  void _onSearchChanged() {
-    print("Search input: ${_searchController.text}");
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // Set background to white
       appBar: AppBar(
-        title: Text(widget.title),
+        backgroundColor: Colors.transparent, // Remove app bar color
+        elevation: 0, // No elevation
+        title: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+          color: Colors.lightBlueAccent, // Sky blue background for GrowGrail
+          child: Text(
+            'GrowGrail',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to LoginPage
+                MaterialPageRoute(builder: (context) => LoginPage()),
               );
             },
             child: Text(
               'Login/Signup',
-              style: TextStyle(color: Colors.black), // Set text color to black
+              style: TextStyle(color: Colors.black),
             ),
           ),
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search, color: Colors.black),
             onPressed: () {
               showSearch(
                 context: context,
@@ -58,33 +68,120 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          CarouselSlider(
-            options: CarouselOptions(
-              height: 400.0,
-              autoPlay: true,
-              enlargeCenterPage: true,
-            ),
-            items: imgList.map((item) => Container(
-              child: Center(
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CarouselSlider(
+              options: CarouselOptions(
+                height: 300.0, // Reduced height for profile images
+                autoPlay: true,
+                enlargeCenterPage: true,
+                aspectRatio: 16 / 9,
+                viewportFraction: 0.8,
+              ),
+              items: imgList.map((item) => Container(
+                margin: EdgeInsets.symmetric(horizontal: 5.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(item['image']!, fit: BoxFit.cover, width: 1000),
+                    CircleAvatar(
+                      radius: 40, // Reduced radius for profile images
+                      backgroundImage: AssetImage(item['image']!),
+                    ),
                     SizedBox(height: 10),
-                    Text(
-                      item['caption']!,
-                      style: TextStyle(fontSize: 16),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                item['caption']!,
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Container(
+                              padding: EdgeInsets.all(5),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Text(
+                                "Today: ${item['progress']}%",
+                                style: TextStyle(fontSize: 14, color: Colors.grey),
+                              ),
+                            ),
+                            SizedBox(height: 5),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.black),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: LinearProgressIndicator(
+                                value: double.parse(item['progress']!) / 100,
+                                minHeight: 6,
+                                backgroundColor: Colors.grey.shade300,
+                                color: Colors.lightBlueAccent, // Sky blue color for progress bar
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
+              )).toList(),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center, // Center-align saving tips section
+                children: [
+                  Text(
+                    'Saving Tips',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Reduced size
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Here are some tips to help you save more effectively:',
+                    style: TextStyle(fontSize: 14, color: Colors.grey), // Reduced size
+                  ),
+                  SizedBox(height: 10),
+                  _buildSavingTip('Set a budget and stick to it.'),
+                  _buildSavingTip('Track your expenses regularly.'),
+                  _buildSavingTip('Automate your savings.'),
+                  _buildSavingTip('Cut down on unnecessary expenses.'),
+                ],
               ),
-            )).toList(),
-          ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSavingTip(String tip) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center, // Center-align each tip
+        children: [
+          Icon(Icons.check_circle, color: Colors.lightBlueAccent, size: 20), // Sky blue color for icons
+          SizedBox(width: 10),
           Expanded(
-            child: Center(
-              child: Text("Pocket Change, Big Ambitions"),
+            child: Text(
+              tip,
+              style: TextStyle(fontSize: 14, color: Colors.black), // Reduced size
             ),
           ),
         ],
