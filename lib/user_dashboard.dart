@@ -86,6 +86,7 @@ class UserDashboard extends StatelessWidget {
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
                             color: Color.fromRGBO(255, 224, 223, 223),
+                            color: Color.fromRGBO(10, 60, 83, 0.125),
                           ),
                         ),
                         Text(
