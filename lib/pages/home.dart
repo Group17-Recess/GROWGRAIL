@@ -33,13 +33,13 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Set background to white
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // Remove app bar color
-        elevation: 0, // No elevation
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-          color: Colors.lightBlueAccent, // Sky blue background for GrowGrail
+          color: Color(0xFF06E7C2), // Green background for GrowGrail
           child: Text(
             'GrowGrail',
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
@@ -74,97 +74,93 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             CarouselSlider(
               options: CarouselOptions(
-                height: 300.0, // Reduced height for profile images
+                height: 300.0,
                 autoPlay: true,
                 enlargeCenterPage: true,
                 aspectRatio: 16 / 9,
                 viewportFraction: 0.8,
               ),
-              items: imgList.map((item) => Container(
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 40, // Reduced radius for profile images
-                      backgroundImage: AssetImage(item['image']!),
-                    ),
-                    SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                item['caption']!,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                "Today: ${item['progress']}%",
-                                style: TextStyle(fontSize: 14, color: Colors.grey),
-                              ),
-                            ),
-                            SizedBox(height: 5),
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: LinearProgressIndicator(
-                                value: double.parse(item['progress']!) / 100,
-                                minHeight: 6,
-                                backgroundColor: Colors.grey.shade300,
-                                color: Colors.lightBlueAccent, // Sky blue color for progress bar
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )).toList(),
+              items: imgList.map((item) => _buildCarouselItem(item)).toList(),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center, // Center-align saving tips section
-                children: [
-                  Text(
-                    'Saving Tips',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Reduced size
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    'Here are some tips to help you save more effectively:',
-                    style: TextStyle(fontSize: 14, color: Colors.grey), // Reduced size
-                  ),
-                  SizedBox(height: 10),
-                  _buildSavingTip('Set a budget and stick to it.'),
-                  _buildSavingTip('Track your expenses regularly.'),
-                  _buildSavingTip('Automate your savings.'),
-                  _buildSavingTip('Cut down on unnecessary expenses.'),
-                ],
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Color(0xFFF4FCFC).withOpacity(0.5),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                ),
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Saving Tips',
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'Here are some tips to help you save more effectively:',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                    SizedBox(height: 10),
+                    _buildSavingTip('Set a budget and stick to it.'),
+                    _buildSavingTip('Track your expenses regularly.'),
+                    _buildSavingTip('Automate your savings.'),
+                    _buildSavingTip('Cut down on unnecessary expenses.'),
+                  ],
+                ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCarouselItem(Map<String, String> item) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CircleAvatar(
+            radius: 80,
+            backgroundImage: AssetImage(item['image']!),
+          ),
+          SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item['caption']!,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 5),
+                Text(
+                  "Today: ${item['progress']}%",
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                SizedBox(height: 5),
+                LinearProgressIndicator(
+                  value: double.parse(item['progress']!) / 100,
+                  minHeight: 6,
+                  backgroundColor: Colors.grey.shade300,
+                  color: Color(0xFF06E7C2), // Green color for progress bar
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -174,14 +170,27 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center, // Center-align each tip
         children: [
-          Icon(Icons.check_circle, color: Colors.lightBlueAccent, size: 20), // Sky blue color for icons
+          Container(
+            width: 20,
+            height: 20,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Color(0xFF06E7C2), // Blue background for circle
+            ),
+            child: Center(
+              child: Icon(
+                Icons.check,
+                color: Colors.white,
+                size: 14,
+              ),
+            ),
+          ),
           SizedBox(width: 10),
           Expanded(
             child: Text(
               tip,
-              style: TextStyle(fontSize: 14, color: Colors.black), // Reduced size
+              style: TextStyle(fontSize: 14, color: Colors.black),
             ),
           ),
         ],
