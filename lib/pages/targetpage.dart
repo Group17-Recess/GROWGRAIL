@@ -8,7 +8,13 @@ class TargetPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('WHAT WOULD YOU WANT TO SAVE FOR?'),
+        title: const Text(
+          'WHAT WOULD YOU WANT TO SAVE FOR?',
+          style: TextStyle(
+            color: Color.fromARGB(255, 3, 62, 110),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -60,11 +66,16 @@ class TargetPage extends StatelessWidget {
   }
 
   void navigateToDepositPage(BuildContext context, String selectedGoal) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => HomeScreen(selectedGoal: selectedGoal)),
-    );
+    try {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(selectedGoal: selectedGoal),
+        ),
+      );
+    } catch (error) {
+      showErrorDialog(context, 'Navigation Error', 'Could not navigate to the deposit page.');
+    }
   }
 
   void showOthersDialog(BuildContext context) {
@@ -82,9 +93,33 @@ class TargetPage extends StatelessWidget {
             TextButton(
               child: const Text('Submit'),
               onPressed: () {
-                // Handle the submit action here
+                String customGoal = customController.text;
+                if (customGoal.isEmpty) {
+                  showErrorDialog(context, 'Input Error', 'Please enter a valid savings goal.');
+                } else {
+                  Navigator.of(context).pop();
+                  navigateToDepositPage(context, customGoal);
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showErrorDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
                 Navigator.of(context).pop();
-                navigateToDepositPage(context, customController.text);
               },
             ),
           ],
@@ -105,13 +140,19 @@ class OptionContainer extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        try {
+          onTap();
+        } catch (error) {
+          showErrorDialog(context, 'Error', 'An unexpected error occurred.');
+        }
+      },
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: Padding(
@@ -120,7 +161,7 @@ class OptionContainer extends StatelessWidget {
             children: [
               CircleAvatar(
                 backgroundImage: AssetImage(imagePath),
-                radius: 25,
+                radius: 30,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -130,20 +171,46 @@ class OptionContainer extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 3, 62, 110),
+                      ),
                     ),
                     Text(
                       subtitle,
-                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, color: Colors.grey),
+              const Icon(Icons.arrow_forward_ios, color: Colors.black),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  void showErrorDialog(BuildContext context, String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

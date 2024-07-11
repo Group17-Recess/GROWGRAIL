@@ -39,16 +39,16 @@ class _MyHomePageState extends State<MyHomePage> {
           TextButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to LoginPage
+                MaterialPageRoute(builder: (context) => const LoginPage()), // Navigate to LoginPage
               );
             },
-            child: Text(
+            child: const Text(
               'Login/Signup',
               style: TextStyle(color: Colors.black), // Set text color to black
             ),
           ),
           IconButton(
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               showSearch(
                 context: context,
@@ -72,17 +72,17 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(item['image']!, fit: BoxFit.cover, width: 1000),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Text(
                       item['caption']!,
-                      style: TextStyle(fontSize: 16),
+                      style: const TextStyle(fontSize: 16),
                     ),
                   ],
                 ),
               ),
             )).toList(),
           ),
-          Expanded(
+          const Expanded(
             child: Center(
               child: Text("Pocket Change, Big Ambitions"),
             ),
@@ -98,7 +98,7 @@ class CustomSearchDelegate extends SearchDelegate {
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: Icon(Icons.clear),
+        icon: const Icon(Icons.clear),
         onPressed: () {
           query = '';
         },
@@ -109,7 +109,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
       onPressed: () {
         close(context, null);
       },

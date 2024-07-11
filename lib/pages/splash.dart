@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       curve: Curves.easeIn,
     );
 
-    Timer(Duration(seconds: 4), () {
+    Timer(const Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MyHomePage(title: 'GrowGrail')));
     });
   }
@@ -47,7 +47,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset('assets/images/money.jpg', width: 100.0, height: 100.0),
-              SizedBox(height: 20.0),
+              const SizedBox(height: 20.0),
             ],
           ),
         ),

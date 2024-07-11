@@ -9,14 +9,14 @@ import 'dbscreen.dart';
 class HomeScreen extends StatelessWidget {
   final String selectedGoal;
 
-  const HomeScreen({required this.selectedGoal});
+  const HomeScreen({super.key, required this.selectedGoal});
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('GROWGRAIL'),
+        title: const Text('GROWGRAIL'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -25,21 +25,21 @@ class HomeScreen extends StatelessWidget {
           children: [
             Text(
               'Selected Goal: $selectedGoal', // Display selected goal here
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: TextField(
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Enter target amount (UGX)',
                   border: InputBorder.none,
                   // icon: Icon(Icons.attach_money),
@@ -49,17 +49,17 @@ class HomeScreen extends StatelessWidget {
                 },
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 showModalBottomSheet(
                   context: context,
-                  builder: (context) => DepositSheet(),
+                  builder: (context) => const DepositSheet(),
                 );
               },
-              child: Text('Deposit'),
+              child: const Text('Deposit'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -67,7 +67,7 @@ class HomeScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => DashboardScreen()),
                 );
               },
-              child: Text('View Total Savings'),
+              child: const Text('View Total Savings'),
             ),
           ],
         ),
@@ -77,6 +77,8 @@ class HomeScreen extends StatelessWidget {
 }
 
 class DepositSheet extends StatefulWidget {
+  const DepositSheet({super.key});
+
   @override
   _DepositSheetState createState() => _DepositSheetState();
 }
@@ -90,16 +92,16 @@ class _DepositSheetState extends State<DepositSheet> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -107,7 +109,7 @@ class _DepositSheetState extends State<DepositSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
+          const Text(
             'Make a Deposit',
             style: TextStyle(
               fontSize: 20,
@@ -115,32 +117,32 @@ class _DepositSheetState extends State<DepositSheet> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextField(
             controller: _phoneController,
             keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Enter phone number (+256xxxxxxxxx)',
               prefixIcon: Icon(Icons.phone),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextField(
             controller: _amountController,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Enter deposit amount (UGX)',
               prefixIcon: Icon(Icons.money),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           if (_errorMessage.isNotEmpty)
             Text(
               _errorMessage,
-              style: TextStyle(color: Colors.red),
+              style: const TextStyle(color: Colors.red),
               textAlign: TextAlign.center,
             ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
               final phone = _phoneController.text;
@@ -185,9 +187,9 @@ class _DepositSheetState extends State<DepositSheet> {
                 });
               }
             },
-            child: Text('Deposit'),
+            child: const Text('Deposit'),
             style: ElevatedButton.styleFrom(
-              padding: EdgeInsets.symmetric(vertical: 15),
+              padding: const EdgeInsets.symmetric(vertical: 15),
               backgroundColor: Colors.green,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
