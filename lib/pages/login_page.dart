@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:growgrail/pages/components/my_textfield.dart';
 import 'package:growgrail/pages/targetpage.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final usernameController = TextEditingController();
+    final passwordController = TextEditingController();
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       body: SafeArea(
