@@ -40,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
           color: Colors.lightBlueAccent, // Sky blue background for GrowGrail
-          child: Text(
+          child: const Text(
             'GrowGrail',
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
@@ -49,16 +49,16 @@ class _MyHomePageState extends State<MyHomePage> {
           TextButton(
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => LoginPage()),
+                MaterialPageRoute(builder: (context) => const LoginPage()),
               );
             },
-            child: Text(
+            child: const Text(
               'Login/Signup',
               style: TextStyle(color: Colors.black),
             ),
           ),
           IconButton(
-            icon: Icon(Icons.search, color: Colors.black),
+            icon: const Icon(Icons.search, color: Colors.black),
             onPressed: () {
               showSearch(
                 context: context,
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 viewportFraction: 0.8,
               ),
               items: imgList.map((item) => Container(
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                margin: const EdgeInsets.symmetric(horizontal: 5.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       radius: 40, // Reduced radius for profile images
                       backgroundImage: AssetImage(item['image']!),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Padding(
@@ -98,29 +98,29 @@ class _MyHomePageState extends State<MyHomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
                                 item['caption']!,
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                               ),
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Container(
-                              padding: EdgeInsets.all(5),
+                              padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
                                 "Today: ${item['progress']}%",
-                                style: TextStyle(fontSize: 14, color: Colors.grey),
+                                style: const TextStyle(fontSize: 14, color: Colors.grey),
                               ),
                             ),
-                            SizedBox(height: 5),
+                            const SizedBox(height: 5),
                             Container(
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.black),
@@ -146,16 +146,16 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center, // Center-align saving tips section
                 children: [
-                  Text(
+                  const Text(
                     'Saving Tips',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Reduced size
                   ),
-                  SizedBox(height: 10),
-                  Text(
+                  const SizedBox(height: 10),
+                  const Text(
                     'Here are some tips to help you save more effectively:',
                     style: TextStyle(fontSize: 14, color: Colors.grey), // Reduced size
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   _buildSavingTip('Set a budget and stick to it.'),
                   _buildSavingTip('Track your expenses regularly.'),
                   _buildSavingTip('Automate your savings.'),
@@ -176,12 +176,12 @@ class _MyHomePageState extends State<MyHomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center, // Center-align each tip
         children: [
-          Icon(Icons.check_circle, color: Colors.lightBlueAccent, size: 20), // Sky blue color for icons
-          SizedBox(width: 10),
+          const Icon(Icons.check_circle, color: Colors.lightBlueAccent, size: 20), // Sky blue color for icons
+          const SizedBox(width: 10),
           Expanded(
             child: Text(
               tip,
-              style: TextStyle(fontSize: 14, color: Colors.black), // Reduced size
+              style: const TextStyle(fontSize: 14, color: Colors.black), // Reduced size
             ),
           ),
         ],
@@ -195,7 +195,7 @@ class CustomSearchDelegate extends SearchDelegate {
   List<Widget>? buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: Icon(Icons.clear),
+        icon: const Icon(Icons.clear),
         onPressed: () {
           query = '';
         },
@@ -206,7 +206,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget? buildLeading(BuildContext context) {
     return IconButton(
-      icon: Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back),
       onPressed: () {
         close(context, null);
       },

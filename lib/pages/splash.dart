@@ -13,7 +13,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     // Simulate a delay before navigating to the home screen
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MyHomePage(title: 'GrowGrail')),
@@ -34,8 +34,8 @@ class _SplashScreenState extends State<SplashScreen> {
               width: 100, // Adjust size as needed
               height: 100,
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Welcome to GrowGrail!',
               style: TextStyle(
                 fontSize: 24,
@@ -43,8 +43,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 10),
-            CircularProgressIndicator(), // Example loading indicator
+            const SizedBox(height: 10),
+            const CircularProgressIndicator(), // Example loading indicator
           ],
         ),
       ),

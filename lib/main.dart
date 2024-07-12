@@ -1,10 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:growgrail/firebase_options.dart';
 import 'package:growgrail/pages/splash.dart';
 import 'package:growgrail/pages/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 
-void main() {
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(
     ChangeNotifierProvider(
       create: (context) => UserProvider(),
