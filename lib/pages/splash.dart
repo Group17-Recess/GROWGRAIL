@@ -24,25 +24,27 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF013125), // background color
+      backgroundColor: Colors.blue, // Example background color
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            CircleAvatar(
-              backgroundColor: Colors.white, // background color of the circle avatar
-              radius: 50, // radius of the circle avatar
-              child: ClipOval(
-                child: Image.asset(
-                  'images/GGlogo.png', // path to your logo image
-                  width: 100, // width of the image inside the circle avatar
-                  height: 100, // height of the image inside the circle avatar
-                  fit: BoxFit.cover, // adjust how the image fits within the circle
-                ),
-              ),
+            Image.asset(
+              'images/GGlogo.png', // Replace with your logo asset path
+              width: 100, // Adjust size as needed
+              height: 100,
             ),
             SizedBox(height: 20),
-            CircularProgressIndicator(), // loading indicator
+            Text(
+              'Welcome to GrowGrail!',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+            CircularProgressIndicator(), // Example loading indicator
           ],
         ),
       ),
