@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   cloud_firestore: ^5.0.2  # Updated to a compatible version
-  firebase_core: ^3.1.1    # Updated to a compatible version
+  firebase_core: ^3.2.0    # Updated to a compatible version
   uganda_mobile_money: ^0.0.5
   permission_handler: ^11.3.1
   flutterwave_standard: ^1.0.8

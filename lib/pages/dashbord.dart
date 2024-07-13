@@ -1,22 +1,5 @@
 import 'package:flutter/material.dart';
 
-//void main() {
-//runApp(GrowRailApp());
-//}
-
-//class GrowRailApp extends StatelessWidget {
-// @override
-//Widget build(BuildContext context) {
-//return MaterialApp(
-//title: 'GrowRail',
-// theme: ThemeData(
-// primarySwatch: Colors.blue,
-//),
-//home: UserDashboard(),
-//);
-//}
-//}
-
 class UserDashboard extends StatelessWidget {
   const UserDashboard({Key? key}) : super(key: key);
 
@@ -167,7 +150,7 @@ class UserDashboard extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
+      ),
+    );
+  }
 }
