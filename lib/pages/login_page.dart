@@ -51,11 +51,7 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-               // spacing
               // sign in button
-              
-              
-               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -66,7 +62,6 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20), // spacing
               // or continue with
-              const Text('Or continue with'),
               const SizedBox(height: 10), // spacing
               // google + apple sign in buttons
               Row(
