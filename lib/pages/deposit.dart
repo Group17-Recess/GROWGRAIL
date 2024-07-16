@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'mobile_money_service.dart';
 
 class DepositPage extends StatefulWidget {
   @override
@@ -8,12 +9,48 @@ class DepositPage extends StatefulWidget {
 class _DepositPageState extends State<DepositPage> {
   final _amountController = TextEditingController();
   final _phoneNumberController = TextEditingController();
+  final MobileMoneyService _service = MobileMoneyService();
+  String _token;
+  String _transactionResult;
 
   @override
   void dispose() {
     _amountController.dispose();
     _phoneNumberController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _authenticate();
+  }
+
+  Future<void> _authenticate() async {
+    try {
+      final token = await _service.getAccessToken();
+      setState(() {
+        _token = token;
+      });
+    } catch (e) {
+      print('Failed to authenticate: $e');
+    }
+  }
+
+  Future<void> _initiateTransaction() async {
+    try {
+      final amount = double.parse(_amountController.text);
+      final phoneNumber = _phoneNumberController.text;
+      await _service.initiateTransaction(_token, amount, phoneNumber);
+      setState(() {
+        _transactionResult = 'Transaction successful';
+      });
+    } catch (e) {
+      print('Failed to initiate transaction: $e');
+      setState(() {
+        _transactionResult = 'Transaction failed';
+      });
+    }
   }
 
   void _showPhoneNumberDialog() {
@@ -44,7 +81,7 @@ class _DepositPageState extends State<DepositPage> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  // Handle the deposit process here
+                  _initiateTransaction();
                 },
                 child: const Text('Deposit'),
                 style: ElevatedButton.styleFrom(
@@ -91,18 +128,22 @@ class _DepositPageState extends State<DepositPage> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                _showPhoneNumberDialog();
-              },
+              onPressed: _showPhoneNumberDialog,
               child: const Text('Next'),
               style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 textStyle: const TextStyle(
                   fontSize: 18,
                 ),
                 backgroundColor: Colors.green,
               ),
             ),
+            if (_transactionResult != null)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text('Transaction Result: $_transactionResult'),
+              ),
           ],
         ),
       ),

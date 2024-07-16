@@ -51,7 +51,10 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+              // spacing
               // sign in button
+
+              ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -62,43 +65,17 @@ class LoginPage extends StatelessWidget {
               ),
               const SizedBox(height: 20), // spacing
               // or continue with
+
               const SizedBox(height: 10), // spacing
               // google + apple sign in buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // google button
-                  IconButton(
-                    icon: const Icon(Icons.account_circle),
-                    onPressed: () {
-                      // google sign in logic
-                    },
-                  ),
-                  // spacing between buttons
-                  const SizedBox(width: 10),
-                  // apple button
-                  IconButton(
-                    icon: const Icon(Icons.account_circle),
-                    onPressed: () {
-                      // Apple sign in logic
-                    },
-                  ),
                 ],
               ),
               const SizedBox(height: 20), // spacing
               // not a member? register
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Not a member?'),
-                  TextButton(
-                    onPressed: () {
-                      // registration logic
-                    },
-                    child: const Text('Register now'),
-                  ),
-                ],
-              ),
             ],
           ),
         ),
