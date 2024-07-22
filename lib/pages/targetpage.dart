@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'amount.dart';
 
 class TargetPage extends StatelessWidget {
-  const TargetPage({Key? key});
+  const TargetPage({Key? key, required String userName, required String phoneNumber});
 
   @override
   Widget build(BuildContext context) {
