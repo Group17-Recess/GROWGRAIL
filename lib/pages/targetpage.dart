@@ -7,11 +7,22 @@ class TargetPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('WHAT WOULD YOU WANT TO SAVE FOR?'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80.0), // Adjust the height as needed
+        child: AppBar(
+          title: const Text(
+            'WHAT WOULD YOU WANT TO SAVE FOR?',
+            style: TextStyle(fontWeight: FontWeight.bold), // Bold font
+          ),
+          backgroundColor: Colors.teal,
+          elevation: 0,
+          centerTitle: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(30),
+            ),
+          ),
+        ),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -82,7 +93,6 @@ class TargetPage extends StatelessWidget {
             TextButton(
               child: const Text('Submit'),
               onPressed: () {
-                // Handle the submit action here
                 Navigator.of(context).pop();
                 navigateToDepositPage(context, customController.text);
               },
@@ -105,8 +115,8 @@ class OptionContainer extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -130,7 +140,7 @@ class OptionContainer extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal),
                     ),
                     Text(
                       subtitle,
@@ -139,7 +149,7 @@ class OptionContainer extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.arrow_forward_ios, color: Colors.grey),
+              const Icon(Icons.arrow_forward_ios, color: Colors.teal),
             ],
           ),
         ),
