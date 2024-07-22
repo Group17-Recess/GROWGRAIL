@@ -74,7 +74,7 @@ class TargetPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => HomeScreen(selectedGoal: selectedGoal)),
+          builder: (context) => HomeScreen(selectedGoal: selectedGoal, phoneNumber: '',)),
     );
   }
 
