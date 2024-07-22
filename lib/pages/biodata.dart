@@ -82,61 +82,77 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('User Bio Data Form'),
+        backgroundColor: Colors.teal,
+        title: const Center(
+          child: Text(
+            'USER BIODATA FORM',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
+          ),
+        ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _buildTextField(
-                controller: _nameController,
-                label: 'Name',
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Reduced top padding
+          child: Form(
+            key: _formKey,
+            child: Container(
+              width: 300, // Adjusted width
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildTextField(
+                    controller: _nameController,
+                    label: 'Name',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your name';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _emailController,
+                    label: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email';
+                      }
+                      if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                        return 'Please enter a valid email address';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _phoneController,
+                    label: 'Phone Number',
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your phone number';
+                      }
+                      if (!RegExp(r'^\+256\d{9}$').hasMatch(value)) {
+                        return 'Please enter a valid phone number starting with +256 and followed by 9 digits';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    child: Text('Submit'),
+                  ),
+                ],
               ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _emailController,
-                label: 'Email',
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16),
-              _buildTextField(
-                controller: _phoneController,
-                label: 'Phone Number',
-                keyboardType: TextInputType.phone,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your phone number';
-                  }
-                  if (!RegExp(r'^\+256\d{9}$').hasMatch(value)) {
-                    return 'Please enter a valid phone number starting with +256 and followed by 9 digits';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Submit'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -160,7 +176,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
           borderRadius: BorderRadius.circular(10),
         ),
         filled: true,
-        fillColor: Colors.teal[50],
+        fillColor: Colors.white,
       ),
       validator: validator,
     );

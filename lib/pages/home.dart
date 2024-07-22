@@ -65,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Center(
           child: const Text(
             'GROWGRAIL',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         shape: const RoundedRectangleBorder(
