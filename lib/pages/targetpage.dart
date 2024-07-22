@@ -12,7 +12,10 @@ class TargetPage extends StatelessWidget {
         child: AppBar(
           title: const Text(
             'WHAT WOULD YOU WANT TO SAVE FOR?',
-            style: TextStyle(fontWeight: FontWeight.bold), // Bold font
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ), // Bold font
           ),
           backgroundColor: Colors.teal,
           elevation: 0,
