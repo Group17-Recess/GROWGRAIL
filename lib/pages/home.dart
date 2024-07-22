@@ -2,6 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'login_page.dart'; // Import your login page here
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'GrowGrail',
+      theme: ThemeData(
+        primaryColor: Colors.teal,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.teal,
+          elevation: 0,
+          iconTheme: IconThemeData(color: Colors.white),
+        ),
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: Colors.black),
+        ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
+      ),
+      home: MyHomePage(title: 'GrowGrail'),
+    );
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -33,18 +59,20 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Set background to white
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // Remove app bar color
-        elevation: 0, // No elevation
-        title: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
-          color: Colors.lightBlueAccent, // Sky blue background for GrowGrail
+        backgroundColor: Colors.teal,
+        title: Center(
           child: const Text(
-            'GrowGrail',
+            'GROWGRAIL',
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
         ),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(30),
+            ),
+          ),
         actions: [
           TextButton(
             onPressed: () {
@@ -54,17 +82,8 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             child: const Text(
               'Login/Signup',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.white),
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.search, color: Colors.black),
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: CustomSearchDelegate(),
-              );
-            },
           ),
         ],
       ),
@@ -74,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             CarouselSlider(
               options: CarouselOptions(
-                height: 300.0, // Reduced height for profile images
+                height: 300.0,
                 autoPlay: true,
                 enlargeCenterPage: true,
                 aspectRatio: 16 / 9,
@@ -86,7 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      radius: 40, // Reduced radius for profile images
+                      radius: 40,
                       backgroundImage: AssetImage(item['image']!),
                     ),
                     const SizedBox(height: 10),
@@ -100,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
+                                border: Border.all(color: Colors.teal),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
@@ -112,7 +131,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Container(
                               padding: const EdgeInsets.all(5),
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
+                                border: Border.all(color: Colors.teal),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
@@ -123,14 +142,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             const SizedBox(height: 5),
                             Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.black),
+                                border: Border.all(color: Colors.teal),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: LinearProgressIndicator(
                                 value: double.parse(item['progress']!) / 100,
                                 minHeight: 6,
                                 backgroundColor: Colors.grey.shade300,
-                                color: Colors.lightBlueAccent, // Sky blue color for progress bar
+                                color: Colors.teal,
                               ),
                             ),
                           ],
@@ -144,16 +163,16 @@ class _MyHomePageState extends State<MyHomePage> {
             Padding(
               padding: const EdgeInsets.all(20.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center, // Center-align saving tips section
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
                     'Saving Tips',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold), // Reduced size
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
                   const Text(
                     'Here are some tips to help you save more effectively:',
-                    style: TextStyle(fontSize: 14, color: Colors.grey), // Reduced size
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
                   ),
                   const SizedBox(height: 10),
                   _buildSavingTip('Set a budget and stick to it.'),
@@ -174,14 +193,14 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center, // Center-align each tip
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.check_circle, color: Colors.lightBlueAccent, size: 20), // Sky blue color for icons
+          const Icon(Icons.check_circle, color: Colors.teal, size: 20),
           const SizedBox(width: 10),
           Expanded(
             child: Text(
               tip,
-              style: const TextStyle(fontSize: 14, color: Colors.black), // Reduced size
+              style: const TextStyle(fontSize: 14, color: Colors.black),
             ),
           ),
         ],
