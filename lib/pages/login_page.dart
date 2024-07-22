@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                   size: 100,
                   color: Colors.teal,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 19),
                 const Text(
                   'Welcome to Financial Freedom, we have missed you',
                   style: TextStyle(fontSize: 20, color: Colors.teal),
