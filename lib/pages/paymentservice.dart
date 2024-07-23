@@ -16,7 +16,6 @@ class PaymentService {
     required String phoneNumber,
   }) async {
     final Customer customer = Customer(
-      name: "Test User",
       phoneNumber: phoneNumber,
       email: email,
     );
