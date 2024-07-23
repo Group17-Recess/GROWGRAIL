@@ -4,8 +4,6 @@ import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
 
 class PaymentService {
-  final String publicKey = 'FLWPUBK_TEST-2ef45f0c86125f0ccdbb630c7aa346bc-X';
-  final String secretKey = 'FLWSECK_TEST-b92f391c45dabfc38190375e3bdeadc6-X';
 
   Future<bool> initiatePayment({
     required BuildContext context,
@@ -17,6 +15,7 @@ class PaymentService {
   }) async {
     final Customer customer = Customer(
       name: "Test User11",
+      name: " User11",
       phoneNumber: phoneNumber,
       email: email,
     );
@@ -28,9 +27,7 @@ class PaymentService {
       amount: amount,
       customer: customer,
       paymentOptions: "mobilemoneyuganda",
-      customization: Customization(title: "Test Payment"),
       txRef: txRef,
-      isTestMode: true, // Change to false for live payments
       redirectUrl:
           "https://your-redirect-url.com", // You can use any URL for testing
     );

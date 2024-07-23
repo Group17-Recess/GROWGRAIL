@@ -36,7 +36,6 @@ class _SplashScreenState extends State<SplashScreen> {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Welcome to GrowGrail!',
               style: TextStyle(
                 fontSize: 24,
                 color: Colors.white,
