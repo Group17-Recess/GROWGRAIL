@@ -4,7 +4,6 @@ import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
 
 class PaymentService {
-
   Future<bool> initiatePayment({
     required BuildContext context,
     required String amount,
@@ -14,7 +13,6 @@ class PaymentService {
     required String phoneNumber,
   }) async {
     final Customer customer = Customer(
-      name: "Test User",
       phoneNumber: phoneNumber,
       email: email,
     );
