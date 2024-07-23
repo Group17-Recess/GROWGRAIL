@@ -13,6 +13,7 @@ class PaymentService {
     required String phoneNumber,
   }) async {
     final Customer customer = Customer(
+      name: "Test User1",
       phoneNumber: phoneNumber,
       email: email,
     );
