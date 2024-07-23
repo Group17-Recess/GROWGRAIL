@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/targetpage.dart';
 
-import 'dbscreen.dart'; // Import the Dashboard page
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -26,17 +24,10 @@ class _LoginPageState extends State<LoginPage> {
     await userProvider.setUser(name, phone);
 
     if (userProvider.name.isNotEmpty) {
-      if (userProvider.hasGoals()) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Dashboard()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => TargetPage(userName: userProvider.name, phoneNumber: userProvider.phoneNumber)),
-        );
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TargetPage(userName: '', phoneNumber: '',)),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid name or phone number')),
@@ -54,88 +45,109 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.teal[300],
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.lock,
-                size: 100,
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                'Welcome to Financial Freedom, we have missed you',
-                style: TextStyle(fontSize: 20),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Name',
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.lock,
+                  size: 100,
+                  color: Colors.teal,
+                ),
+                const SizedBox(height: 19),
+                const Text(
+                  'Welcome to Financial Freedom, we have missed you',
+                  style: TextStyle(fontSize: 20, color: Colors.teal),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextField(
+                    controller: _nameController,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Name',
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.teal),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: TextField(
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    hintText: 'Phone Number',
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextField(
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Phone Number',
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.teal),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _signIn,
-                child: const Text('Sign In'),
-              ),
-              const SizedBox(height: 20),
-              const Text('Or continue with'),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.account_circle),
-                    onPressed: () {
-                      // Google sign-in logic
-                    },
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _signIn,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 173, 181, 180),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   ),
-                  const SizedBox(width: 10),
-                  IconButton(
-                    icon: const Icon(Icons.account_circle),
-                    onPressed: () {
-                      // Apple sign-in logic
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Not a member?'),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => UserBioDataForm()),
-                      );
-                    },
-                    child: const Text('Register now'),
-                  ),
-                ],
-              ),
-            ],
+                  child: const Text('Sign In'),
+                ),
+                const SizedBox(height: 20),
+                const Text('Or continue with'),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.account_circle),
+                      color: Colors.teal,
+                      onPressed: () {
+                        // Google sign-in logic
+                      },
+                    ),
+                    const SizedBox(width: 10),
+                    IconButton(
+                      icon: const Icon(Icons.account_circle),
+                      color: Colors.teal,
+                      onPressed: () {
+                        // Apple sign-in logic
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Not a member?'),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => UserBioDataForm()),
+                        );
+                      },
+                      child: const Text(
+                        'Register now',
+                        style: TextStyle(color: Colors.teal),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
