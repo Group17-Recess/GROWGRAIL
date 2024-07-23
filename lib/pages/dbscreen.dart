@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/targetpage.dart';
-import 'deposit.dart';
-import 'amount.dart';
-import 'home.dart';
 import 'package:growgrail/pages/userprovider.dart';
+import 'amount.dart';
+import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
+import 'home.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -44,9 +44,12 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    // Access UserProvider to get the user's name
+    // Access UserProvider to get the user's name and goals
     final userProvider = Provider.of<UserProvider>(context);
     final userName = userProvider.name.isEmpty ? 'Guest' : userProvider.name;
+    final firstGoal = userProvider.goals.isNotEmpty
+        ? userProvider.goals.first
+        : Goal(target: '', amount: 0, achieved: 0, balance: 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -83,7 +86,10 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     Text(
                       userName,
-                      style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 16.0),
                     Card(
@@ -97,13 +103,16 @@ class _DashboardState extends State<Dashboard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Total Target ',
+                              'Total Target',
                               style: TextStyle(color: Colors.white, fontSize: 16),
                             ),
                             SizedBox(height: 8.0),
                             Text(
-                              '\$2,957',
-                              style: TextStyle(color: Colors.white, fontSize: 32, fontWeight: FontWeight.bold),
+                              '\UGX ${firstGoal.amount.toStringAsFixed(0)}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold),
                             ),
                             SizedBox(height: 16.0),
                             Row(
@@ -114,11 +123,15 @@ class _DashboardState extends State<Dashboard> {
                                   children: [
                                     Text(
                                       'Savings',
-                                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                                      style: TextStyle(
+                                          color: Colors.white70, fontSize: 16),
                                     ),
                                     Text(
-                                      '\$1,450',
-                                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                                      '\UGX ${firstGoal.achieved.toStringAsFixed(0)}',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -127,24 +140,15 @@ class _DashboardState extends State<Dashboard> {
                                   children: [
                                     Text(
                                       'Balance',
-                                      style: TextStyle(color: Colors.white70, fontSize: 16),
+                                      style: TextStyle(
+                                          color: Colors.white70, fontSize: 16),
                                     ),
                                     Text(
-                                      '\$450',
-                                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Interest',
-                                      style: TextStyle(color: Colors.white70, fontSize: 16),
-                                    ),
-                                    Text(
-                                      '\$450',
-                                      style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                                      '\UGX ${firstGoal.balance.toStringAsFixed(0)}',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ],
                                 ),
@@ -160,38 +164,17 @@ class _DashboardState extends State<Dashboard> {
             ],
           ),
           Expanded(
-            child: ListView(
+            child: ListView.builder(
               padding: const EdgeInsets.all(8),
-              children: <Widget>[
-                GoalCard(
-                  imagePath: 'assets/images/paris.jpg',
-                  goalName: 'Trip To Paris',
-                  goalAmount: 3000,
-                  currentAmount: 2400,
-                  textFieldController: textFieldController, // Pass the controller to the GoalCard
-                ),
-                GoalCard(
-                  imagePath: 'assets/images/laptop.jpg',
-                  goalName: 'New Laptop',
-                  goalAmount: 2500,
-                  currentAmount: 608,
-                  textFieldController: textFieldController, // Pass the controller to the GoalCard
-                ),
-                GoalCard(
-                  imagePath: 'assets/images/car.jpg',
-                  goalName: 'Glc Coupe',
-                  goalAmount: 50000,
-                  currentAmount: 3400,
-                  textFieldController: textFieldController, // Pass the controller to the GoalCard
-                ),
-                GoalCard(
-                  imagePath: 'assets/images/emergency.jpg',
-                  goalName: 'Emergency Fund',
-                  goalAmount: 5000,
-                  currentAmount: 2500,
-                  textFieldController: textFieldController, // Pass the controller to the GoalCard
-                ),
-              ],
+              itemCount: userProvider.goals.length,
+              itemBuilder: (context, index) {
+                final goal = userProvider.goals[index];
+                return GoalCard(
+                  goal: goal,
+                  
+                  textFieldController: textFieldController,
+                );
+              },
             ),
           ),
         ],
@@ -207,33 +190,19 @@ class _DashboardState extends State<Dashboard> {
             label: 'Account',
           ),
         ],
+        currentIndex: _selectedIndex,
         selectedItemColor: Colors.teal,
-        onTap: (int index) {
-          switch (index) {
-            case 0:
-              // Navigate to HomeScreen
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
-              );
-              break;
-            case 1:
-              // Navigate to Dashboard
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Dashboard()),
-              );
-              break;
-            default:
-              break;
-          }
-        },
+        onTap: _onItemTapped,
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => TargetPage(userName: '', phoneNumber: '',)),
+            MaterialPageRoute(
+                builder: (context) => TargetPage(
+                      userName: '',
+                      phoneNumber: '',
+                    )),
           );
         },
         child: Icon(Icons.add),
@@ -244,24 +213,42 @@ class _DashboardState extends State<Dashboard> {
   }
 }
 
+class UpperClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.lineTo(0, size.height * 0.75);
+    var firstControlPoint = Offset(size.width / 4, size.height * 0.85);
+    var firstEndPoint = Offset(size.width / 2, size.height * 0.75);
+    var secondControlPoint = Offset(size.width * 3 / 4, size.height * 0.65);
+    var secondEndPoint = Offset(size.width, size.height * 0.75);
+    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
+        firstEndPoint.dx, firstEndPoint.dy);
+    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
+        secondEndPoint.dx, secondEndPoint.dy);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+ // Ensure you import the Goal model
+
 class GoalCard extends StatelessWidget {
-  final String imagePath;
-  final String goalName;
-  final double goalAmount;
-  final double currentAmount;
-  final TextEditingController textFieldController; // Add this line
+  final TextEditingController textFieldController;
+  final Goal goal;
 
   const GoalCard({
-    required this.imagePath,
-    required this.goalName,
-    required this.goalAmount,
-    required this.currentAmount,
-    required this.textFieldController, // Add this line
+    required this.textFieldController,
+    required this.goal,
   });
 
   @override
   Widget build(BuildContext context) {
-    double progress = currentAmount / goalAmount;
+    double progress = goal.achieved / goal.amount;
 
     return Card(
       shape: RoundedRectangleBorder(
@@ -272,17 +259,12 @@ class GoalCard extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            CircleAvatar(
-              backgroundImage: AssetImage(imagePath),
-              radius: 30,
-            ),
-            SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    goalName,
+                    goal.target,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   SizedBox(height: 8),
@@ -297,11 +279,11 @@ class GoalCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '\$${currentAmount.toStringAsFixed(2)}',
+                        'UGX ${goal.achieved.toStringAsFixed(2)}',
                         style: TextStyle(color: Colors.grey),
                       ),
                       Text(
-                        '\$${(goalAmount - currentAmount).toStringAsFixed(2)}',
+                        'UGX ${(goal.amount - goal.achieved).toStringAsFixed(2)}',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -323,11 +305,11 @@ class GoalCard extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context); // Close the dialog
-                              textFieldController.text = '09999'; // Set default number
+                              textFieldController.text = Provider.of<UserProvider>(context, listen: false).phoneNumber; // Set user's phone number
                               showModalBottomSheet(
                                 context: context,
                                 builder: (context) => DepositSheetMy(
-                                  selectedGoal: goalName, // Pass the goal name to DepositSheetMy
+                                  selectedGoal: goal.target, // Pass the goal name to DepositSheetMy
                                   textFieldController: textFieldController, // Pass the controller
                                 ),
                               );
@@ -345,7 +327,7 @@ class GoalCard extends StatelessWidget {
                               showModalBottomSheet(
                                 context: context,
                                 builder: (context) => DepositSheet(
-                                  selectedGoal: goalName, // Pass the goal name to DepositSheet
+                                  selectedGoal: goal.target, // Pass the goal name to DepositSheet
                                 ),
                               );
                             },
@@ -367,26 +349,4 @@ class GoalCard extends StatelessWidget {
       ),
     );
   }
-}
-
-class UpperClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-    path.lineTo(0, size.height * 0.75);
-    var firstControlPoint = Offset(size.width / 4, size.height * 0.85);
-    var firstEndPoint = Offset(size.width / 2, size.height * 0.75);
-    var secondControlPoint = Offset(size.width * 3 / 4, size.height * 0.65);
-    var secondEndPoint = Offset(size.width, size.height * 0.75);
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
-    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy, secondEndPoint.dx, secondEndPoint.dy);
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return false;
-}
 }
