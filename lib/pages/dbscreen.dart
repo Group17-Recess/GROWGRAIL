@@ -1,176 +1,159 @@
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'login_page.dart'; // Import your login page here
-import 'dbscreen.dart'; // Import your account page here
+import 'package:provider/provider.dart';
+import 'package:growgrail/pages/targetpage.dart';
+import 'package:growgrail/pages/userprovider.dart';
+import 'amount.dart';
+import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
+import 'home.dart';
+import 'withdraw.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
+class Dashboard extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GrowGrail',
-      theme: ThemeData(
-        primaryColor: Colors.teal,
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.teal,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.white),
-        ),
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(color: Colors.black),
-        ),
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
-      ),
-      home: MyHomePage(title: 'GrowGrail'),
-    );
-  }
+  _DashboardState createState() => _DashboardState();
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+class _DashboardState extends State<Dashboard> {
+  int _selectedIndex = 0;
+  final TextEditingController textFieldController = TextEditingController();
 
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  final List<Map<String, String>> imgList = [
-    {
-      'image': 'images/person3.webp',
-      'caption': 'You are all set to build wealth',
-      'progress': '40'
-    },
-    {
-      'image': 'images/person4.webp',
-      'caption': 'Save consistently with ease',
-      'progress': '20'
-    },
-    {
-      'image': 'images/moneygrow.jpg',
-      'caption': 'Grow your money with ease',
-      'progress': '10'
-    },
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text('Home Page'),
+    Text('Profile Page'),
   ];
 
   @override
+  void dispose() {
+    textFieldController.dispose(); // Dispose the controller when the widget is disposed
+    super.dispose();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  void _logout() {
+    // Add your logout logic here (e.g., clearing user data, tokens, etc.)
+
+    // Navigate to MyHomePage after logging out
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Access UserProvider to get the user's name and goals
+    final userProvider = Provider.of<UserProvider>(context);
+    final userName = userProvider.name.isEmpty ? 'Guest' : userProvider.name;
+    final firstGoal = userProvider.goals.isNotEmpty
+        ? userProvider.goals.first
+        : Goal(target: '', amount: 0, achieved: 0, balance: 0);
+
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        title: const Center(
-          child: Text(
-            'GROWGRAIL',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-        ),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(30),
-          ),
-        ),
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.person, color: Colors.white),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Dashboard()),
-                  );
-                },
-              ),
-              //const Text(
-              //  'Account',
-              //  style: TextStyle(color: Colors.white, fontSize: 10),
-             // ),
-            ],
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
-            },
-            child: const Text(
-              'Login/Signup',
-              style: TextStyle(color: Colors.white),
-            ),
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: _logout,
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CarouselSlider(
-              options: CarouselOptions(
-                height: 300.0,
-                autoPlay: true,
-                enlargeCenterPage: true,
-                aspectRatio: 16 / 9,
-                viewportFraction: 0.8,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Stack(
+            children: [
+              ClipPath(
+                clipper: UpperClipper(),
+                child: Container(
+                  color: Colors.teal,
+                  height: 300,
+                ),
               ),
-              items: imgList.map((item) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: AssetImage(item['image']!),
+                    SizedBox(height: 40),
+                    Text(
+                      'Welcome,',
+                      style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
-                    const SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerLeft,
+                    Text(
+                      userName,
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 16.0),
+                    Card(
+                      color: Colors.teal[400],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 20),
+                        padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.teal),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                item['caption']!,
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
+                            Text(
+                              'Total Target',
+                              style: TextStyle(color: Colors.white, fontSize: 16),
                             ),
-                            const SizedBox(height: 5),
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.teal),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                "Today: ${item['progress']}%",
-                                style: const TextStyle(fontSize: 14, color: Colors.grey),
-                              ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              '\UGX ${firstGoal.amount.toStringAsFixed(0)}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold),
                             ),
-                            const SizedBox(height: 5),
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.teal),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: LinearProgressIndicator(
-                                value: double.parse(item['progress']!) / 100,
-                                minHeight: 6,
-                                backgroundColor: Colors.grey.shade300,
-                                color: Colors.teal,
-                              ),
+                            SizedBox(height: 16.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Savings',
+                                      style: TextStyle(
+                                          color: Colors.white70, fontSize: 16),
+                                    ),
+                                    Text(
+                                      '\UGX ${firstGoal.achieved.toStringAsFixed(0)}',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Balance',
+                                      style: TextStyle(
+                                          color: Colors.white70, fontSize: 16),
+                                    ),
+                                    Text(
+                                      '\UGX ${firstGoal.balance.toStringAsFixed(0)}',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -178,91 +161,250 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ],
                 ),
-              )).toList(),
+              ),
+            ],
+          ),
+          Expanded(
+            child: ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: userProvider.goals.length,
+              itemBuilder: (context, index) {
+                final goal = userProvider.goals[index];
+                return GoalCard(
+                  goal: goal,
+                  
+                  textFieldController: textFieldController,
+                );
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Account',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.teal,
+        onTap: _onItemTapped,
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TargetPage(
+                      userName: '',
+                      phoneNumber: '',
+                    )),
+          );
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.teal,
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    );
+  }
+}
+
+class UpperClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    var path = Path();
+    path.lineTo(0, size.height * 0.75);
+    var firstControlPoint = Offset(size.width / 4, size.height * 0.85);
+    var firstEndPoint = Offset(size.width / 2, size.height * 0.75);
+    var secondControlPoint = Offset(size.width * 3 / 4, size.height * 0.65);
+    var secondEndPoint = Offset(size.width, size.height * 0.75);
+    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy,
+        firstEndPoint.dx, firstEndPoint.dy);
+    path.quadraticBezierTo(secondControlPoint.dx, secondControlPoint.dy,
+        secondEndPoint.dx, secondEndPoint.dy);
+    path.lineTo(size.width, 0);
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+ // Ensure you import the Goal model
+
+class GoalCard extends StatelessWidget {
+  final TextEditingController textFieldController;
+  final Goal goal;
+
+  const GoalCard({
+    required this.textFieldController,
+    required this.goal,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    double progress = goal.achieved / goal.amount;
+
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Expanded(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Saving Tips',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    goal.target,
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Here are some tips to help you save more effectively:',
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                  SizedBox(height: 8),
+                  LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: Colors.grey[200],
+                    color: Colors.teal,
+                    minHeight: 5,
                   ),
-                  const SizedBox(height: 10),
-                  _buildSavingTip('Set a budget and stick to it.'),
-                  _buildSavingTip('Track your expenses regularly.'),
-                  _buildSavingTip('Automate your savings.'),
-                  _buildSavingTip('Cut down on unnecessary expenses.'),
+                  SizedBox(height: 8),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'UGX ${goal.achieved.toStringAsFixed(2)}',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      Text(
+                        'UGX ${(goal.amount - goal.achieved).toStringAsFixed(2)}',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ],
               ),
+            ),
+            Column(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.add, color: Colors.teal),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Choose an Option'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Close the dialog
+                                  textFieldController.text = Provider.of<UserProvider>(context, listen: false).phoneNumber; // Set user's phone number
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => DepositSheetMy(
+                                      selectedGoal: goal.target, // Pass the goal name to DepositSheetMy
+                                      textFieldController: textFieldController, // Pass the controller
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.teal,
+                                ),
+                                child: Text('My Number'),
+                              ),
+                              SizedBox(height: 10),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Close the dialog
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => DepositSheet(
+                                      selectedGoal: goal.target, // Pass the goal name to DepositSheet
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.teal,
+                                ),
+                                child: Text('Other Number'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.remove, color: Colors.teal),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text('Choose an Option'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Close the dialog
+                                  textFieldController.text = Provider.of<UserProvider>(context, listen: false).phoneNumber; // Set user's phone number
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => WithdrawSheetMy(
+                                      selectedGoal: goal.target, // Pass the goal name to WithdrawSheetMy
+                                      textFieldController: textFieldController, // Pass the controller
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.teal,
+                                ),
+                                child: Text('My Number'),
+                              ),
+                              SizedBox(height: 10),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(context); // Close the dialog
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => WithdrawSheet(
+                                      selectedGoal: goal.target, // Pass the goal name to WithdrawSheet
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.teal,
+                                ),
+                                child: Text('Other Number'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
-
-  Widget _buildSavingTip(String tip) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Icon(Icons.check_circle, color: Colors.teal, size: 20),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              tip,
-              style: const TextStyle(fontSize: 14, color: Colors.black),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class CustomSearchDelegate extends SearchDelegate {
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget? buildLeading(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return Center(
-      child: Text("Search result for '$query'"),
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Center(
-      child: Text("Search suggestions for '$query'"),
-    );
-  }
 }

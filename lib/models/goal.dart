@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Goal {
   final String target;
   final double amount;
-  final double achieved;
+  late final double achieved;
   final double balance;
   double interest;
   List<Timestamp> deposits; // List to track deposit timestamps
