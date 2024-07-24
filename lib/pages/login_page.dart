@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/targetpage.dart';
 
+import 'dbscreen.dart'; // Import the Dashboard page
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -24,10 +26,17 @@ class _LoginPageState extends State<LoginPage> {
     await userProvider.setUser(name, phone);
 
     if (userProvider.name.isNotEmpty) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const TargetPage(userName: '', phoneNumber: '',)),
-      );
+      if (userProvider.hasGoals()) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Dashboard()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => TargetPage(userName: userProvider.name, phoneNumber: userProvider.phoneNumber)),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid name or phone number')),

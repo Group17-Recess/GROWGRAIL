@@ -23,9 +23,15 @@ class HomeScreen extends StatelessWidget {
         elevation: 0,
         title: Text(
           selectedGoal,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+         shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
           ),
         ),
         centerTitle: true,
@@ -37,14 +43,14 @@ class HomeScreen extends StatelessWidget {
           children: [
             Text(
               'Selected Goal: $selectedGoal',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.grey),
                 borderRadius: BorderRadius.circular(10),
@@ -52,14 +58,14 @@ class HomeScreen extends StatelessWidget {
               child: TextField(
                 controller: textFieldController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Enter target amount (UGX)',
                   border: InputBorder.none,
                 ),
                 // Removed the onChanged listener for testing
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -73,12 +79,12 @@ class HomeScreen extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.teal,
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                    padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: Text('View Total Savings'),
+                  child: const Text('View Total Savings'),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -108,7 +114,7 @@ class HomeScreen extends StatelessWidget {
                     } else {
                       // Show error if the target amount is not valid
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text('Please enter a valid target amount.'),
                         ),
                       );
@@ -118,7 +124,7 @@ class HomeScreen extends StatelessWidget {
                     foregroundColor: Colors.white,
                     backgroundColor: Colors.teal,
                   ),
-                  child: Text('Deposit'),
+                  child: const Text('Deposit'),
                 ),
               ],
             ),
@@ -188,16 +194,16 @@ class _DepositSheetState extends State<DepositSheet> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -207,39 +213,39 @@ class _DepositSheetState extends State<DepositSheet> {
         children: [
           Text(
             'Save for ${widget.selectedGoal}',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextField(
             controller: _phoneController,
             keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Enter phone number (+256xxxxxxxxx)',
               prefixIcon: Icon(Icons.phone),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           TextField(
             controller: _amountController,
             
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Enter deposit amount (UGX)',
               prefixIcon: Icon(Icons.money),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           if (_errorMessage.isNotEmpty)
             Text(
               _errorMessage,
-              style: TextStyle(color: Colors.red),
+              style: const TextStyle(color: Colors.red),
               textAlign: TextAlign.center,
             ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
               final phone = _phoneController.text;
@@ -284,10 +290,10 @@ class _DepositSheetState extends State<DepositSheet> {
                 });
               }
             },
-            child: Text('Deposit'),
+            child: const Text('Deposit'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.teal, // Set button color to teal
-              padding: EdgeInsets.symmetric(vertical: 15),
+              padding: const EdgeInsets.symmetric(vertical: 15),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -330,16 +336,16 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
     final userProvider = Provider.of<UserProvider>(context);
 
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
             spreadRadius: 2,
             blurRadius: 5,
-            offset: Offset(0, 3),
+            offset: const Offset(0, 3),
           ),
         ],
       ),
@@ -350,41 +356,41 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
           children: [
             Text(
               'Save for ${widget.selectedGoal}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Phone number (+256xxxxxxxxx)',
                 prefixIcon: Icon(Icons.phone),
                 // Add hint text to provide a visual indication of the field being disabled
                 hintText: 'Phone number',
               ),
               enabled: false, // Make the field non-editable
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.grey, // Set text color to grey to make it faint
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               controller: _amountController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter deposit amount (UGX)',
                 prefixIcon: Icon(Icons.money),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_errorMessage.isNotEmpty)
               Text(
                 _errorMessage,
-                style: TextStyle(color: Colors.red),
+                style: const TextStyle(color: Colors.red),
                 textAlign: TextAlign.center,
               ),
             SizedBox(height: _errorMessage.isNotEmpty ? 20 : 0),
@@ -432,16 +438,16 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
                   });
                 }
               },
-              child: Text('Deposit'),
+              child: const Text('Deposit'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
-                padding: EdgeInsets.symmetric(vertical: 15),
+                padding: const EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
-            SizedBox(height: 10), // Add some extra space at the bottom
+            const SizedBox(height: 10), // Add some extra space at the bottom
           ],
         ),
       ),
