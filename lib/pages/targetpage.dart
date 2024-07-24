@@ -1,3 +1,6 @@
+
+import 'package:flutter/material.dart';
+import 'amount.dart';
 import 'package:flutter/material.dart';
 import 'package:growgrail/pages/amount.dart';
 import 'package:provider/provider.dart';
@@ -8,14 +11,9 @@ import 'home.dart';
 
 import 'userprovider.dart';
 
-class TargetPage extends StatefulWidget {
-  const TargetPage({Key? key, required String userName, required String phoneNumber}) : super(key: key);
+class TargetPage extends StatelessWidget {
+  const TargetPage({Key? key, required String userName, required String phoneNumber});
 
-  @override
-  _TargetPageState createState() => _TargetPageState();
-}
-
-class _TargetPageState extends State<TargetPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,49 +37,47 @@ class _TargetPageState extends State<TargetPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  OptionContainer(
-                    imagePath: 'images/gadgets.jpg',
-                    title: 'Gadgets',
-                    subtitle: 'Save for new gadgets',
-                    onTap: () => _saveGoalAndNavigate(context, 'Gadgets'),
-                  ),
-                  OptionContainer(
-                    imagePath: 'images/shopping.jpg',
-                    title: 'Shopping',
-                    subtitle: 'Save for shopping',
-                    onTap: () => _saveGoalAndNavigate(context, 'Shopping'),
-                  ),
-                  OptionContainer(
-                    imagePath: 'images/tuition.jpg',
-                    title: 'Tuition',
-                    subtitle: 'Save for tuition fees',
-                    onTap: () => _saveGoalAndNavigate(context, 'Tuition'),
-                  ),
-                  OptionContainer(
-                    imagePath: 'images/business.jpg',
-                    title: 'Starting A Business',
-                    subtitle: 'Save for starting a business',
-                    onTap: () => _saveGoalAndNavigate(context, 'Starting A Business'),
-                  ),
-                  OptionContainer(
-                    imagePath: 'images/others.jpg',
-                    title: 'Others',
-                    subtitle: 'Specify your savings goal',
-                    onTap: () => _showOthersDialog(context),
-                  ),
-                ],
-              ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                OptionContainer(
+                  imagePath: 'images/gadgets.jpg',
+                  title: 'Gadgets',
+                  subtitle: 'Save for new gadgets',
+                  onTap: () => navigateToDepositPage(context, 'Gadgets'),
+                ),
+                OptionContainer(
+                  imagePath: 'images/shopping.jpg',
+                  title: 'Shopping',
+                  subtitle: 'Save for shopping',
+                  onTap: () => navigateToDepositPage(context, 'Shopping'),
+                ),
+                OptionContainer(
+                  imagePath: 'images/tuition.jpg',
+                  title: 'Tuition',
+                  subtitle: 'Save for tuition fees',
+                  onTap: () => navigateToDepositPage(context, 'Tuition'),
+                ),
+                OptionContainer(
+                  imagePath: 'images/business.jpg',
+                  title: 'Starting A Business',
+                  subtitle: 'Save for starting a business',
+                  onTap: () =>
+                      navigateToDepositPage(context, 'Starting A Business'),
+                ),
+                OptionContainer(
+                  imagePath: 'images/others.jpg',
+                  title: 'Others',
+                  subtitle: 'Specify your savings goal',
+                  onTap: () => showOthersDialog(context),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -119,28 +115,20 @@ class _TargetPageState extends State<TargetPage> {
       ),
     );
   }
+      
+  
+  }
+  
 
-  Future<void> _saveGoalAndNavigate(BuildContext context, String selectedGoal) async {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-
-    final goal = Goal(
-      target: selectedGoal,
-      amount: 0,
-      achieved: 0,
-      balance: 0,
-    );
-
-    await Goal.saveGoal(userProvider.phoneNumber, goal);
-
+  void navigateToDepositPage(BuildContext context, String selectedGoal) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => HomeScreen(selectedGoal: selectedGoal, phoneNumber: '',),
-      ),
+          builder: (context) => HomeScreen(selectedGoal: selectedGoal, phoneNumber: '',)),
     );
   }
 
-  void _showOthersDialog(BuildContext context) {
+  void showOthersDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -156,7 +144,7 @@ class _TargetPageState extends State<TargetPage> {
               child: const Text('Submit'),
               onPressed: () {
                 Navigator.of(context).pop();
-                _saveGoalAndNavigate(context, customController.text);
+                navigateToDepositPage(context, customController.text);
               },
             ),
           ],
@@ -164,7 +152,7 @@ class _TargetPageState extends State<TargetPage> {
       },
     );
   }
-}
+
 
 class OptionContainer extends StatelessWidget {
   final String imagePath;
@@ -177,8 +165,8 @@ class OptionContainer extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
