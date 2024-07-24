@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'login_page.dart'; // Import your login page here
+import 'dbscreen.dart'; // Import your account page here
 
 void main() {
   runApp(MyApp());
@@ -21,7 +22,8 @@ class MyApp extends StatelessWidget {
         ),
         textTheme: const TextTheme(
           bodyMedium: TextStyle(color: Colors.black),
-        ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
+        ),
+        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
       ),
       home: MyHomePage(title: 'GrowGrail'),
     );
@@ -62,18 +64,36 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        title: Center(
-          child: const Text(
+        title: const Center(
+          child: Text(
             'GROWGRAIL',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
         ),
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(30),
-            ),
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
           ),
+        ),
         actions: [
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.person, color: Colors.white),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Dashboard()),
+                  );
+                },
+              ),
+              //const Text(
+              //  'Account',
+              //  style: TextStyle(color: Colors.white, fontSize: 10),
+             // ),
+            ],
+          ),
           TextButton(
             onPressed: () {
               Navigator.of(context).push(
@@ -243,6 +263,6 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     return Center(
       child: Text("Search suggestions for '$query'"),
-    );
-  }
+);
+}
 }

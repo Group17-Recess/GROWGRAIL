@@ -65,4 +65,24 @@ class UserProvider with ChangeNotifier {
   bool hasGoals() {
     return _goals.isNotEmpty;
   }
+
+  // Method to withdraw savings
+  Future<void> withdraw(double amount, String goalTarget) async {
+    if (_totalSavings >= amount) {
+      final goalIndex = _goals.indexWhere((goal) => goal.target == goalTarget);
+      if (goalIndex != -1) {
+        _goals[goalIndex].achieved -= amount;
+        _totalSavings -= amount;
+        await FirebaseFirestore.instance
+            .collection('Goals')
+            .doc(_phoneNumber)
+            .update(_goals[goalIndex].toJson());
+        notifyListeners();
+      } else {
+        print("Goal not found");
+      }
+    } else {
+      print("Insufficient funds");
+    }
+  }
 }
