@@ -5,7 +5,6 @@ import 'package:growgrail/pages/userprovider.dart';
 import 'amount.dart';
 import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
 import 'home.dart';
-import 'withdraw.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -55,11 +54,14 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-          IconButton(
-            icon: Icon(Icons.logout),
+          TextButton(
             onPressed: _logout,
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -80,19 +82,19 @@ class _DashboardState extends State<Dashboard> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 40),
-                    Text(
+                    const SizedBox(height: 40),
+                    const Text(
                       'Welcome,',
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     Text(
                       userName,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Card(
                       color: Colors.teal[400],
                       shape: RoundedRectangleBorder(
@@ -103,33 +105,33 @@ class _DashboardState extends State<Dashboard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
+                            const Text(
                               'Total Target',
                               style: TextStyle(color: Colors.white, fontSize: 16),
                             ),
-                            SizedBox(height: 8.0),
+                            const SizedBox(height: 8.0),
                             Text(
                               '\UGX ${firstGoal.amount.toStringAsFixed(0)}',
-                              style: TextStyle(
+                              style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 32,
                                   fontWeight: FontWeight.bold),
                             ),
-                            SizedBox(height: 16.0),
+                            const SizedBox(height: 16.0),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Savings',
                                       style: TextStyle(
                                           color: Colors.white70, fontSize: 16),
                                     ),
                                     Text(
                                       '\UGX ${firstGoal.achieved.toStringAsFixed(0)}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold),
@@ -139,14 +141,32 @@ class _DashboardState extends State<Dashboard> {
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Balance',
                                       style: TextStyle(
                                           color: Colors.white70, fontSize: 16),
                                     ),
                                     Text(
                                       '\UGX ${firstGoal.balance.toStringAsFixed(0)}',
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
+
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Interest',
                                       style: TextStyle(
+                                          color: Colors.white70, fontSize: 16),
+                                    ),
+                                    Text(
+                                      '\UGX ${firstGoal.interest.toStringAsFixed(0)}',
+                                      style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold),
@@ -200,13 +220,13 @@ class _DashboardState extends State<Dashboard> {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => TargetPage(
+                builder: (context) => const TargetPage(
                       userName: '',
                       phoneNumber: '',
                     )),
           );
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         backgroundColor: Colors.teal,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -266,141 +286,84 @@ class GoalCard extends StatelessWidget {
                 children: [
                   Text(
                     goal.target,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   LinearProgressIndicator(
                     value: progress,
                     backgroundColor: Colors.grey[200],
                     color: Colors.teal,
                     minHeight: 5,
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         'UGX ${goal.achieved.toStringAsFixed(2)}',
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                       Text(
                         'UGX ${(goal.amount - goal.achieved).toStringAsFixed(2)}',
-                        style: TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            Column(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.add, color: Colors.teal),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Choose an Option'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context); // Close the dialog
-                                  textFieldController.text = Provider.of<UserProvider>(context, listen: false).phoneNumber; // Set user's phone number
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => DepositSheetMy(
-                                      selectedGoal: goal.target, // Pass the goal name to DepositSheetMy
-                                      textFieldController: textFieldController, // Pass the controller
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.teal,
+            IconButton(
+              icon: const Icon(Icons.add, color: Colors.teal),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('Choose an Option'),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close the dialog
+                              textFieldController.text = Provider.of<UserProvider>(context, listen: false).phoneNumber; // Set user's phone number
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => DepositSheetMy(
+                                  selectedGoal: goal.target, // Pass the goal name to DepositSheetMy
+                                  textFieldController: textFieldController, // Pass the controller
                                 ),
-                                child: Text('My Number'),
-                              ),
-                              SizedBox(height: 10),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context); // Close the dialog
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => DepositSheet(
-                                      selectedGoal: goal.target, // Pass the goal name to DepositSheet
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.teal,
-                                ),
-                                child: Text('Other Number'),
-                              ),
-                            ],
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.teal,
+                            ),
+                            child: const Text('My Number'),
                           ),
-                        );
-                      },
+                          const SizedBox(height: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context); // Close the dialog
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (context) => DepositSheet(
+                                  selectedGoal: goal.target, // Pass the goal name to DepositSheet
+                                ),
+                              );
+                            },
+                            style: ElevatedButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.teal,
+                            ),
+                            child: const Text('Other Number'),
+                          ),
+                        ],
+                      ),
                     );
                   },
-                ),
-                IconButton(
-                  icon: Icon(Icons.remove, color: Colors.teal),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text('Choose an Option'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context); // Close the dialog
-                                  textFieldController.text = Provider.of<UserProvider>(context, listen: false).phoneNumber; // Set user's phone number
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => WithdrawSheetMy(
-                                      selectedGoal: goal.target, // Pass the goal name to WithdrawSheetMy
-                                      textFieldController: textFieldController, // Pass the controller
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.teal,
-                                ),
-                                child: Text('My Number'),
-                              ),
-                              SizedBox(height: 10),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context); // Close the dialog
-                                  showModalBottomSheet(
-                                    context: context,
-                                    builder: (context) => WithdrawSheet(
-                                      selectedGoal: goal.target, // Pass the goal name to WithdrawSheet
-                                    ),
-                                  );
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor: Colors.teal,
-                                ),
-                                child: Text('Other Number'),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
+                );
+              },
             ),
           ],
         ),
