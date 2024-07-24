@@ -13,12 +13,16 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
+  final _ninController = TextEditingController();
+  final _locationController = TextEditingController();
 
   @override
   void dispose() {
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
+    _ninController.dispose();
+    _locationController.dispose();
     super.dispose();
   }
 
@@ -43,11 +47,14 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
           name: _nameController.text,
           email: _emailController.text,
           phone: phone,
+          nationalIdentificationNumber: _ninController.text,
+          districtOfResidence: _locationController.text,
         );
 
         try {
           // Get a reference to the Firestore collection
-          final collection = FirebaseFirestore.instance.collection('user_bio_data');
+          final collection =
+              FirebaseFirestore.instance.collection('user_bio_data');
 
           // Add a new document with a generated ID
           await collection.add(userBioData.toJson());
@@ -61,6 +68,8 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
           _nameController.clear();
           _emailController.clear();
           _phoneController.clear();
+          _ninController.clear();
+          _locationController.clear();
 
           // Redirect to login page
           Navigator.pushReplacement(
@@ -97,7 +106,8 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
       ),
       body: Center(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Reduced top padding
+          padding: const EdgeInsets.symmetric(
+              horizontal: 16.0, vertical: 8.0), // Reduced top padding
           child: Form(
             key: _formKey,
             child: Container(
@@ -141,6 +151,28 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
                       }
                       if (!RegExp(r'^\+256\d{9}$').hasMatch(value)) {
                         return 'Please enter a valid phone number starting with +256 and followed by 9 digits';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _ninController,
+                    label: 'National Identification Number',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your National Identification Number';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildTextField(
+                    controller: _locationController,
+                    label: 'District of Residence',
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your District of Residence';
                       }
                       return null;
                     },
