@@ -5,10 +5,11 @@ import 'package:growgrail/pages/splash.dart';
 import 'package:growgrail/pages/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
+import 'pages/summary_page.dart'; // Import the summary page
 
-void main()async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -30,6 +31,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: SplashScreen(), // Set SplashScreen as the initial screen
+      routes: {
+        '/summary': (context) => SummaryPage(), // Define the summary route
+      },
     );
   }
 }
