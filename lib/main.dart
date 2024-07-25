@@ -5,17 +5,25 @@ import 'package:growgrail/pages/splash.dart';
 import 'package:growgrail/pages/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
-import 'pages/summary_page.dart'; // Import the summary page
+import 'pages/summary_page.dart';
+import 'pages/adminboard.dart';
+import 'package:growgrail/pages/targetprovider.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => TargetProvider()), // Add TargetProvider here
+      ],
       child: MyApp(),
     ),
   );
@@ -28,12 +36,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Savings App',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
       ),
-      home: SplashScreen(), // Set SplashScreen as the initial screen
-      routes: {
-        '/summary': (context) => SummaryPage(), // Define the summary route
-      },
+      home: SplashScreen(), // Set the initial screen here
     );
   }
 }
