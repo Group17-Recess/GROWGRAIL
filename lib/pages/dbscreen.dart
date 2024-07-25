@@ -5,13 +5,14 @@ import 'package:growgrail/pages/userprovider.dart';
 import 'amount.dart';
 import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
 import 'home.dart';
+import 'deposit_sheet_my.dart'; // Import DepositSheetMy widget
 
 class Dashboard extends StatefulWidget {
   @override
   _DashboardState createState() => _DashboardState();
 }
 
-class _DashboardState extends State<Dashboard> {
+class _DashboardState extends Stat2e<Dashboard> {
   int _selectedIndex = 0;
   final TextEditingController textFieldController = TextEditingController();
 
@@ -22,7 +23,8 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void dispose() {
-    textFieldController.dispose(); // Dispose the controller when the widget is disposed
+    textFieldController
+        .dispose(); // Dispose the controller when the widget is disposed
     super.dispose();
   }
 
@@ -38,7 +40,10 @@ class _DashboardState extends State<Dashboard> {
     // Navigate to MyHomePage after logging out
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+      MaterialPageRoute(
+          builder: (context) => MyHomePage(
+                title: '',
+              )),
     );
   }
 
@@ -104,7 +109,8 @@ class _DashboardState extends State<Dashboard> {
                           children: [
                             Text(
                               'Total Target',
-                              style: TextStyle(color: Colors.white, fontSize: 16),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16),
                             ),
                             SizedBox(height: 8.0),
                             Text(
@@ -171,7 +177,6 @@ class _DashboardState extends State<Dashboard> {
                 final goal = userProvider.goals[index];
                 return GoalCard(
                   goal: goal,
-                  
                   textFieldController: textFieldController,
                 );
               },
@@ -235,7 +240,7 @@ class UpperClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
- // Ensure you import the Goal model
+// Ensure you import the Goal model
 
 class GoalCard extends StatelessWidget {
   final TextEditingController textFieldController;
@@ -305,12 +310,17 @@ class GoalCard extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context); // Close the dialog
-                              textFieldController.text = Provider.of<UserProvider>(context, listen: false).phoneNumber; // Set user's phone number
+                              textFieldController.text =
+                                  Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .phoneNumber; // Set user's phone number
                               showModalBottomSheet(
                                 context: context,
                                 builder: (context) => DepositSheetMy(
-                                  selectedGoal: goal.target, // Pass the goal name to DepositSheetMy
-                                  textFieldController: textFieldController, // Pass the controller
+                                  selectedGoal: goal
+                                      .target, // Pass the goal name to DepositSheetMy
+                                  textFieldController:
+                                      textFieldController, // Pass the controller
                                 ),
                               );
                             },
@@ -327,7 +337,8 @@ class GoalCard extends StatelessWidget {
                               showModalBottomSheet(
                                 context: context,
                                 builder: (context) => DepositSheet(
-                                  selectedGoal: goal.target, // Pass the goal name to DepositSheet
+                                  selectedGoal: goal
+                                      .target, // Pass the goal name to DepositSheet
                                 ),
                               );
                             },

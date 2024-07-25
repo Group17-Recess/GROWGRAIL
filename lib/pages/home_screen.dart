@@ -3,7 +3,7 @@ import '../models/goal.dart';
 import 'home.dart';
 import 'package:provider/provider.dart';
 import 'paymentservice.dart';
-import 'userprovider.dart';
+import 'user_provider.dart';
 import 'dbscreen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -82,8 +82,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final targetAmount =
-                        double.tryParse(textFieldController.text) ?? 0;
+                    final targetAmount = double.tryParse(textFieldController.text) ?? 0;
 
                     if (targetAmount > 0) {
                       // Create a new goal with the entered target amount
@@ -143,10 +142,7 @@ class HomeScreen extends StatelessWidget {
               // Navigate to HomeScreen
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => MyHomePage(
-                          title: '',
-                        )),
+                MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
               );
               break;
             case 1:
@@ -169,8 +165,7 @@ class DepositSheetMy extends StatefulWidget {
   final String selectedGoal;
   final TextEditingController textFieldController;
 
-  DepositSheetMy(
-      {required this.selectedGoal, required this.textFieldController});
+  DepositSheetMy({required this.selectedGoal, required this.textFieldController});
 
   @override
   _DepositSheetMyState createState() => _DepositSheetMyState();
@@ -229,87 +224,9 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
                 prefixIcon: Icon(Icons.phone),
                 hintText: 'Phone number',
               ),
-              enabled: false,
+              enabled: false, // Make the field non-editable
               style: TextStyle(
-                color: Colors.grey,
+                color: Colors.grey, // Set text color to grey to make it faint
               ),
             ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Enter deposit amount (UGX)',
-                prefixIcon: Icon(Icons.money),
-              ),
-            ),
-            SizedBox(height: 20),
-            if (_errorMessage.isNotEmpty)
-              Text(
-                _errorMessage,
-                style: TextStyle(color: Colors.red),
-                textAlign: TextAlign.center,
-              ),
-            SizedBox(height: _errorMessage.isNotEmpty ? 20 : 0),
-            ElevatedButton(
-              onPressed: () async {
-                final phone = _phoneController.text;
-                final amount = double.tryParse(_amountController.text) ?? 0;
-                final minDeposit = userProvider.targetAmount * 0.01;
-
-                if (!RegExp(r'^\+256\d{9}$').hasMatch(phone)) {
-                  setState(() {
-                    _errorMessage = 'Invalid phone number';
-                  });
-                  return;
-                }
-
-                if (amount < minDeposit) {
-                  setState(() {
-                    _errorMessage =
-                        'Minimum initial deposit is UGX $minDeposit';
-                  });
-                  return;
-                }
-
-                setState(() {
-                  _errorMessage = '';
-                });
-
-                final paymentService = PaymentService();
-
-                final success = await paymentService.initiatePayment(
-                  context: context,
-                  amount: amount.toString(),
-                  currency: 'UGX',
-                  email: 'user@example.com',
-                  txRef: 'TX${DateTime.now().millisecondsSinceEpoch}',
-                  phoneNumber: phone,
-                  userId: userProvider.userId, // Pass userId here
-                );
-
-                if (success) {
-                  userProvider.addSavings(amount);
-                  Navigator.pop(context);
-                } else {
-                  setState(() {
-                    _errorMessage = 'Payment failed. Please try again.';
-                  });
-                }
-              },
-              child: Text('Deposit'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                padding: EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            SizedBox(height: 10), // Add some extra space at the bottom
-          ],
-        ),
-      ),
-    );
-  }
-}
+            SizedBox(height

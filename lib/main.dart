@@ -1,35 +1,44 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:growgrail/firebase_options.dart';
-import 'package:growgrail/pages/splash.dart';
-import 'package:growgrail/pages/login_page.dart';
 import 'package:provider/provider.dart';
-import 'package:growgrail/pages/userprovider.dart';
+import 'pages/userprovider.dart';
 
-void main()async {
+import 'pages/login_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => UserProvider(),
-      child: MyApp(),
-    ),
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Savings App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ChangeNotifierProvider(
+      create: (context) => UserProvider(),
+      child: MaterialApp(
+        title: 'GrowGrail',
+        theme: ThemeData(
+          primarySwatch: Colors.teal,
+        ),
+        home: AuthWrapper(),
       ),
-      home: SplashScreen(), // Set SplashScreen as the initial screen
     );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    if (userProvider.isSignedIn) {
+      return HomeScreen(); // Your HomeScreen widget
+    } else {
+      return LoginPage();
+    }
   }
 }

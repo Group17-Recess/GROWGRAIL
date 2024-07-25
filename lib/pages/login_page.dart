@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:growgrail/pages/biodata.dart';
 import 'package:provider/provider.dart';
-import 'package:growgrail/pages/userprovider.dart';
-import 'package:growgrail/pages/targetpage.dart';
-
-import 'dbscreen.dart'; // Import the Dashboard page
+import 'package:your_app_name/userprovider.dart';
+import 'package:your_app_name/dbscreen.dart'; // Import the Dashboard page
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,7 +31,10 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => TargetPage(userName: userProvider.name, phoneNumber: userProvider.phoneNumber)),
+          MaterialPageRoute(
+              builder: (context) => TargetPage(
+                  userName: userProvider.name,
+                  phoneNumber: userProvider.phoneNumber)),
         );
       }
     } else {
@@ -128,7 +128,8 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => UserBioDataForm()),
+                        MaterialPageRoute(
+                            builder: (context) => UserBioDataForm()),
                       );
                     },
                     child: const Text('Register now'),
