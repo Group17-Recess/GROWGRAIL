@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "919185344154",
+    "project_id": "save-3e823",
+    "storage_bucket": "save-3e823.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:919185344154:android:4cbea7adf819a0f5de4123",
+        "android_client_info": {
+          "package_name": "com.group17.growgrail"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXfmMsllCCNPh5RgISk5PcfV9fcINhmEQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
