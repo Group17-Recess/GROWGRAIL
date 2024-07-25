@@ -29,6 +29,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
       final phone = _phoneController.text;
+      final name = _nameController.text;
 
       // Check if the phone number already exists
       final querySnapshot = await FirebaseFirestore.instance
@@ -44,7 +45,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
       } else {
         // Phone number does not exist, proceed with form submission
         final userBioData = UserBioData(
-          name: _nameController.text,
+          name: name,
           email: _emailController.text,
           phone: phone,
           nationalIdentificationNumber: _ninController.text,
@@ -56,8 +57,8 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
           final collection =
               FirebaseFirestore.instance.collection('user_bio_data');
 
-          // Add a new document with a generated ID
-          await collection.add(userBioData.toJson());
+          // Add a new document with the user's name as the ID
+          await collection.doc(name).set(userBioData.toJson());
 
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(

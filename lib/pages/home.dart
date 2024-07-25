@@ -3,33 +3,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'login_page.dart'; // Import your login page here
 import 'dbscreen.dart'; // Import your account page here
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'GrowGrail',
-      theme: ThemeData(
-        primaryColor: Colors.teal,
-        scaffoldBackgroundColor: Colors.white,
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.teal,
-          elevation: 0,
-          iconTheme: IconThemeData(color: Colors.white),
-        ),
-        textTheme: const TextTheme(
-          bodyMedium: TextStyle(color: Colors.black),
-        ),
-        colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
-      ),
-      home: MyHomePage(title: 'GrowGrail'),
-    );
-  }
-}
-
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
 
@@ -88,10 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   );
                 },
               ),
-              //const Text(
-              //  'Account',
-              //  style: TextStyle(color: Colors.white, fontSize: 10),
-             // ),
             ],
           ),
           TextButton(
@@ -119,66 +88,72 @@ class _MyHomePageState extends State<MyHomePage> {
                 aspectRatio: 16 / 9,
                 viewportFraction: 0.8,
               ),
-              items: imgList.map((item) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: AssetImage(item['image']!),
-                    ),
-                    const SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20),
+              items: imgList
+                  .map((item) => Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.teal),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                item['caption']!,
-                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
+                            CircleAvatar(
+                              radius: 40,
+                              backgroundImage: AssetImage(item['image']!),
                             ),
-                            const SizedBox(height: 5),
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.teal),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: Text(
-                                "Today: ${item['progress']}%",
-                                style: const TextStyle(fontSize: 14, color: Colors.grey),
-                              ),
-                            ),
-                            const SizedBox(height: 5),
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.teal),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: LinearProgressIndicator(
-                                value: double.parse(item['progress']!) / 100,
-                                minHeight: 6,
-                                backgroundColor: Colors.grey.shade300,
-                                color: Colors.teal,
+                            const SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.teal),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Text(
+                                        item['caption']!,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Container(
+                                      padding: const EdgeInsets.all(5),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.teal),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Text(
+                                        "Today: ${item['progress']}%",
+                                        style: const TextStyle(
+                                            fontSize: 14, color: Colors.grey),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.teal),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: LinearProgressIndicator(
+                                        value: double.parse(item['progress']!) /
+                                            100,
+                                        minHeight: 6,
+                                        backgroundColor: Colors.grey.shade300,
+                                        color: Colors.teal,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              )).toList(),
+                      ))
+                  .toList(),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
@@ -199,6 +174,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   _buildSavingTip('Track your expenses regularly.'),
                   _buildSavingTip('Automate your savings.'),
                   _buildSavingTip('Cut down on unnecessary expenses.'),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/summary');
+                    },
+                    child: Text('View Summary'),
+                  ),
                 ],
               ),
             ),
@@ -263,6 +244,6 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     return Center(
       child: Text("Search suggestions for '$query'"),
-);
-}
+    );
+  }
 }
