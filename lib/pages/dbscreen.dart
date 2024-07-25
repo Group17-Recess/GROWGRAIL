@@ -211,10 +211,30 @@ class _DashboardState extends State<Dashboard> {
             label: 'Account',
           ),
         ],
-        currentIndex: _selectedIndex,
+        
         selectedItemColor: Colors.teal,
-        onTap: _onItemTapped,
+        onTap: (int index) {
+          switch (index) {
+            case 0:
+              // Navigate to HomeScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+              );
+              break;
+            case 1:
+              // Navigate to Dashboard
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Dashboard()),
+              );
+              break;
+            default:
+              break;
+          }
+        },
       ),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
