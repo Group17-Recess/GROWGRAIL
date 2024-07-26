@@ -1,47 +1,62 @@
 import 'package:flutter/material.dart';
-import 'userprovider.dart';
+import 'package:growgrail/models/goal.dart';
 import 'package:provider/provider.dart';
+import 'userprovider.dart';
+
 
 class WithdrawSheetMy extends StatelessWidget {
   final String selectedGoal;
   final TextEditingController textFieldController;
+  final double targetAmount;
+  final dynamic selectedGoals;
+  final String phoneNumber;
 
   const WithdrawSheetMy({
     required this.selectedGoal,
     required this.textFieldController,
+    required this.targetAmount,
+    required this.selectedGoals,
+    required this.phoneNumber, required String defaultPhoneNumber,
   });
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    // Initialize the text field controller with the default phone number
+    textFieldController.text = phoneNumber;
 
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Withdraw from $selectedGoal', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(
+            'Withdraw to My Number',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16),
+          TextField(
+            controller: TextEditingController(text: targetAmount.toStringAsFixed(2)),
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: 'Amount',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 16),
           TextField(
             controller: textFieldController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: 'Amount to withdraw'),
+            decoration: InputDecoration(
+              labelText: 'Phone Number',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.phone,
           ),
-          SizedBox(height: 16.0),
+          SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              final amount = double.tryParse(textFieldController.text);
-              if (amount != null && amount > 0) {
-                userProvider.withdraw(amount, selectedGoal).then((_) {
-                  Navigator.pop(context);
-                });
-              } else {
-                print("Invalid amount");
-              }
+              // Perform the withdraw operation here
+              Navigator.pop(context);
             },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.teal,
-            ),
             child: Text('Withdraw'),
           ),
         ],
@@ -50,47 +65,57 @@ class WithdrawSheetMy extends StatelessWidget {
   }
 }
 
-
 class WithdrawSheet extends StatelessWidget {
   final String selectedGoal;
+  final TextEditingController textFieldController;
+  final Goal goal;
+  final double targetAmount;
 
   const WithdrawSheet({
     required this.selectedGoal,
+    required this.textFieldController,
+    required this.goal,
+    required this.targetAmount,
   });
 
   @override
   Widget build(BuildContext context) {
-    final textFieldController = TextEditingController();
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-
     return Padding(
-      padding: EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Withdraw from $selectedGoal', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(
+            'Withdraw to Other Number',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 16),
+          TextField(
+            controller: TextEditingController(text: targetAmount.toStringAsFixed(2)),
+            readOnly: true,
+            decoration: InputDecoration(
+              labelText: 'Amount',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          SizedBox(height: 16),
           TextField(
             controller: textFieldController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(labelText: 'Amount to withdraw'),
+            decoration: InputDecoration(
+              labelText: 'Phone Number',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.phone,
           ),
-          SizedBox(height: 16.0),
+          SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              final amount = double.tryParse(textFieldController.text);
-              if (amount != null && amount > 0) {
-                userProvider.withdraw(amount, selectedGoal).then((_) {
-                  Navigator.pop(context);
-                });
-              } else {
-                print("Invalid amount");
-              }
+              // Handle withdraw logic here
             },
+            child: Text('Withdraw'),
             style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
               backgroundColor: Colors.teal,
             ),
-            child: Text('Withdraw'),
           ),
         ],
       ),

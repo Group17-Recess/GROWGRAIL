@@ -15,6 +15,18 @@ class UserProvider with ChangeNotifier {
   String get phoneNumber => _phoneNumber;
   List<Goal> get goals => _goals;
 
+  double get totalTarget {
+    return _goals.fold<double>(0, (prev, goal) => prev + goal.amount);
+  }
+
+  double get totalAchieved {
+    return _goals.fold<double>(0, (prev, goal) => prev + goal.achieved);
+  }
+
+  double get totalBalance {
+    return _goals.fold<double>(0, (prev, goal) => prev + goal.balance);
+  }
+
   // Method to set user details
   Future<void> setUser(String name, String phone) async {
     final querySnapshot = await FirebaseFirestore.instance
@@ -47,14 +59,17 @@ class UserProvider with ChangeNotifier {
 
   // Fetch user goals
   Future<void> fetchGoals() async {
-    final docSnapshot = await FirebaseFirestore.instance
+    final goalsCollection = FirebaseFirestore.instance
         .collection('Goals')
         .doc(_phoneNumber)
-        .get();
+        .collection('userGoals'); // Reference to user-specific goals collection
 
-    if (docSnapshot.exists) {
-      final goalData = docSnapshot.data()!;
-      _goals = [Goal.fromJson(goalData)];
+    final querySnapshot = await goalsCollection.get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      _goals = querySnapshot.docs
+          .map((doc) => Goal.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
     } else {
       _goals = [];
     }
@@ -67,22 +82,48 @@ class UserProvider with ChangeNotifier {
   }
 
   // Method to withdraw savings
-  Future<void> withdraw(double amount, String goalTarget) async {
+  Future<void> withdraw(double amount, String goalId) async {
     if (_totalSavings >= amount) {
-      final goalIndex = _goals.indexWhere((goal) => goal.target == goalTarget);
+      final goalIndex = _goals.indexWhere((goal) => goal.id == goalId);
       if (goalIndex != -1) {
         _goals[goalIndex].achieved -= amount;
         _totalSavings -= amount;
+
+        // Update Firestore with the new goal data
         await FirebaseFirestore.instance
             .collection('Goals')
             .doc(_phoneNumber)
+            .collection('userGoals')
+            .doc(goalId) // Use goalId for the document reference
             .update(_goals[goalIndex].toJson());
+
         notifyListeners();
       } else {
         print("Goal not found");
       }
     } else {
       print("Insufficient funds");
+    }
+  }
+
+  // Method to update goal details
+  Future<void> updateGoal(String goalId, String newTarget, double newAmount) async {
+    final goalIndex = _goals.indexWhere((goal) => goal.id == goalId);
+    if (goalIndex != -1) {
+      _goals[goalIndex].target = newTarget;
+      _goals[goalIndex].amount = newAmount;
+
+      // Update Firestore with the new goal data
+      await FirebaseFirestore.instance
+          .collection('Goals')
+          .doc(_phoneNumber)
+          .collection('userGoals')
+          .doc(goalId) // Use goalId for the document reference
+          .update(_goals[goalIndex].toJson());
+
+      notifyListeners();
+    } else {
+      print("Goal not found");
     }
   }
 }

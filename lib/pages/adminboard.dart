@@ -71,9 +71,9 @@ class _AdminState extends State<Admin> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final userName = userProvider.name.isEmpty ? 'Admin' : userProvider.name;
-    final firstGoal = userProvider.goals.isNotEmpty
-        ? userProvider.goals.first
-        : Goal(target: '', amount: 0, achieved: 0, balance: 0);
+    // final firstGoal = userProvider.goals.isNotEmpty
+    //     ? userProvider.goals.first
+    //     : Goal(target: '', amount: 0, achieved: 0, balance: 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -115,73 +115,73 @@ class _AdminState extends State<Admin> {
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 16.0),
-                    Card(
-                      color: Colors.blue[400],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Total Target',
-                              style: TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                            SizedBox(height: 8.0),
-                            Text(
-                              '\UGX ${firstGoal.amount.toStringAsFixed(0)}',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(height: 16.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Savings',
-                                      style: TextStyle(
-                                          color: Colors.white70, fontSize: 16),
-                                    ),
-                                    Text(
-                                      '\UGX ${firstGoal.achieved.toStringAsFixed(0)}',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Balance',
-                                      style: TextStyle(
-                                          color: Colors.white70, fontSize: 16),
-                                    ),
-                                    Text(
-                                      '\UGX ${firstGoal.balance.toStringAsFixed(0)}',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    // SizedBox(height: 16.0),
+                    // Card(
+                    //   color: Colors.blue[400],
+                    //   shape: RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.circular(16.0),
+                    //   ),
+                    //   child: Padding(
+                    //     padding: const EdgeInsets.all(16.0),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text(
+                    //           'Total Target',
+                    //           style: TextStyle(color: Colors.white, fontSize: 16),
+                    //         ),
+                    //         SizedBox(height: 8.0),
+                    //         Text(
+                    //           '\UGX ${firstGoal.amount.toStringAsFixed(0)}',
+                    //           style: TextStyle(
+                    //               color: Colors.white,
+                    //               fontSize: 32,
+                    //               fontWeight: FontWeight.bold),
+                    //         ),
+                    //         SizedBox(height: 16.0),
+                    //         Row(
+                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //           children: [
+                    //             Column(
+                    //               crossAxisAlignment: CrossAxisAlignment.start,
+                    //               children: [
+                    //                 Text(
+                    //                   'Savings',
+                    //                   style: TextStyle(
+                    //                       color: Colors.white70, fontSize: 16),
+                    //                 ),
+                    //                 Text(
+                    //                   '\UGX ${firstGoal.achieved.toStringAsFixed(0)}',
+                    //                   style: TextStyle(
+                    //                       color: Colors.white,
+                    //                       fontSize: 20,
+                    //                       fontWeight: FontWeight.bold),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //             Column(
+                    //               crossAxisAlignment: CrossAxisAlignment.start,
+                    //               children: [
+                    //                 Text(
+                    //                   'Balance',
+                    //                   style: TextStyle(
+                    //                       color: Colors.white70, fontSize: 16),
+                    //                 ),
+                    //                 Text(
+                    //                   '\UGX ${firstGoal.balance.toStringAsFixed(0)}',
+                    //                   style: TextStyle(
+                    //                       color: Colors.white,
+                    //                       fontSize: 20,
+                    //                       fontWeight: FontWeight.bold),
+                    //                 ),
+                    //               ],
+                    //             ),
+                    //           ],
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
