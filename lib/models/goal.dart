@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Goal {
-  final String target;
-  final double amount;
-  late final double achieved;
+  final String id; // Unique identifier for the goal
+  String target;
+  double amount;
+  late double achieved;
   final double balance;
   double interest;
   List<Timestamp> deposits; // List to track deposit timestamps
 
   Goal({
+    required this.id, // Initialize ID in the constructor
     required this.target,
     this.amount = 0.0,
     this.achieved = 0.0,
@@ -20,35 +22,39 @@ class Goal {
   // Convert Goal instance to JSON
   Map<String, dynamic> toJson() {
     return {
+      'id': id, // Include ID in JSON
       'Target': target,
       'Amount': amount,
       'Achieved': achieved,
       'Balance': balance,
       'Interest': interest,
-      'Deposits': deposits, // Convert timestamps to list
+      'Deposits': deposits.map((timestamp) => timestamp.toDate()).toList(), // Convert timestamps to DateTime
     };
   }
 
   // Create a Goal instance from JSON
   factory Goal.fromJson(Map<String, dynamic> json) {
     return Goal(
+      id: json['id'], // Extract ID from JSON
       target: json['Target'],
-      amount: json['Amount'].toDouble(),
-      achieved: json['Achieved'].toDouble(),
-      balance: json['Balance'].toDouble(),
-      interest: json['Interest']?.toDouble() ?? 0.0,
-      deposits: List<Timestamp>.from(json['Deposits'] ?? []), // Convert list to timestamps
+      amount: (json['Amount'] ?? 0).toDouble(),
+      achieved: (json['Achieved'] ?? 0).toDouble(),
+      balance: (json['Balance'] ?? 0).toDouble(),
+      interest: (json['Interest'] ?? 0).toDouble(),
+      deposits: (json['Deposits'] as List<dynamic>?)
+              ?.map((item) => Timestamp.fromDate(DateTime.parse(item.toString())))
+              .toList() ?? [], // Convert list to timestamps
     );
   }
 
   // Save the Goal to Firestore
   static Future<void> saveGoal(String phoneNumber, Goal goal) async {
     final firestore = FirebaseFirestore.instance;
-    final userGoalsCollection = firestore.collection('Goals');
+    final userGoalsCollection = firestore.collection('Goals').doc(phoneNumber).collection('userGoals');
 
-    // Use the phone number as the document ID
-    final goalDocRef = userGoalsCollection.doc(phoneNumber);
-    
+    // Use the goal ID as the document ID
+    final goalDocRef = userGoalsCollection.doc(goal.id);
+
     // Add or update the goal
     await goalDocRef.set(goal.toJson(), SetOptions(merge: true));
   }
@@ -71,9 +77,12 @@ class Goal {
     deposits.add(timestamp);
     applyInterest(); // Recalculate interest whenever a new deposit is added
   }
-}
 
-// Function to save a user goal
-Future<void> saveUserGoal(String phoneNumber, Goal goal) async {
-  await Goal.saveGoal(phoneNumber, goal);
+  // Update the goal's target and amount
+  void updateGoal(String newTarget, double newAmount) {
+    target = newTarget;
+    amount = newAmount;
+    // Update interest calculation if necessary
+    applyInterest();
+  }
 }

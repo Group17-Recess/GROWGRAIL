@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/targetpage.dart';
@@ -5,6 +6,7 @@ import 'package:growgrail/pages/userprovider.dart';
 import 'amount.dart';
 import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
 import 'home.dart';
+import 'withdraw.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -49,7 +51,14 @@ class _DashboardState extends State<Dashboard> {
     final userName = userProvider.name.isEmpty ? 'Guest' : userProvider.name;
     final firstGoal = userProvider.goals.isNotEmpty
         ? userProvider.goals.first
-        : Goal(target: '', amount: 0, achieved: 0, balance: 0);
+        : Goal(
+            id: 'default-id', // Provide a default or placeholder ID
+            target: 'No Goal',
+            amount: 0,
+            achieved: 0,
+            balance: 0,
+            interest: 0,
+          );
 
     return Scaffold(
       appBar: AppBar(
@@ -96,89 +105,89 @@ class _DashboardState extends State<Dashboard> {
                     ),
                     const SizedBox(height: 16.0),
                     Card(
-                      color: Colors.teal[400],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Total Target',
-                              style: TextStyle(color: Colors.white, fontSize: 16),
-                            ),
-                            const SizedBox(height: 8.0),
-                            Text(
-                              '\UGX ${firstGoal.amount.toStringAsFixed(0)}',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 16.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Savings',
-                                      style: TextStyle(
-                                          color: Colors.white70, fontSize: 16),
-                                    ),
-                                    Text(
-                                      '\UGX ${firstGoal.achieved.toStringAsFixed(0)}',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Balance',
-                                      style: TextStyle(
-                                          color: Colors.white70, fontSize: 16),
-                                    ),
-                                    Text(
-                                      '\UGX ${firstGoal.balance.toStringAsFixed(0)}',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Interest',
-                                      style: TextStyle(
-                                          color: Colors.white70, fontSize: 16),
-                                    ),
-                                    Text(
-                                      '\UGX ${firstGoal.interest.toStringAsFixed(0)}',
-                                      style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+  color: Colors.teal[400],
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(16.0),
+  ),
+  child: Padding(
+    padding: const EdgeInsets.all(16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Total Target',
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+        const SizedBox(height: 8.0),
+        Text(
+          'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.amount).toStringAsFixed(0)}', // Sum of all targets
+          style: const TextStyle(
+              color: Colors.white,
+              fontSize: 32,
+              fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Savings',
+                  style: TextStyle(
+                      color: Colors.white70, fontSize: 16),
+                ),
+                Text(
+                  'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.achieved).toStringAsFixed(0)}', // Sum of all achieved
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Balance',
+                  style: TextStyle(
+                      color: Colors.white70, fontSize: 16),
+                ),
+                Text(
+                  'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.balance).toStringAsFixed(0)}', // Sum of all balance
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Interest',
+                  style: TextStyle(
+                      color: Colors.white70, fontSize: 16),
+                ),
+                Text(
+                  'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.interest).toStringAsFixed(0)}', // Sum of all interest
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            )
+          ],
+        ),
+      ],
+    ),
+  ),
+)
+,
                   ],
                 ),
               ),
@@ -192,7 +201,6 @@ class _DashboardState extends State<Dashboard> {
                 final goal = userProvider.goals[index];
                 return GoalCard(
                   goal: goal,
-                  
                   textFieldController: textFieldController,
                 );
               },
@@ -289,13 +297,14 @@ class GoalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double progress = goal.achieved / goal.amount;
+    double progress = goal.amount > 0 ? goal.achieved / goal.amount : 0.0; // Avoid division by zero
 
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
       ),
       elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8.0), // Add margin for spacing between cards
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -332,62 +341,214 @@ class GoalCard extends StatelessWidget {
                 ],
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.add, color: Colors.teal),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('Choose an Option'),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context); // Close the dialog
-                              textFieldController.text = Provider.of<UserProvider>(context, listen: false).phoneNumber; // Set user's phone number
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (context) => DepositSheetMy(
-                                  selectedGoal: goal.target, // Pass the goal name to DepositSheetMy
-                                  textFieldController: textFieldController, // Pass the controller
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.teal,
-                            ),
-                            child: const Text('My Number'),
-                          ),
-                          const SizedBox(height: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context); // Close the dialog
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (context) => DepositSheet(
-                                  selectedGoal: goal.target, // Pass the goal name to DepositSheet
-                                ),
-                              );
-                            },
-                            style: ElevatedButton.styleFrom(
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors.teal,
-                            ),
-                            child: const Text('Other Number'),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.more_vert, color: Colors.teal),
+              onSelected: (String value) {
+                switch (value) {
+                  case 'Add Deposit':
+                    _showDepositOptions(context, textFieldController);
+                    break;
+                  case 'Withdraw':
+                    _showWithdrawOptions(context, textFieldController);
+                    break;
+                  case 'Edit':
+                    _showEditDialog(context, goal);
+                    break;
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return [
+                  const PopupMenuItem<String>(
+                    value: 'Add Deposit',
+                    child: Text('Add Deposit'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Withdraw',
+                    child: Text('Withdraw'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Edit',
+                    child: Text('Edit'),
+                  ),
+                ];
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _showDepositOptions(BuildContext context, TextEditingController textFieldController) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Deposit Options'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('My Number'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showDepositModalMy(context, textFieldController);
+                },
+              ),
+              ListTile(
+                title: const Text('Other Number'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showDepositModal(context, textFieldController);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showWithdrawOptions(BuildContext context, TextEditingController textFieldController) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Withdraw Options'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                title: const Text('My Number'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showWithdrawModalMy(context, textFieldController);
+                },
+              ),
+              ListTile(
+                title: const Text('Other Number'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _showWithdrawModal(context, textFieldController);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showWithdrawModalMy(BuildContext context, TextEditingController textFieldController) {
+  final userProvider = Provider.of<UserProvider>(context, listen: false);
+  final defaultPhoneNumber = userProvider.phoneNumber; // Get the default phone number
+
+  showModalBottomSheet(
+    context: context,
+    builder: (context) => WithdrawSheetMy(
+      selectedGoal: goal.target, // Pass the goal name to WithdrawSheetMy
+      textFieldController: textFieldController, // Pass the controller
+      targetAmount: goal.amount, // Pass the goal amount as targetAmount
+      defaultPhoneNumber: defaultPhoneNumber, selectedGoals: null, phoneNumber: '', // Pass the default phone number
+    ),
+  );
+}
+
+
+  void _showWithdrawModal(BuildContext context, TextEditingController textFieldController) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => WithdrawSheet(
+        selectedGoal: goal.target, // Pass the goal name to WithdrawSheet
+        goal: goal, // Pass the goal
+        textFieldController: textFieldController, // Pass the controller
+        targetAmount: goal.amount, // Pass the goal amount as targetAmount
+      ),
+    );
+  }
+
+  void _showDepositModalMy(BuildContext context, TextEditingController textFieldController) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => DepositSheetMy(
+        selectedGoal: goal.target, // Pass the goal name to DepositSheetMy
+        textFieldController: textFieldController, // Pass the controller
+        selectedGoals: null,
+      ),
+    );
+  }
+
+  void _showDepositModal(BuildContext context, TextEditingController textFieldController) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => DepositSheet(
+        selectedGoal: goal.target, // Pass the goal name to DepositSheet
+        textFieldController: textFieldController, // Pass the controller
+      ),
+    );
+  }
+
+  void _showEditDialog(BuildContext context, Goal goal) {
+    final TextEditingController targetController = TextEditingController(text: goal.target);
+    final TextEditingController amountController = TextEditingController(text: goal.amount.toString());
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Goal'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: targetController,
+                decoration: const InputDecoration(labelText: 'Target Name'),
+              ),
+              TextField(
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Target Amount'),
+              ),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () async {
+                final newTarget = targetController.text;
+                final newAmount = double.tryParse(amountController.text) ?? 0.0;
+
+                // Update the goal in the database
+                await _updateGoalInDatabase(context, goal, newTarget, newAmount);
+
+                Navigator.pop(context); // Close the dialog
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+              ),
+              child: const Text('Save'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _updateGoalInDatabase(BuildContext context, Goal oldGoal, String newTarget, double newAmount) async {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    // Update the goal in the user's goals list
+    await userProvider.updateGoal(oldGoal.id, newTarget, newAmount);
+
+    // Notify listeners to refresh the UI
+    userProvider.notifyListeners();
   }
 }
