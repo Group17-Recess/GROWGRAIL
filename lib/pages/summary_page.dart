@@ -1,5 +1,3 @@
-// lib/pages/summary_page.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../goal_summary.dart'; // Updated import to match your file structure
@@ -41,8 +39,8 @@ class SummaryPage extends StatelessWidget {
                 ),
                 _buildSummaryCard(
                   context,
-                  'Total Amount',
-                  summary?.totalAmount ?? 0.0,
+                  'Total Target Amount',
+                  summary?.totalTargetAmount ?? 0.0,
                   Colors.blue,
                   Icons.attach_money,
                 ),
@@ -60,6 +58,72 @@ class SummaryPage extends StatelessWidget {
                   Colors.purple,
                   Icons.account_balance_wallet,
                 ),
+                FutureBuilder<int>(
+                  future: goalSummaryService.getTotalPeopleSaved(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+
+                    final totalPeopleSaved = snapshot.data ?? 0;
+
+                    return _buildSummaryCard(
+                      context,
+                      'People Who Have Saved',
+                      totalPeopleSaved.toDouble(),
+                      Colors.teal,
+                      Icons.people,
+                    );
+                  },
+                ),
+                FutureBuilder<String>(
+                  future: goalSummaryService.getDistrictSavingMore(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+
+                    final districtSavingMore = snapshot.data ?? 'Unknown';
+
+                    return _buildSummaryCard(
+                      context,
+                      'District Saving More',
+                      districtSavingMore,
+                      Colors.red,
+                      Icons.location_city,
+                    );
+                  },
+                ),
+                FutureBuilder<String>(
+                  future: goalSummaryService.getMostSavedGoals(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+
+                    final mostSavedGoal = snapshot.data ?? 'Unknown';
+
+                    return _buildSummaryCard(
+                      context,
+                      'Goal Being Saved For the Most',
+                      mostSavedGoal,
+                      Colors.indigo,
+                      Icons.star,
+                    );
+                  },
+                ),
               ],
             ),
           );
@@ -68,7 +132,7 @@ class SummaryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryCard(BuildContext context, String title, double value,
+  Widget _buildSummaryCard(BuildContext context, String title, dynamic value,
       Color color, IconData icon) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -82,7 +146,7 @@ class SummaryPage extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         trailing: Text(
-          value.toStringAsFixed(2),
+          value is double ? value.toStringAsFixed(2) : value.toString(),
           style: TextStyle(
             fontSize: 20.0,
             fontWeight: FontWeight.bold,
