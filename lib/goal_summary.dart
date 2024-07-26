@@ -17,7 +17,7 @@ class TotalSummary {
   Map<String, dynamic> toJson() {
     return {
       'TotalAchieved': totalAchieved,
-      'TotalTargetAmount': totalTargetAmount,
+      'TotalAmount': totalTargetAmount,
       'TotalInterest': totalInterest,
       'TotalBalance': totalBalance,
     };
@@ -50,14 +50,14 @@ class GoalSummaryService {
     for (var doc in querySnapshot.docs) {
       final goal = Goal.fromJson(doc.data());
       totalAchieved += goal.achieved;
-      totalTargetAmount += goal.amount;
+      totalTAmount += goal.amount;
       totalInterest += goal.interest;
       totalBalance += goal.balance;
     }
 
     return TotalSummary(
       totalAchieved: totalAchieved,
-      totalTargetAmount: totalTargetAmount,
+      totalTargetAmount: totalAmount,
       totalInterest: totalInterest,
       totalBalance: totalBalance,
     );
@@ -77,7 +77,7 @@ class GoalSummaryService {
 
     for (var doc in querySnapshot.docs) {
       final goal = Goal.fromJson(doc.data());
-      final district = doc.data()['district'];
+      final district = doc.data()['district'] as String? ?? 'Unknown';
       if (districtSavings.containsKey(district)) {
         districtSavings[district] = districtSavings[district]! + goal.amount;
       } else {
