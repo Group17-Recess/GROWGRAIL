@@ -50,14 +50,14 @@ class GoalSummaryService {
     for (var doc in querySnapshot.docs) {
       final goal = Goal.fromJson(doc.data());
       totalAchieved += goal.achieved;
-      totalTargetAmount += goal.amount;
+      totalTAmount += goal.amount;
       totalInterest += goal.interest;
       totalBalance += goal.balance;
     }
 
     return TotalSummary(
       totalAchieved: totalAchieved,
-      totalTargetAmount: totalTargetAmount,
+      totalTargetAmount: totalAmount,
       totalInterest: totalInterest,
       totalBalance: totalBalance,
     );
