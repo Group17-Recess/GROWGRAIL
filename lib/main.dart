@@ -1,19 +1,19 @@
+// File path: lib/main.dart
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:growgrail/firebase_options.dart';
 import 'package:growgrail/pages/splash.dart';
-import 'package:growgrail/pages/login_page.dart';
+
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
-import 'pages/summary_page.dart';
-import 'pages/adminboard.dart';
+
 import 'package:growgrail/pages/targetprovider.dart';
-
-
+import 'package:growgrail/pages/transaction_provider.dart'; // Add this import
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -22,7 +22,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
-        ChangeNotifierProvider(create: (context) => TargetProvider()), // Add TargetProvider here
+        ChangeNotifierProvider(create: (context) => TargetProvider()),
+        ChangeNotifierProvider(create: (context) => TransactionProvider()), // Add this line
       ],
       child: MyApp(),
     ),
