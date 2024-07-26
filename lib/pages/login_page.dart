@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:growgrail/pages/biodata.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
-import 'dbscreen.dart'; // Import the Dashboard page
+import 'package:growgrail/pages/dbscreen.dart'; // Import the Dashboard page
+
+
+import 'adminboard.dart'; // Import the Admin page
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -24,15 +27,32 @@ class _LoginPageState extends State<LoginPage> {
     await userProvider.setUser(name, phone);
 
     if (userProvider.name.isNotEmpty) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Dashboard()),
-      );
+      if (await _isAdmin(name, phone)) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Admin()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Dashboard()),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Invalid name or phone number')),
       );
     }
+  }
+
+  Future<bool> _isAdmin(String name, String phone) async {
+    final adminQuerySnapshot = await FirebaseFirestore.instance
+        .collection('admin_bio_data')
+        .where('name', isEqualTo: name)
+        .where('phone', isEqualTo: phone)
+        .get();
+
+    return adminQuerySnapshot.docs.isNotEmpty;
   }
 
   @override
@@ -131,18 +151,12 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Not a member?'),
+                    const Text('Don’t have an account?'),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => UserBioDataForm()),
-                        );
+                        // Navigate to registration page
                       },
-                      child: const Text(
-                        'Register now',
-                        style: TextStyle(color: Colors.teal),
-                      ),
+                      child: const Text('Register'),
                     ),
                   ],
                 ),
