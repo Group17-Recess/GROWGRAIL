@@ -7,7 +7,7 @@ import '../models/goal.dart';
 import 'admin_biodata.dart';
 import 'home.dart';
 import 'userlist.dart';
-
+import 'summary_page.dart'; // Import the SummaryPage
 
 class Admin extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _AdminState extends State<Admin> {
       if (index == 0) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+          MaterialPageRoute(builder: (context) => MyHomePage(title: '')),
         );
       } else if (index == 1) {
         Navigator.pushReplacement(
@@ -37,7 +37,7 @@ class _AdminState extends State<Admin> {
   void _logout() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+      MaterialPageRoute(builder: (context) => MyHomePage(title: '')),
     );
   }
 
@@ -61,6 +61,12 @@ class _AdminState extends State<Admin> {
           MaterialPageRoute(builder: (context) => TargetEditPage()),
         );
         break;
+      case 'Analytics':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SummaryPage()), // Navigate to SummaryPage
+        );
+        break;
       default:
         // Handle other cases or show an error
         break;
@@ -71,9 +77,6 @@ class _AdminState extends State<Admin> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final userName = userProvider.name.isEmpty ? 'Admin' : userProvider.name;
-    // final firstGoal = userProvider.goals.isNotEmpty
-    //     ? userProvider.goals.first
-    //     : Goal(target: '', amount: 0, achieved: 0, balance: 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -115,73 +118,6 @@ class _AdminState extends State<Admin> {
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
-                    // SizedBox(height: 16.0),
-                    // Card(
-                    //   color: Colors.blue[400],
-                    //   shape: RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.circular(16.0),
-                    //   ),
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.all(16.0),
-                    //     child: Column(
-                    //       crossAxisAlignment: CrossAxisAlignment.start,
-                    //       children: [
-                    //         Text(
-                    //           'Total Target',
-                    //           style: TextStyle(color: Colors.white, fontSize: 16),
-                    //         ),
-                    //         SizedBox(height: 8.0),
-                    //         Text(
-                    //           '\UGX ${firstGoal.amount.toStringAsFixed(0)}',
-                    //           style: TextStyle(
-                    //               color: Colors.white,
-                    //               fontSize: 32,
-                    //               fontWeight: FontWeight.bold),
-                    //         ),
-                    //         SizedBox(height: 16.0),
-                    //         Row(
-                    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //           children: [
-                    //             Column(
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Text(
-                    //                   'Savings',
-                    //                   style: TextStyle(
-                    //                       color: Colors.white70, fontSize: 16),
-                    //                 ),
-                    //                 Text(
-                    //                   '\UGX ${firstGoal.achieved.toStringAsFixed(0)}',
-                    //                   style: TextStyle(
-                    //                       color: Colors.white,
-                    //                       fontSize: 20,
-                    //                       fontWeight: FontWeight.bold),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //             Column(
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Text(
-                    //                   'Balance',
-                    //                   style: TextStyle(
-                    //                       color: Colors.white70, fontSize: 16),
-                    //                 ),
-                    //                 Text(
-                    //                   '\UGX ${firstGoal.balance.toStringAsFixed(0)}',
-                    //                   style: TextStyle(
-                    //                       color: Colors.white,
-                    //                       fontSize: 20,
-                    //                       fontWeight: FontWeight.bold),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ],
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -192,7 +128,7 @@ class _AdminState extends State<Admin> {
               padding: const EdgeInsets.all(16.0),
               children: [
                 _buildListItem(Icons.person, 'Users', 'Users'),
-                _buildListItem(Icons.analytics, 'Analytics', 'Analytics'),
+                _buildListItem(Icons.analytics, 'Analytics', 'Analytics'), // Updated route
                 _buildListItem(Icons.edit, 'Edit interest', 'EditInterest'),
                 _buildListItem(Icons.attach_money, 'Deposit records', 'DepositRecords'),
                 _buildListItem(Icons.money_off, 'Withdraw records', 'WithdrawRecords'),

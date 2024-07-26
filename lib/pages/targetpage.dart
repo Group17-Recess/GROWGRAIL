@@ -9,13 +9,15 @@ import 'dbscreen.dart';
 
 import 'home.dart';
 
+import 'targetprovider.dart';
 import 'userprovider.dart';
-
 class TargetPage extends StatelessWidget {
   const TargetPage({Key? key, required String userName, required String phoneNumber});
 
   @override
   Widget build(BuildContext context) {
+    final targetProvider = Provider.of<TargetProvider>(context);
+
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0), // Adjust the height as needed
@@ -43,39 +45,14 @@ class TargetPage extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                OptionContainer(
-                  imagePath: 'images/gadgets.jpg',
-                  title: 'Gadgets',
-                  subtitle: 'Save for new gadgets',
-                  onTap: () => navigateToDepositPage(context, 'Gadgets'),
-                ),
-                OptionContainer(
-                  imagePath: 'images/shopping.jpg',
-                  title: 'Shopping',
-                  subtitle: 'Save for shopping',
-                  onTap: () => navigateToDepositPage(context, 'Shopping'),
-                ),
-                OptionContainer(
-                  imagePath: 'images/tuition.jpg',
-                  title: 'Tuition',
-                  subtitle: 'Save for tuition fees',
-                  onTap: () => navigateToDepositPage(context, 'Tuition'),
-                ),
-                OptionContainer(
-                  imagePath: 'images/business.jpg',
-                  title: 'Starting A Business',
-                  subtitle: 'Save for starting a business',
-                  onTap: () =>
-                      navigateToDepositPage(context, 'Starting A Business'),
-                ),
-                OptionContainer(
-                  imagePath: 'images/others.jpg',
-                  title: 'Others',
-                  subtitle: 'Specify your savings goal',
-                  onTap: () => showOthersDialog(context),
-                ),
-              ],
+              children: targetProvider.targets.map((target) {
+                return OptionContainer(
+                  imagePath: 'images/$target.jpg', // Ensure images are named accordingly
+                  title: target,
+                  subtitle: 'Save for $target',
+                  onTap: () => navigateToDepositPage(context, target),
+                );
+              }).toList(),
             ),
           ),
         ),
@@ -115,10 +92,6 @@ class TargetPage extends StatelessWidget {
       ),
     );
   }
-      
-  
-  }
-  
 
   void navigateToDepositPage(BuildContext context, String selectedGoal) {
     Navigator.push(
@@ -127,32 +100,7 @@ class TargetPage extends StatelessWidget {
           builder: (context) => HomeScreen(selectedGoal: selectedGoal, phoneNumber: '',)),
     );
   }
-
-  void showOthersDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController customController = TextEditingController();
-        return AlertDialog(
-          title: const Text('Specify'),
-          content: TextField(
-            controller: customController,
-            decoration: const InputDecoration(hintText: "Type here"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Submit'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                navigateToDepositPage(context, customController.text);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
+}
 
 class OptionContainer extends StatelessWidget {
   final String imagePath;
