@@ -23,7 +23,8 @@ class UserListPage extends StatelessWidget {
 
           final users = snapshot.data!.docs.map((doc) {
             return UserBioData.fromJson(doc.data() as Map<String, dynamic>);
-          }).toList();
+          }).toList()
+            ..sort((a, b) => a.name.compareTo(b.name));
 
           return ListView.builder(
             itemCount: users.length,
@@ -45,7 +46,16 @@ class UserListPage extends StatelessWidget {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(user.email),
-                  trailing: Icon(Icons.arrow_forward, color: Colors.blue),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _confirmDelete(context, user.phone),
+                      ),
+                      Icon(Icons.arrow_forward, color: Colors.blue),
+                    ],
+                  ),
                   onTap: () {
                     Navigator.push(
                       context,
@@ -61,6 +71,63 @@ class UserListPage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _confirmDelete(BuildContext context, String userPhone) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Delete User'),
+          content: const Text('Are you sure you want to delete this user and all related data?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel', style: TextStyle(color: Colors.blue)),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog before deleting
+                await _deleteUser(context, userPhone);
+              },
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteUser(BuildContext context, String userPhone) async {
+    final firestore = FirebaseFirestore.instance;
+    final batch = firestore.batch();
+    
+    // References to the documents to be deleted
+    final userBioDataRef = firestore.collection('user_bio_data').doc(userPhone);
+    final userGoalsRef = firestore.collection('Goals').doc(userPhone);
+
+    try {
+      // Delete the user bio data
+      batch.delete(userBioDataRef);
+
+      // Delete the user goals data
+      batch.delete(userGoalsRef);
+
+      // Commit the batch operation
+      await batch.commit();
+
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('User deleted successfully'),
+        backgroundColor: Colors.green,
+      ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error deleting user: $e'),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 }
 

@@ -7,7 +7,7 @@ import '../models/goal.dart';
 import 'admin_biodata.dart';
 import 'home.dart';
 import 'userlist.dart';
-import 'summary_page.dart'; // Import the SummaryPage
+
 
 class Admin extends StatefulWidget {
   @override
@@ -23,7 +23,7 @@ class _AdminState extends State<Admin> {
       if (index == 0) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MyHomePage(title: '')),
+          MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
         );
       } else if (index == 1) {
         Navigator.pushReplacement(
@@ -37,7 +37,7 @@ class _AdminState extends State<Admin> {
   void _logout() {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MyHomePage(title: '')),
+      MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
     );
   }
 
@@ -61,12 +61,6 @@ class _AdminState extends State<Admin> {
           MaterialPageRoute(builder: (context) => TargetEditPage()),
         );
         break;
-      case 'Analytics':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => SummaryPage()), // Navigate to SummaryPage
-        );
-        break;
       default:
         // Handle other cases or show an error
         break;
@@ -77,6 +71,9 @@ class _AdminState extends State<Admin> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final userName = userProvider.name.isEmpty ? 'Admin' : userProvider.name;
+    // final firstGoal = userProvider.goals.isNotEmpty
+    //     ? userProvider.goals.first
+    //     : Goal(target: '', amount: 0, achieved: 0, balance: 0);
 
     return Scaffold(
       appBar: AppBar(
@@ -118,6 +115,7 @@ class _AdminState extends State<Admin> {
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
                     ),
+
                   ],
                 ),
               ),
@@ -128,7 +126,7 @@ class _AdminState extends State<Admin> {
               padding: const EdgeInsets.all(16.0),
               children: [
                 _buildListItem(Icons.person, 'Users', 'Users'),
-                _buildListItem(Icons.analytics, 'Analytics', 'Analytics'), // Updated route
+                _buildListItem(Icons.analytics, 'Analytics', 'Analytics'),
                 _buildListItem(Icons.edit, 'Edit interest', 'EditInterest'),
                 _buildListItem(Icons.attach_money, 'Deposit records', 'DepositRecords'),
                 _buildListItem(Icons.money_off, 'Withdraw records', 'WithdrawRecords'),
