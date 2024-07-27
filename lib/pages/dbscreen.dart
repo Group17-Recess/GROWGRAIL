@@ -56,7 +56,7 @@ class _DashboardState extends State<Dashboard> {
             target: 'No Goal',
             amount: 0,
             achieved: 0,
-            balance: 0,
+            
             interest: 0,
           );
 

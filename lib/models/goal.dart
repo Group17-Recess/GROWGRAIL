@@ -4,8 +4,7 @@ class Goal {
   final String id; // Unique identifier for the goal
   String target;
   double amount;
-  late double achieved;
-  final double balance;
+  double achieved;
   double interest;
   List<Timestamp> deposits; // List to track deposit timestamps
 
@@ -14,10 +13,14 @@ class Goal {
     required this.target,
     this.amount = 0.0,
     this.achieved = 0.0,
-    this.balance = 0.0,
     this.interest = 0.0,
     this.deposits = const [], // Initialize with an empty list
   });
+
+  // Calculate balance dynamically as amount minus achieved
+  double get balance {
+    return amount - achieved;
+  }
 
   // Convert Goal instance to JSON
   Map<String, dynamic> toJson() {
@@ -26,7 +29,7 @@ class Goal {
       'Target': target,
       'Amount': amount,
       'Achieved': achieved,
-      'Balance': balance,
+      'Balance': balance, // Include balance in JSON
       'Interest': interest,
       'Deposits': deposits.map((timestamp) => timestamp.toDate()).toList(), // Convert timestamps to DateTime
     };
@@ -39,7 +42,6 @@ class Goal {
       target: json['Target'],
       amount: (json['Amount'] ?? 0).toDouble(),
       achieved: (json['Achieved'] ?? 0).toDouble(),
-      balance: (json['Balance'] ?? 0).toDouble(),
       interest: (json['Interest'] ?? 0).toDouble(),
       deposits: (json['Deposits'] as List<dynamic>?)
               ?.map((item) => Timestamp.fromDate(DateTime.parse(item.toString())))

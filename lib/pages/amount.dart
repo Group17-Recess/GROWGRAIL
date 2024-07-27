@@ -100,7 +100,7 @@ class HomeScreen extends StatelessWidget {
                         target: selectedGoal,
                         amount: targetAmount,
                         achieved: 0,
-                        balance: 0,
+                        
                       );
 
                       // Save the goal to Firestore
