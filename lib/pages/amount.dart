@@ -6,6 +6,7 @@ import 'paymentservice.dart';
 import 'userprovider.dart';
 import 'dbscreen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:growgrail/pages/dashboard.dart';
 
 class HomeScreen extends StatelessWidget {
   final String selectedGoal;
@@ -82,7 +83,8 @@ class HomeScreen extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () async {
-                    final targetAmount = double.tryParse(textFieldController.text) ?? 0;
+                    final targetAmount =
+                        double.tryParse(textFieldController.text) ?? 0;
 
                     if (targetAmount > 0) {
                       // Check the number of existing goals to generate the next ID
@@ -92,7 +94,8 @@ class HomeScreen extends StatelessWidget {
                           .collection('userGoals')
                           .get();
 
-                      final nextId = '${userProvider.phoneNumber}.${goalsSnapshot.size + 1}';
+                      final nextId =
+                          '${userProvider.phoneNumber}.${goalsSnapshot.size + 1}';
 
                       // Create a new goal with the entered target amount
                       final goal = Goal(
@@ -100,7 +103,6 @@ class HomeScreen extends StatelessWidget {
                         target: selectedGoal,
                         amount: targetAmount,
                         achieved: 0,
-                        
                       );
 
                       // Save the goal to Firestore
@@ -111,7 +113,8 @@ class HomeScreen extends StatelessWidget {
                         context: context,
                         builder: (context) => DepositSheetMy(
                           selectedGoal: selectedGoal,
-                          textFieldController: textFieldController, selectedGoals: null,
+                          textFieldController: textFieldController,
+                          selectedGoals: null,
                         ),
                       );
                     } else {
@@ -152,7 +155,10 @@ class HomeScreen extends StatelessWidget {
               // Navigate to HomeScreen
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+                MaterialPageRoute(
+                    builder: (context) => MyHomePage(
+                          title: '',
+                        )),
               );
               break;
             case 1:
@@ -171,20 +177,12 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
 class DepositSheet extends StatefulWidget {
   final String selectedGoal;
 
-  DepositSheet({required this.selectedGoal, required TextEditingController textFieldController});
+  DepositSheet(
+      {required this.selectedGoal,
+      required TextEditingController textFieldController});
 
   @override
   _DepositSheetState createState() => _DepositSheetState();
@@ -236,7 +234,6 @@ class _DepositSheetState extends State<DepositSheet> {
           SizedBox(height: 20),
           TextField(
             controller: _amountController,
-            
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
               labelText: 'Enter deposit amount (UGX)',
@@ -310,14 +307,14 @@ class _DepositSheetState extends State<DepositSheet> {
   }
 }
 
-
-
-
 class DepositSheetMy extends StatefulWidget {
   final String selectedGoal;
   final TextEditingController textFieldController;
 
-  DepositSheetMy({required this.selectedGoal, required this.textFieldController, required selectedGoals});
+  DepositSheetMy(
+      {required this.selectedGoal,
+      required this.textFieldController,
+      required selectedGoals});
 
   @override
   _DepositSheetMyState createState() => _DepositSheetMyState();
@@ -414,7 +411,8 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
 
                 if (amount < minDeposit) {
                   setState(() {
-                    _errorMessage = 'Minimum initial deposit is UGX $minDeposit';
+                    _errorMessage =
+                        'Minimum initial deposit is UGX $minDeposit';
                   });
                   return;
                 }

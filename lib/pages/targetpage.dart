@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'amount.dart';
 import 'package:flutter/material.dart';
@@ -6,13 +5,17 @@ import 'package:growgrail/pages/amount.dart';
 import 'package:provider/provider.dart';
 import '../models/goal.dart';
 import 'dbscreen.dart';
+import 'package:growgrail/pages/dashboard.dart';
 
 import 'home.dart';
 
 import 'targetprovider.dart';
 import 'userprovider.dart';
+import 'package:growgrail/pages/dashboard.dart';
+
 class TargetPage extends StatelessWidget {
-  const TargetPage({Key? key, required String userName, required String phoneNumber});
+  const TargetPage(
+      {Key? key, required String userName, required String phoneNumber});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,8 @@ class TargetPage extends StatelessWidget {
 
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80.0), // Adjust the height as needed
+        preferredSize:
+            const Size.fromHeight(80.0), // Adjust the height as needed
         child: AppBar(
           title: const Text(
             'WHAT WOULD YOU WANT TO SAVE FOR?',
@@ -47,7 +51,8 @@ class TargetPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: targetProvider.targets.map((target) {
                 return OptionContainer(
-                  imagePath: 'images/$target.jpg', // Ensure images are named accordingly
+                  imagePath:
+                      'images/$target.jpg', // Ensure images are named accordingly
                   title: target,
                   subtitle: 'Save for $target',
                   onTap: () => navigateToDepositPage(context, target),
@@ -75,7 +80,10 @@ class TargetPage extends StatelessWidget {
               // Navigate to HomeScreen
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+                MaterialPageRoute(
+                    builder: (context) => MyHomePage(
+                          title: '',
+                        )),
               );
               break;
             case 1:
@@ -97,7 +105,10 @@ class TargetPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => HomeScreen(selectedGoal: selectedGoal, phoneNumber: '',)),
+          builder: (context) => HomeScreen(
+                selectedGoal: selectedGoal,
+                phoneNumber: '',
+              )),
     );
   }
 }
@@ -138,7 +149,9 @@ class OptionContainer extends StatelessWidget {
                     Text(
                       title,
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.teal),
                     ),
                     Text(
                       subtitle,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'login_page.dart'; // Import your login page here
 import 'dbscreen.dart'; // Import your account page here
+import 'package:growgrail/pages/dashboard.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);

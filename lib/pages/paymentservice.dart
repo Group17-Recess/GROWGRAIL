@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutterwave_standard/flutterwave.dart';
 import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
-import 'package:provider/provider.dart';
-import 'package:growgrail/pages/userprovider.dart'; // Import your UserProvider
 
 class PaymentService {
   final String publicKey = 'FLWPUBK-3e4514215898208e91495577492530d7-X';
@@ -19,7 +17,7 @@ class PaymentService {
     required String phoneNumber,
   }) async {
     final Customer customer = Customer(
-      name: "User",
+      name: " User11",
       phoneNumber: phoneNumber,
       email: email,
     );
@@ -33,17 +31,14 @@ class PaymentService {
       paymentOptions: "mobilemoneyuganda",
       customization: Customization(title: "Live Payment"),
       txRef: txRef,
-      isTestMode: false,
-      redirectUrl: "https://your-redirect-url.com",
+      isTestMode: false, // Change to false for live payments
+      redirectUrl:
+          "https://your-redirect-url.com", // You can use any URL for testing
     );
 
     try {
       final ChargeResponse response = await flutterwave.charge();
       if (response != null && response.status == "successful") {
-        // Payment was successful, update user balance
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        double paymentAmount = double.tryParse(amount) ?? 0.0;
-        await userProvider.updateUserBalance(paymentAmount);
         return true;
       } else {
         print("Transaction failed");

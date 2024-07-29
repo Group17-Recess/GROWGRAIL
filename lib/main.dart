@@ -1,15 +1,15 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:growgrail/firebase_options.dart';
-import 'package:growgrail/pages/splash.dart';
 import 'package:provider/provider.dart';
-import 'package:growgrail/pages/userprovider.dart';
-import 'package:growgrail/pages/targetprovider.dart';
-import 'pages/adminboard.dart';
+import 'pages/splash.dart';
+import 'pages/userprovider.dart'; // Ensure this path is correct
+import 'pages/targetprovider.dart'; // Ensure this path is correct
+import 'pages/adminboard.dart'; // Ensure this path is correct
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -18,7 +18,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => UserProvider()),
-        ChangeNotifierProvider(create: (context) => TargetProvider()), // Add TargetProvider here
+        ChangeNotifierProvider(
+            create: (context) => TargetProvider()), // Add TargetProvider here
       ],
       child: MyApp(),
     ),
