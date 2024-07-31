@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'adminboard.dart';
 import 'login_page.dart'; // Import your login page here
-import 'dbscreen.dart'; // Import your account page here
+import 'dbscreen.dart'; // Import your dashboard page here
+
+import 'package:provider/provider.dart';
+import 'userprovider.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -33,6 +37,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
+    bool isLoggedIn = userProvider.isLoggedIn();
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -49,31 +56,41 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         actions: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.person, color: Colors.white),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Dashboard()),
-                  );
-                },
-              ),
-            ],
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-              );
-            },
-            child: const Text(
-              'Login/Signup',
-              style: TextStyle(color: Colors.white),
+          if (isLoggedIn)
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.person, color: Colors.white),
+                  onPressed: () async {
+                    bool isAdmin = await userProvider.isAdmin();
+                    if (isAdmin) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Admin()),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Dashboard()),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
-          ),
+          if (!isLoggedIn)
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
+              child: const Text(
+                'Login/Signup',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
         ],
       ),
       body: SingleChildScrollView(
@@ -106,45 +123,50 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.teal),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Text(
-                                        item['caption']!,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                    Text(
+                                      item['caption']!,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                     const SizedBox(height: 5),
                                     Container(
-                                      padding: const EdgeInsets.all(5),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.teal),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Text(
-                                        "Today: ${item['progress']}%",
-                                        style: const TextStyle(
-                                            fontSize: 14, color: Colors.grey),
+                                      height: 10,
+                                      width: 250,
+                                      child: Stack(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(5),
+                                              color: Colors.grey.shade300,
+                                            ),
+                                          ),
+                                          LayoutBuilder(
+                                            builder: (context, constraints) {
+                                              return Container(
+                                                width: constraints.maxWidth *
+                                                    (double.parse(item[
+                                                            'progress']!) /
+                                                        100),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  color: Colors.teal,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     const SizedBox(height: 5),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.teal),
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: LinearProgressIndicator(
-                                        value: double.parse(item['progress']!) /
-                                            100,
-                                        minHeight: 6,
-                                        backgroundColor: Colors.grey.shade300,
-                                        color: Colors.teal,
-                                      ),
+                                    Text(
+                                      "Today: ${item['progress']}%",
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey),
                                     ),
                                   ],
                                 ),
@@ -174,12 +196,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   _buildSavingTip('Track your expenses regularly.'),
                   _buildSavingTip('Automate your savings.'),
                   _buildSavingTip('Cut down on unnecessary expenses.'),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/summary');
-                    },
-                    child: Text('View Summary'),
-                  ),
                 ],
               ),
             ),
