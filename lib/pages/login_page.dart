@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     // Validate user and set user info
-    await userProvider.setUser(name, phone);
+    await userProvider.setUser(name, phone, AutofillHints.email);
 
     if (userProvider.name.isNotEmpty) {
       if (await _isAdmin(name, phone)) {
