@@ -1,47 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/targetcat.dart';
 
-class TargetProvider extends ChangeNotifier {
-  List<String> _targets = ['Gadgets', 'Shopping', 'Tuition', 'Starting A Business'];
+class TargetProvider with ChangeNotifier {
+  List<TargetCategory> _targets = [];
 
-  List<String> get targets => _targets;
+  List<TargetCategory> get targets => _targets;
 
   TargetProvider() {
-    _loadTargets();
+    fetchTargets();
   }
 
-  void addTarget(String target) {
-    _targets.add(target);
-    _saveTargets();
+  Future<void> fetchTargets() async {
+    final snapshot =
+        await FirebaseFirestore.instance.collection('target_categories').get();
+    _targets =
+        snapshot.docs.map((doc) => TargetCategory.fromFirestore(doc)).toList();
     notifyListeners();
   }
 
-  void removeTarget(String target) {
-    _targets.remove(target);
-    _saveTargets();
+  Future<void> addTarget(String targetName) async {
+    final newCategory = TargetCategory(id: '', name: targetName);
+    _targets.add(newCategory);
+    notifyListeners();
+    await FirebaseFirestore.instance
+        .collection('target_categories')
+        .add(newCategory.toMap());
+  }
+
+  Future<void> editTarget(String targetId, String newName) async {
+    await FirebaseFirestore.instance
+        .collection('target_categories')
+        .doc(targetId)
+        .update({'name': newName});
+    _targets = _targets.map((target) {
+      if (target.id == targetId) {
+        return TargetCategory(id: targetId, name: newName);
+      }
+      return target;
+    }).toList();
     notifyListeners();
   }
 
-  void editTarget(String oldTarget, String newTarget) {
-    final index = _targets.indexOf(oldTarget);
-    if (index != -1) {
-      _targets[index] = newTarget;
-      _saveTargets();
-      notifyListeners();
-    }
-  }
-
-  void _loadTargets() async {
-    final prefs = await SharedPreferences.getInstance();
-    final savedTargets = prefs.getStringList('targets') ?? [];
-    if (savedTargets.isNotEmpty) {
-      _targets = savedTargets;
-    }
+  Future<void> deleteTarget(String targetId) async {
+    await FirebaseFirestore.instance
+        .collection('target_categories')
+        .doc(targetId)
+        .delete();
+    _targets.removeWhere((target) => target.id == targetId);
     notifyListeners();
-  }
-
-  void _saveTargets() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('targets', _targets);
   }
 }
