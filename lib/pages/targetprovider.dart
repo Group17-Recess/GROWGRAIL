@@ -50,4 +50,6 @@ class TargetProvider with ChangeNotifier {
     _targets.removeWhere((target) => target.id == targetId);
     notifyListeners();
   }
+
+  void removeTarget(String target) {}
 }

@@ -188,16 +188,6 @@ class HomeScreen extends StatelessWidget {
 
 
 
-
-
-
-
-
-
-
-
-
-
 class DepositSheet extends StatefulWidget {
   final String selectedGoal;
 
@@ -445,7 +435,7 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
             ),
           ],
         ),
-      ),
-    );
-  }
+     ),
+);
+}
 }

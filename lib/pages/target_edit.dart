@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../models/targetcat.dart';
 import 'targetprovider.dart';
+
 
 class TargetEditPage extends StatelessWidget {
   @override
@@ -10,7 +12,7 @@ class TargetEditPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Target Categories'),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blue,
         elevation: 0,
         centerTitle: true,
         shape: const RoundedRectangleBorder(
@@ -35,12 +37,12 @@ class TargetEditPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ListTile(
-                      title: Text(target, style: TextStyle(fontWeight: FontWeight.bold)),
+                      title: Text(target.name, style: TextStyle(fontWeight: FontWeight.bold)),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.edit, color: Colors.teal),
+                            icon: Icon(Icons.edit, color: Colors.blue),
                             onPressed: () => _editTarget(context, target),
                           ),
                           IconButton(
@@ -61,7 +63,7 @@ class TargetEditPage extends StatelessWidget {
                 icon: Icon(Icons.add),
                 label: Text('Add Target Category'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
+                  backgroundColor: Colors.blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -95,7 +97,7 @@ class TargetEditPage extends StatelessWidget {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Add', style: TextStyle(color: Colors.teal)),
+              child: const Text('Add', style: TextStyle(color: Colors.blue)),
             ),
           ],
         );
@@ -103,12 +105,12 @@ class TargetEditPage extends StatelessWidget {
     );
   }
 
-  void _editTarget(BuildContext context, String oldTarget) {
+  void _editTarget(BuildContext context, TargetCategory target) {
     final targetProvider = Provider.of<TargetProvider>(context, listen: false);
     showDialog(
       context: context,
       builder: (context) {
-        final controller = TextEditingController(text: oldTarget);
+        final controller = TextEditingController(text: target.name);
         return AlertDialog(
           title: const Text('Edit Target'),
           content: TextField(
@@ -119,11 +121,11 @@ class TargetEditPage extends StatelessWidget {
             TextButton(
               onPressed: () {
                 if (controller.text.isNotEmpty) {
-                  targetProvider.editTarget(oldTarget, controller.text);
+                  targetProvider.editTarget(target.id, controller.text);
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Save', style: TextStyle(color: Colors.teal)),
+              child: const Text('Save', style: TextStyle(color: Colors.blue)),
             ),
           ],
         );
@@ -131,7 +133,7 @@ class TargetEditPage extends StatelessWidget {
     );
   }
 
-  void _confirmDelete(BuildContext context, TargetProvider targetProvider, String target) {
+  void _confirmDelete(BuildContext context, TargetProvider targetProvider, TargetCategory target) {
     showDialog(
       context: context,
       builder: (context) {
@@ -143,11 +145,11 @@ class TargetEditPage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text('Cancel', style: TextStyle(color: Colors.teal)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.blue)),
             ),
             TextButton(
               onPressed: () {
-                targetProvider.removeTarget(target);
+                targetProvider.deleteTarget(target.id);
                 Navigator.of(context).pop();
               },
               child: const Text('Delete', style: TextStyle(color: Colors.red)),
