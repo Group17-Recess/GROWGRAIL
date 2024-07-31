@@ -1,18 +1,19 @@
-
 import 'package:flutter/material.dart';
-import 'amount.dart';
-import 'package:flutter/material.dart';
-import 'package:growgrail/pages/amount.dart';
 import 'package:provider/provider.dart';
-import '../models/goal.dart';
-import 'dbscreen.dart';
-
-import 'home.dart';
-
 import 'targetprovider.dart';
-import 'userprovider.dart';
+import 'home.dart';
+import 'dbscreen.dart';
+import 'amount.dart';
+
 class TargetPage extends StatelessWidget {
-  const TargetPage({Key? key, required String userName, required String phoneNumber});
+  final String userName;
+  final String phoneNumber;
+
+  const TargetPage({
+    Key? key,
+    required this.userName,
+    required this.phoneNumber,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,14 +46,18 @@ class TargetPage extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: targetProvider.targets.map((target) {
-                return OptionContainer(
-                  imagePath: 'images/$target.jpg', // Ensure images are named accordingly
-                  title: target,
-                  subtitle: 'Save for $target',
-                  onTap: () => navigateToDepositPage(context, target),
-                );
-              }).toList(),
+              children: [
+                ...targetProvider.targets.map((target) => OptionContainer(
+                  title: target.name,
+                  subtitle: 'Save for ${target.name}',
+                  onTap: () => navigateToDepositPage(context, target.name),
+                )),
+                OptionContainer(
+                  title: 'Others',
+                  subtitle: 'Specify your savings goal',
+                  onTap: () => showOthersDialog(context),
+                ),
+              ],
             ),
           ),
         ),
@@ -97,19 +102,46 @@ class TargetPage extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => HomeScreen(selectedGoal: selectedGoal, phoneNumber: '',)),
+        builder: (context) => HomeScreen(selectedGoal: selectedGoal, phoneNumber: ''),
+      ),
+    );
+  }
+
+  void showOthersDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        TextEditingController customController = TextEditingController();
+        return AlertDialog(
+          title: const Text('Specify'),
+          content: TextField(
+            controller: customController,
+            decoration: const InputDecoration(hintText: "Type here"),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Submit'),
+              onPressed: () {
+                String customGoal = customController.text;
+                if (customGoal.isNotEmpty) {
+                  Navigator.of(context).pop();
+                  navigateToDepositPage(context, customGoal);
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }
 
 class OptionContainer extends StatelessWidget {
-  final String imagePath;
   final String title;
   final String subtitle;
   final VoidCallback onTap;
 
   const OptionContainer({
-    required this.imagePath,
     required this.title,
     required this.subtitle,
     required this.onTap,
@@ -126,10 +158,6 @@ class OptionContainer extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
-              CircleAvatar(
-                backgroundImage: AssetImage(imagePath),
-                radius: 25,
-              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(

@@ -198,5 +198,5 @@ class UserProvider with ChangeNotifier {
   void dispose() {
     _goalSubscription.cancel();
     super.dispose();
-  }
+}
 }

@@ -17,6 +17,6 @@ class TargetCategory {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-    };
-  }
+};
+}
 }
