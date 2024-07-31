@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/goal.dart';
 import 'home.dart';
-import 'package:provider/provider.dart';
 import 'paymentservice.dart';
 import 'userprovider.dart';
 import 'dbscreen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatelessWidget {
   final String selectedGoal;
@@ -16,6 +16,16 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+
+    // Check if the user is logged in
+    if (!userProvider.isLoggedIn()) {
+      return Scaffold(
+        body: Center(
+          child: Text('Access Denied. Please log in.'),
+        ),
+      );
+    }
+
     final TextEditingController textFieldController = TextEditingController();
 
     return Scaffold(
@@ -96,22 +106,27 @@ class HomeScreen extends StatelessWidget {
 
                       // Create a new goal with the entered target amount
                       final goal = Goal(
-                        id: nextId, // Set the generated ID
+                        id: nextId,
                         target: selectedGoal,
                         amount: targetAmount,
                         achieved: 0,
-                        
+                        interest: 0.0,
+                        deposits: [],
+                        createdAt: Timestamp.now(),
                       );
 
                       // Save the goal to Firestore
                       await Goal.saveGoal(userProvider.phoneNumber, goal);
 
-                      // Proceed to open the DepositSheetMy
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (context) => DepositSheetMy(
-                          selectedGoal: selectedGoal,
-                          textFieldController: textFieldController, selectedGoals: null,
+                      // Trigger DepositSheetMy directly
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DepositSheetMy(
+                            selectedGoal: selectedGoal,
+                            textFieldController: textFieldController,
+                            selectedGoals: null,
+                          ),
                         ),
                       );
                     } else {
@@ -181,6 +196,8 @@ class HomeScreen extends StatelessWidget {
 
 
 
+
+
 class DepositSheet extends StatefulWidget {
   final String selectedGoal;
 
@@ -198,113 +215,101 @@ class _DepositSheetState extends State<DepositSheet> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Save for ${widget.selectedGoal}',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 20),
-          TextField(
-            controller: _phoneController,
-            keyboardType: TextInputType.phone,
-            decoration: InputDecoration(
-              labelText: 'Enter phone number (+256xxxxxxxxx)',
-              prefixIcon: Icon(Icons.phone),
-            ),
-          ),
-          SizedBox(height: 20),
-          TextField(
-            controller: _amountController,
-            
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'Enter deposit amount (UGX)',
-              prefixIcon: Icon(Icons.money),
-            ),
-          ),
-          SizedBox(height: 20),
-          if (_errorMessage.isNotEmpty)
+    return AlertDialog(
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
             Text(
-              _errorMessage,
-              style: TextStyle(color: Colors.red),
+              'Save for ${widget.selectedGoal}',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
               textAlign: TextAlign.center,
             ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () async {
-              final phone = _phoneController.text;
-              final amount = double.tryParse(_amountController.text) ?? 0;
-              final minDeposit = userProvider.targetAmount * 0.01;
-
-              if (!RegExp(r'^\+256\d{9}$').hasMatch(phone)) {
-                setState(() {
-                  _errorMessage = 'Invalid phone number';
-                });
-                return;
-              }
-
-              if (amount < minDeposit) {
-                setState(() {
-                  _errorMessage = 'Minimum deposit is UGX $minDeposit';
-                });
-                return;
-              }
-
-              setState(() {
-                _errorMessage = '';
-              });
-
-              final paymentService = PaymentService();
-
-              final success = await paymentService.initiatePayment(
-                context: context,
-                amount: amount.toString(),
-                currency: 'UGX',
-                email: 'user@example.com',
-                txRef: 'TX${DateTime.now().millisecondsSinceEpoch}',
-                phoneNumber: phone,
-              );
-
-              if (success) {
-                userProvider.addSavings(amount);
-                Navigator.pop(context);
-              } else {
-                setState(() {
-                  _errorMessage = 'Payment failed. Please try again.';
-                });
-              }
-            },
-            child: Text('Deposit'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal, // Set button color to teal
-              padding: EdgeInsets.symmetric(vertical: 15),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+            SizedBox(height: 20),
+            TextField(
+              controller: _phoneController,
+              keyboardType: TextInputType.phone,
+              decoration: InputDecoration(
+                labelText: 'Enter phone number (+256xxxxxxxxx)',
+                prefixIcon: Icon(Icons.phone),
               ),
             ),
-          ),
-        ],
+            SizedBox(height: 20),
+            TextField(
+              controller: _amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Enter deposit amount (UGX)',
+                prefixIcon: Icon(Icons.money),
+              ),
+            ),
+            SizedBox(height: 20),
+            if (_errorMessage.isNotEmpty)
+              Text(
+                _errorMessage,
+                style: TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                final phone = _phoneController.text;
+                final amount = double.tryParse(_amountController.text) ?? 0;
+                final minDeposit = userProvider.targetAmount * 0.01;
+
+                if (!RegExp(r'^\+256\d{9}$').hasMatch(phone)) {
+                  setState(() {
+                    _errorMessage = 'Invalid phone number';
+                  });
+                  return;
+                }
+
+                if (amount < minDeposit) {
+                  setState(() {
+                    _errorMessage = 'Minimum deposit is UGX $minDeposit';
+                  });
+                  return;
+                }
+
+                setState(() {
+                  _errorMessage = '';
+                });
+
+                final paymentService = PaymentService();
+
+                final success = await paymentService.initiatePayment(
+                  context: context,
+                  amount: amount.toString(),
+                  currency: 'UGX',
+                  email: 'user@example.com',
+                  txRef: 'TX${DateTime.now().millisecondsSinceEpoch}',
+                  phoneNumber: phone,
+                );
+
+                if (success) {
+                  userProvider.addSavings(amount);
+                  Navigator.pop(context);
+                } else {
+                  setState(() {
+                    _errorMessage = 'Payment failed. Please try again.';
+                  });
+                }
+              },
+              child: Text('Deposit'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal, // Set button color to teal
+                padding: EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -340,21 +345,8 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
 
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.5),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: SingleChildScrollView(
+    return AlertDialog(
+      content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -374,12 +366,11 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
               decoration: InputDecoration(
                 labelText: 'Phone number (+256xxxxxxxxx)',
                 prefixIcon: Icon(Icons.phone),
-                // Add hint text to provide a visual indication of the field being disabled
                 hintText: 'Phone number',
               ),
-              enabled: false, // Make the field non-editable
+              enabled: false,
               style: TextStyle(
-                color: Colors.grey, // Set text color to grey to make it faint
+                color: Colors.grey,
               ),
             ),
             SizedBox(height: 20),
@@ -452,10 +443,9 @@ class _DepositSheetMyState extends State<DepositSheetMy> {
                 ),
               ),
             ),
-            SizedBox(height: 10), // Add some extra space at the bottom
           ],
         ),
-      ),
-    );
-  }
+      ),
+    );
+  }
 }
