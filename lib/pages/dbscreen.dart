@@ -1,12 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/targetpage.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'amount.dart';
-import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
 import 'home.dart';
+import 'profile.dart';
 import 'withdraw.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
 
 class Dashboard extends StatefulWidget {
   @override
@@ -16,11 +17,6 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
   final TextEditingController textFieldController = TextEditingController();
-
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('Home Page'),
-    Text('Profile Page'),
-  ];
 
   @override
   void dispose() {
@@ -34,179 +30,190 @@ class _DashboardState extends State<Dashboard> {
     });
   }
 
-  void _logout() {
-    // Add your logout logic here (e.g., clearing user data, tokens, etc.)
+  void _logout(BuildContext context, UserProvider userProvider) {
+  // Clear user data and cancel goal subscription
+  userProvider.clearUserData();
 
-    // Navigate to MyHomePage after logging out
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
-    );
-  }
+  // Add your additional logout logic here (e.g., clearing tokens, etc.)
+
+  // Navigate to MyHomePage after logging out
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
-    // Access UserProvider to get the user's name and goals
-    final userProvider = Provider.of<UserProvider>(context);
-    final userName = userProvider.name.isEmpty ? 'Guest' : userProvider.name;
-    final firstGoal = userProvider.goals.isNotEmpty
-        ? userProvider.goals.first
-        : Goal(
-            id: 'default-id', // Provide a default or placeholder ID
-            target: 'No Goal',
-            amount: 0,
-            achieved: 0,
-            
-            interest: 0,
-          );
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.teal,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           TextButton(
-            onPressed: _logout,
-            child: const Text(
-              'Logout',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+  onPressed: () {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    _logout(context, userProvider);
+  },
+  child: const Text(
+    'Logout',
+    style: TextStyle(color: Colors.white),
+  ),
+),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Stack(
+      body: Consumer<UserProvider>(
+        builder: (context, userProvider, child) {
+          final userName = userProvider.name.isEmpty ? 'Guest' : userProvider.name;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              ClipPath(
-                clipper: UpperClipper(),
-                child: Container(
-                  color: Colors.teal,
-                  height: 300,
-                ),
+              Stack(
+                children: [
+                  ClipPath(
+                    clipper: UpperClipper(),
+                    child: Container(
+                      color: Colors.teal,
+                      height: 300,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 40),
+                        const Text(
+                          'Welcome,',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        Text(
+                          userName,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold),
+                        ),
+                                                IconButton(
+                              icon: const Icon(
+                                Icons.person,
+                                color: Colors.white,
+                                size: 32.0,
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Profile Page
+                                );
+                              },
+                            ),
+                        const SizedBox(height: 16.0),
+                        Card(
+                          color: Colors.teal[400],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Total Target',
+                                  style: TextStyle(color: Colors.white, fontSize: 16),
+                                ),
+                                const SizedBox(height: 8.0),
+                                Text(
+                                  'UGX ${userProvider.totalTarget.toStringAsFixed(0)}',
+                                  style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                const SizedBox(height: 16.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Savings',
+                                          style: TextStyle(
+                                              color: Colors.white70, fontSize: 16),
+                                        ),
+                                        Text(
+                                          'UGX ${userProvider.totalAchieved.toStringAsFixed(0)}',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Balance',
+                                          style: TextStyle(
+                                              color: Colors.white70, fontSize: 16),
+                                        ),
+                                        Text(
+                                          'UGX ${userProvider.totalBalance.toStringAsFixed(0)}',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Interest',
+                                          style: TextStyle(
+                                              color: Colors.white70, fontSize: 16),
+                                        ),
+                                        Text(
+                                          'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.interest).toStringAsFixed(0)}',
+                                          style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 40),
-                    const Text(
-                      'Welcome,',
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    Text(
-                      userName,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Card(
-  color: Colors.teal[400],
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(16.0),
-  ),
-  child: Padding(
-    padding: const EdgeInsets.all(16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Total Target',
-          style: TextStyle(color: Colors.white, fontSize: 16),
-        ),
-        const SizedBox(height: 8.0),
-        Text(
-          'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.amount).toStringAsFixed(0)}', // Sum of all targets
-          style: const TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Savings',
-                  style: TextStyle(
-                      color: Colors.white70, fontSize: 16),
-                ),
-                Text(
-                  'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.achieved).toStringAsFixed(0)}', // Sum of all achieved
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Balance',
-                  style: TextStyle(
-                      color: Colors.white70, fontSize: 16),
-                ),
-                Text(
-                  'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.balance).toStringAsFixed(0)}', // Sum of all balance
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Interest',
-                  style: TextStyle(
-                      color: Colors.white70, fontSize: 16),
-                ),
-                Text(
-                  'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.interest).toStringAsFixed(0)}', // Sum of all interest
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            )
-          ],
-        ),
-      ],
-    ),
-  ),
-)
-,
-                  ],
+              Expanded(
+                child: ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: userProvider.goals.length,
+                  itemBuilder: (context, index) {
+                    final goal = userProvider.goals[index];
+                    return GoalCard(
+                      goal: goal,
+                      textFieldController: textFieldController,
+                    );
+                  },
                 ),
               ),
             ],
-          ),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.all(8),
-              itemCount: userProvider.goals.length,
-              itemBuilder: (context, index) {
-                final goal = userProvider.goals[index];
-                return GoalCard(
-                  goal: goal,
-                  textFieldController: textFieldController,
-                );
-              },
-            ),
-          ),
-        ],
+          );
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -219,9 +226,10 @@ class _DashboardState extends State<Dashboard> {
             label: 'Account',
           ),
         ],
-        
+        currentIndex: _selectedIndex,
         selectedItemColor: Colors.teal,
         onTap: (int index) {
+          _onItemTapped(index);
           switch (index) {
             case 0:
               // Navigate to HomeScreen
@@ -242,7 +250,6 @@ class _DashboardState extends State<Dashboard> {
           }
         },
       ),
-      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -284,7 +291,14 @@ class UpperClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
+
+
+
  // Ensure you import the Goal model
+
+
+
+
 
 class GoalCard extends StatelessWidget {
   final TextEditingController textFieldController;
@@ -313,9 +327,18 @@ class GoalCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    goal.target,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        goal.target,
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'UGX ${goal.amount.toStringAsFixed(2)}',
+                        style: const TextStyle(fontSize: 14, color: Colors.black),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   LinearProgressIndicator(
@@ -440,20 +463,21 @@ class GoalCard extends StatelessWidget {
   }
 
   void _showWithdrawModalMy(BuildContext context, TextEditingController textFieldController) {
-  final userProvider = Provider.of<UserProvider>(context, listen: false);
-  final defaultPhoneNumber = userProvider.phoneNumber; // Get the default phone number
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final defaultPhoneNumber = userProvider.phoneNumber; // Get the default phone number
 
-  showModalBottomSheet(
-    context: context,
-    builder: (context) => WithdrawSheetMy(
-      selectedGoal: goal.target, // Pass the goal name to WithdrawSheetMy
-      textFieldController: textFieldController, // Pass the controller
-      targetAmount: goal.amount, // Pass the goal amount as targetAmount
-      defaultPhoneNumber: defaultPhoneNumber, selectedGoals: null, phoneNumber: '', // Pass the default phone number
-    ),
-  );
-}
-
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => WithdrawSheetMy(
+        selectedGoal: goal.target, // Pass the goal name to WithdrawSheetMy
+        textFieldController: textFieldController, // Pass the controller
+        targetAmount: goal.amount, // Pass the goal amount as targetAmount
+        defaultPhoneNumber: defaultPhoneNumber, // Pass the default phone number
+        selectedGoals: null, 
+        phoneNumber: '', 
+      ),
+    );
+  }
 
   void _showWithdrawModal(BuildContext context, TextEditingController textFieldController) {
     showModalBottomSheet(
