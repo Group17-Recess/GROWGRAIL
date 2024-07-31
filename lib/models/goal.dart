@@ -7,6 +7,7 @@ class Goal {
   double achieved;
   double interest;
   List<Timestamp> deposits; // List to track deposit timestamps
+  Timestamp createdAt; // Add the created_at field
 
   Goal({
     required this.id, // Initialize ID in the constructor
@@ -15,6 +16,7 @@ class Goal {
     this.achieved = 0.0,
     this.interest = 0.0,
     this.deposits = const [], // Initialize with an empty list
+    required this.createdAt, // Initialize createdAt in the constructor
   });
 
   // Calculate balance dynamically as amount minus achieved
@@ -32,20 +34,22 @@ class Goal {
       'Balance': balance, // Include balance in JSON
       'Interest': interest,
       'Deposits': deposits.map((timestamp) => timestamp.toDate()).toList(), // Convert timestamps to DateTime
+      'created_at': createdAt, // Include created_at in JSON
     };
   }
 
   // Create a Goal instance from JSON
   factory Goal.fromJson(Map<String, dynamic> json) {
     return Goal(
-      id: json['id'], // Extract ID from JSON
-      target: json['Target'],
+      id: json['id'] ?? '', // Extract ID from JSON
+      target: json['Target'] ?? '',
       amount: (json['Amount'] ?? 0).toDouble(),
       achieved: (json['Achieved'] ?? 0).toDouble(),
       interest: (json['Interest'] ?? 0).toDouble(),
       deposits: (json['Deposits'] as List<dynamic>?)
               ?.map((item) => Timestamp.fromDate(DateTime.parse(item.toString())))
               .toList() ?? [], // Convert list to timestamps
+      createdAt: json['created_at'] ?? Timestamp.now(), // Extract created_at from JSON, default to now if null
     );
   }
 
