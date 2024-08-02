@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:growgrail/pages/biodata.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/dbscreen.dart'; // Import the Dashboard page
@@ -153,10 +154,13 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     const Text('Don’t have an account?'),
                     TextButton(
-                      onPressed: () {
-                        // Navigate to registration page
-                      },
-                      child: const Text('Register'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => UserBioDataForm()),
+                      );
+                    },
+                    child: const Text('Register now'),
                     ),
                   ],
                 ),

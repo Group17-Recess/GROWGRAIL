@@ -61,6 +61,20 @@ class _DashboardState extends State<Dashboard> {
     style: TextStyle(color: Colors.white),
   ),
 ),
+
+TextButton(
+ onPressed: () {
+ Navigator.push(
+    context,
+      MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Profile Page
+               );
+        },
+         child: const Text(
+        'Update profile',
+         style: TextStyle(color: Colors.white),
+
+            ),
+              ),
         ],
       ),
       body: Consumer<UserProvider>(
@@ -96,19 +110,7 @@ class _DashboardState extends State<Dashboard> {
                               fontSize: 24,
                               fontWeight: FontWeight.bold),
                         ),
-                                                IconButton(
-                              icon: const Icon(
-                                Icons.person,
-                                color: Colors.white,
-                                size: 32.0,
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Profile Page
-                                );
-                              },
-                            ),
+                            
                         const SizedBox(height: 16.0),
                         Card(
                           color: Colors.teal[400],
