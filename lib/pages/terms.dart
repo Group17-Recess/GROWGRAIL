@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -39,7 +42,7 @@ class TermsAndConditions extends StatelessWidget {
                 'By accessing or using the App, you agree to be bound by these Terms and our Privacy Policy. If you do not agree to these Terms, you must not access or use the App.'),
             buildSectionTitle('2. Eligibility'),
             buildSectionContent(
-                'You must be at least 18 years old to use the App. By using the App, you represent and warrant that you meet this requirement.'),
+                'You must be at least 14 years old to use the App. By using the App, you represent and warrant that you meet this requirement.'),
             buildSectionTitle('3. Account Registration'),
             buildSectionContent(
                 'To use the App, you must create an account by providing accurate and complete information. You are responsible for maintaining the confidentiality of your account and password, and you are responsible for all activities that occur under your account.'),
