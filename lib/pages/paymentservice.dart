@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutterwave_standard/flutterwave.dart';
 import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
@@ -18,7 +17,7 @@ class PaymentService {
     required String phoneNumber,
   }) async {
     final Customer customer = Customer(
-      name: "User11",
+      name: " User11",
       phoneNumber: phoneNumber,
       email: email,
     );
@@ -40,22 +39,6 @@ class PaymentService {
     try {
       final ChargeResponse response = await flutterwave.charge();
       if (response != null && response.status == "successful") {
-        // Update Firestore balance
-        final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-        final userRef = _firestore.collection('users').doc(phoneNumber);
-        final userDoc = await userRef.get();
-
-        if (userDoc.exists) {
-          final currentBalance = userDoc.data()?['balance'] ?? 0;
-          await userRef.update({
-            'balance': currentBalance + double.parse(amount),
-          });
-        } else {
-          await userRef.set({
-            'balance': double.parse(amount),
-          });
-        }
-
         return true;
       } else {
         print("Transaction failed");
