@@ -1,58 +1,26 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
-const crypto = require("crypto");
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+const axios = require('axios'); // Assuming you are using axios for making HTTP requests
 admin.initializeApp();
 
-exports.flutterwaveWebhook = functions.https.onRequest(async (req, res) => {
+// Access environment variables
+const publicKey = functions.config().payment.public_key || 'FLWPUBK_TEST-e931b80b1f9dc244f8f9466593f25269-X';//publivc key
+const secretKey = functions.config().payment.secret_key || 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X'; // secret key
+const encryptionKey = functions.config().payment.encryption_key || 'FLWSECK_TEST6350e5c551aa'; //encryption key
+
+exports.processPayment = functions.https.onRequest(async (req, res) => {
   try {
-    if (req.method === "POST") {
-      const payload = req.body;
-
-      // Verify the webhook signature if needed
-      const receivedSignature = req.headers["x-flutterwave-signature"];
-      const secretKey = "FLWSECK-2a14c6ee2ffa2246fa4974adb05cc4c2-190a8801ecbvt-X";
-      const computedSignature = generateSignature(JSON.stringify(payload), secretKey);
-
-      if (receivedSignature !== computedSignature) {
-        return res.status(400).send("Invalid signature");
-      }
-
-      // Process the payment
-      const {status, amount, user_id} = payload;
-
-      if (status === "successful") {
-        console.log(`Payment successful. Amount: ${amount}, User ID: ${user_id}`);
-        // Update user savings in your database
-        await updateUserSavings(user_id, amount);
-      } else {
-        console.log("Payment failed or other status.");
-      }
-
-      return res.status(200).send("Webhook received");
-    } else {
-      return res.status(405).send("Method not allowed");
-    }
+    // Example API call with your payment details
+    const response = await axios.post('https://api.paymentprovider.com/charge', {
+      amount: req.body.amount,
+      currency: 'USD',
+      public_key: publicKey,
+      secret_key: secretKey,
+      encryption_key: encryptionKey,
+    });
+    res.status(200).send(response.data);
   } catch (error) {
-    console.error("Error handling webhook:", error);
-    return res.status(500).send("Internal Server Error");
+    console.error('Error processing payment:', error);
+    res.status(500).send('Payment processing failed');
   }
 });
-
-function generateSignature(payload, secretKey) {
-  return crypto.createHmac("sha256", secretKey)
-      .update(payload)
-      .digest("hex");
-}
-
-async function updateUserSavings(userId, depositAmount) {
-  const userRef = admin.firestore().collection("users").doc(userId);
-  const userDoc = await userRef.get();
-
-  if (userDoc.exists) {
-    const userData = userDoc.data();
-    const newSavings = (userData.savings || 0) + depositAmount;
-    await userRef.update({savings: newSavings});
-  } else {
-    console.log("User not found");
-  }
-}
