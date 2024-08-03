@@ -30,7 +30,7 @@ class PaymentService {
       paymentOptions: "mobilemoneyuganda",
       customization: Customization(title: "Live Payment"),
       txRef: txRef,
-      isTestMode: false, // Change to false for live payments
+      isTestMode: true, // Change to false for live payments
       redirectUrl:
           "https://your-redirect-url.com", // You can use any URL for testing
     );
