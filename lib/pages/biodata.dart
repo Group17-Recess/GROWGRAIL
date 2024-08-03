@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:growgrail/pages/terms_and_conditions.dart';
 import '../models/biomodel.dart';
-import 'login_page.dart'; // Assuming you have a separate file for the login page
+import 'login_page.dart'; 
+
 
 class UserBioDataForm extends StatefulWidget {
   @override
@@ -15,6 +17,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
   final _phoneController = TextEditingController();
   final _ninController = TextEditingController();
   final _locationController = TextEditingController();
+  bool _agreedToTerms = false;
 
   @override
   void dispose() {
@@ -28,6 +31,13 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
+      if (!_agreedToTerms) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You must agree to the terms and conditions')),
+        );
+        return;
+      }
+
       final phone = _phoneController.text;
       final name = _nameController.text;
 
@@ -40,7 +50,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
       if (querySnapshot.docs.isNotEmpty) {
         // Phone number already exists
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sorry, phone number already used')),
+          const SnackBar(content: Text('Sorry, phone number already used')),
         );
       } else {
         // Phone number does not exist, proceed with form submission
@@ -62,7 +72,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
 
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Form submitted successfully!')),
+            const SnackBar(content: Text('Form submitted successfully!')),
           );
 
           // Optionally, clear the form fields
@@ -81,7 +91,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
           // Handle errors
           print('Error saving data to Firestore: $e');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to submit form.')),
+            const SnackBar(content: Text('Failed to submit form.')),
           );
         }
       }
@@ -177,6 +187,31 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
                       }
                       return null;
                     },
+                  ),
+                  SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _agreedToTerms,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _agreedToTerms = value ?? false;
+                          });
+                        },
+                      ),
+                      const Expanded(
+                        child: Text('I agree to the Terms and Conditions'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => TermsAndConditions()),
+                          );
+                        },
+                        child: const Text('View'),
+                      ),
+                    ],
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
