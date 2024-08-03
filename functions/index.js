@@ -12,7 +12,6 @@ const publicKey = functions.config().payment.public_key || 'FLWPUBK_TEST-e931b80
 const secretKey = functions.config().payment.secret_key || 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X'; // secret key
 const encryptionKey = functions.config().payment.encryption_key || 'FLWSECK_TEST6350e5c551aa'; // encryption key
 
-// Function to process payment
 exports.processPayment = functions.https.onRequest(async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
@@ -25,6 +24,7 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
   }
 
   try {
+    // Example API call with your payment details
     const response = await axios.post('https://api.paymentprovider.com/charge', {
       amount,
       currency: 'USD',
@@ -35,7 +35,7 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
 
     res.status(200).send({
       status: 'success',
-      message: 'Payment initiated, waiting for confirmation',
+      message: 'Payment initiated successfully',
       data: response.data,
     });
   } catch (error) {
@@ -48,19 +48,45 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
   }
 });
 
-// Function to handle payment webhook
 exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
-  try {
-    const payload = req.body;
+  if (req.method !== 'POST') {
+    return res.status(405).send('Method Not Allowed');
+  }
 
-    if (payload.status === 'successful') {
-      const phoneNumber = payload.customer.phone_number;
-      const amount = parseFloat(payload.amount);
+  // Check Content-Type
+  if (req.headers['content-type'] !== 'application/json') {
+    console.error('Invalid Content-Type:', req.headers['content-type']);
+    return res.status(400).send('Invalid Content-Type');
+  }
 
-      const userRef = db.collection('users').doc(phoneNumber);
+  const payload = req.body;
+
+  // Log Headers for Debugging
+  console.log('Headers:', req.headers);
+  console.log('Payload:', payload);
+
+  // Validate payload structure
+  if (payload.event !== 'charge.completed' || !payload.data || !payload.data.metadata) {
+    console.error('Invalid payload structure:', payload);
+    return res.status(400).send('Invalid payload');
+  }
+
+  // Extract data
+  const { phone_number } = payload.data.customer || {}; // Safeguard if customer is not present
+  const { status, amount } = payload.data;
+
+  if (!phone_number || !amount) {
+    console.error('Missing phone number or amount in payload:', payload);
+    return res.status(400).send('Phone number or amount missing');
+  }
+
+  if (status === 'successful') {
+    try {
+      const userRef = db.collection('users').doc(phone_number);
       const userDoc = await userRef.get();
 
       if (!userDoc.exists) {
+        console.error('User not found:', phone_number);
         return res.status(404).send('User not found');
       }
 
@@ -69,16 +95,19 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
 
       await userRef.update({ balance: newBalance });
 
-      res.status(200).send('Payment handled successfully');
-    } else {
-      res.status(400).send('Payment not successful');
+      res.status(200).send({
+        status: 'success',
+        message: 'Payment processed and balance updated',
+      });
+    } catch (error) {
+      console.error('Error handling payment webhook:', error);
+      res.status(500).json({
+        status: 'error',
+        message: 'Failed to handle payment webhook',
+        error: error.message,
+      });
     }
-  } catch (error) {
-    console.error('Error handling payment webhook:', error);
-    res.status(500).json({
-      status: 'error',
-      message: 'Error handling payment webhook',
-      error: error.message,
-    });
+  } else {
+    res.status(400).send('Unsuccessful payment');
   }
 });
