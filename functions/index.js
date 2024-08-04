@@ -74,13 +74,13 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
       }
 
       const userData = userDoc.data();
-      const newBalance = (userData.balance || 0) + amount;
+      const newSavings = (userData.savings || 0) + amount;
 
-      await userRef.update({ balance: newBalance });
+      await userRef.update({ savings: newSavings }); //this saves to the savings field
 
       res.status(200).send({
         status: 'success',
-        message: 'Payment processed and balance updated',
+        message: 'Payment processed and savings updated',
       });
     } catch (error) {
       console.error('Error handling payment webhook:', error);
