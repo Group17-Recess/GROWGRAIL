@@ -27,7 +27,7 @@ class TermsAndConditions extends StatelessWidget {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            Text('Last Updated: [Date]'),
+            Text('Last Updated: [08/03/2024]'),
             SizedBox(height: 16),
             Text(
               'Welcome to GrowGrail! These Terms and Conditions ("Terms") govern your use of the GrowGrail application ("App"). By using the App, you agree to these Terms. If you do not agree to these Terms, please do not use the App.',
@@ -75,10 +75,10 @@ class TermsAndConditions extends StatelessWidget {
                 'We reserve the right to terminate or suspend your account at any time for any reason, including if you violate these Terms.'),
             buildSectionTitle('14. Governing Law'),
             buildSectionContent(
-                'These Terms are governed by and construed in accordance with the laws of [Your Country/State]. Any disputes arising from these Terms or your use of the App will be resolved in the courts of [Your Country/State].'),
+                'These Terms are governed by and construed in accordance with the laws of Uganda. Any disputes arising from these Terms or your use of the App will be resolved in the courts of Uganda.'),
             buildSectionTitle('15. Contact Us'),
             buildSectionContent(
-                'If you have any questions about these Terms, please contact us at [Your Contact Information].'),
+                'If you have any questions about these Terms, please contact us at growgrail@gmail.com.'),
           ],
         ),
       ),

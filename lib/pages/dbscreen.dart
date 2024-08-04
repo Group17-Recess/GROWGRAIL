@@ -6,8 +6,8 @@ import 'amount.dart';
 import 'home.dart';
 import 'profile.dart';
 import 'withdraw.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
+import 'package:growgrail/models/goal.dart'; 
+
 
 class Dashboard extends StatefulWidget {
   @override
@@ -20,7 +20,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   void dispose() {
-    textFieldController.dispose(); // Dispose the controller when the widget is disposed
+    textFieldController.dispose(); 
     super.dispose();
   }
 
@@ -31,12 +31,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _logout(BuildContext context, UserProvider userProvider) {
-  // Clear user data and cancel goal subscription
-  userProvider.clearUserData();
-
-  // Add your additional logout logic here (e.g., clearing tokens, etc.)
-
-  // Navigate to MyHomePage after logging out
+  
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
@@ -292,13 +287,7 @@ class UpperClipper extends CustomClipper<Path> {
 }
 
 
-
-
  // Ensure you import the Goal model
-
-
-
-
 
 class GoalCard extends StatelessWidget {
   final TextEditingController textFieldController;
@@ -318,7 +307,7 @@ class GoalCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.0),
       ),
       elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8.0), // Add margin for spacing between cards
+      margin: const EdgeInsets.symmetric(vertical: 8.0), 
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -573,6 +562,7 @@ class GoalCard extends StatelessWidget {
     await userProvider.updateGoal(oldGoal.id, newTarget, newAmount);
 
     // Notify listeners to refresh the UI
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     userProvider.notifyListeners();
   }
 }

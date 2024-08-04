@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:growgrail/pages/target_edit.dart';
 import 'package:provider/provider.dart';
-import 'package:growgrail/pages/targetpage.dart';
 import 'package:growgrail/pages/userprovider.dart';
-import '../models/goal.dart';
 import 'admin_biodata.dart';
 import 'home.dart';
 import 'userlist.dart';
