@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/targetprovider.dart';
 import 'pages/adminboard.dart';
+import 'pages/mainpage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.teal,
       ),
-      home: SplashScreen(), // Set the initial screen here
+      home: Mainpage(), // Set the initial screen here
     );
   }
 }

@@ -12,7 +12,7 @@ class ProfilePage extends StatelessWidget {
     final TextEditingController phoneController = TextEditingController(text: userProvider.phoneNumber);
 
 
-    Future<void> _updateProfile() async {
+    Future<void> updateProfile() async {
       // Update the user's profile in the Firestore database
       final userDoc = FirebaseFirestore.instance.collection('user_bio_data').doc(userProvider.phoneNumber);
 
@@ -30,8 +30,23 @@ class ProfilePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        title: Text(
+          'My Profile',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        
+        
         backgroundColor: Colors.teal,
+        elevation: 0,
+          centerTitle: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(30),
+            ),
+          ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -72,11 +87,11 @@ class ProfilePage extends StatelessWidget {
             ),
             SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _updateProfile,
-              child: Text('Save Changes'),
+              onPressed: updateProfile,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
               ),
+              child: Text('Save Changes'),
             ),
           ],
         ),

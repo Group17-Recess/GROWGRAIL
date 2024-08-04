@@ -39,7 +39,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
       if (querySnapshot.docs.isNotEmpty) {
         // Phone number already exists
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Sorry, phone number already used')),
+          const SnackBar(content: Text('Sorry, phone number already used')),
         );
       } else {
         // Phone number does not exist, proceed with form submission
@@ -61,7 +61,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
 
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Form submitted successfully!')),
+            const SnackBar(content: Text('Form submitted successfully!')),
           );
 
           // Optionally, clear the form fields
@@ -74,13 +74,13 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
           // Redirect to login page
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
+            MaterialPageRoute(builder: (context) => const LoginPage()),
           );
         } catch (e) {
           // Handle errors
           print('Error saving data to Firestore: $e');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to submit form.')),
+            const SnackBar(content: Text('Failed to submit form.')),
           );
         }
       }
@@ -110,7 +110,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
               horizontal: 16.0, vertical: 8.0), // Reduced top padding
           child: Form(
             key: _formKey,
-            child: Container(
+            child: SizedBox(
               width: 300, // Adjusted width
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -125,7 +125,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _emailController,
                     label: 'Email',
@@ -140,7 +140,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _phoneController,
                     label: 'Phone Number',
@@ -155,7 +155,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _ninController,
                     label: 'National Identification Number',
@@ -166,7 +166,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _locationController,
                     label: 'District of Residence',
@@ -177,10 +177,10 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _submitForm,
-                    child: Text('Submit'),
+                    child: const Text('Submit'),
                   ),
                 ],
               ),
@@ -203,7 +203,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
       decoration: InputDecoration(
         labelText: label,
         hintText: 'Enter your $label',
-        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
