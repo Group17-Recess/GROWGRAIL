@@ -53,40 +53,23 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
     return res.status(405).send('Method Not Allowed');
   }
 
-  // Check Content-Type
-  if (req.headers['content-type'] !== 'application/json') {
-    console.error('Invalid Content-Type:', req.headers['content-type']);
-    return res.status(400).send('Invalid Content-Type');
-  }
-
   const payload = req.body;
 
-  // Log Headers for Debugging
-  console.log('Headers:', req.headers);
-  console.log('Payload:', payload);
+  console.log('Received payload:', JSON.stringify(payload));
 
-  // Validate payload structure
-  if (payload.event !== 'charge.completed' || !payload.data || !payload.data.metadata) {
-    console.error('Invalid payload structure:', payload);
-    return res.status(400).send('Invalid payload');
-  }
+  if (payload.event === 'charge.completed' && payload.data.status === 'successful') {
+    const phoneNumber = payload.data.customer.phone_number;
+    const amount = payload.data.amount;
 
-  // Extract data
-  const { phone_number } = payload.data.customer || {}; // Safeguard if customer is not present
-  const { status, amount } = payload.data;
+    console.log('Phone number from payload:', phoneNumber);
+    console.log('Amount from payload:', amount);
 
-  if (!phone_number || !amount) {
-    console.error('Missing phone number or amount in payload:', payload);
-    return res.status(400).send('Phone number or amount missing');
-  }
-
-  if (status === 'successful') {
     try {
-      const userRef = db.collection('users').doc(phone_number);
+      const userRef = db.collection('Users').doc(phoneNumber);
       const userDoc = await userRef.get();
 
       if (!userDoc.exists) {
-        console.error('User not found:', phone_number);
+        console.error('User not found:', phoneNumber);
         return res.status(404).send('User not found');
       }
 
@@ -108,6 +91,6 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
       });
     }
   } else {
-    res.status(400).send('Unsuccessful payment');
+    res.status(400).send('Invalid event or unsuccessful payment');
   }
 });
