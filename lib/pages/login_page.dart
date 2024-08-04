@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:growgrail/pages/biodata.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/dbscreen.dart'; // Import the Dashboard page
-
-
 import 'adminboard.dart'; // Import the Admin page
+import 'google_sign_in.dart'; // Import the Google sign-in service
+import 'package:flutter_signin_button/flutter_signin_button.dart'; // Import the flutter_signin_button package
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,33 +17,50 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _phoneController = TextEditingController(); // Phone number controller
+  bool _obscurePassword = true; // Variable to toggle password visibility
 
-  Future<void> _signIn() async {
-    final name = _nameController.text;
-    final phone = _phoneController.text;
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-
-    // Validate user and set user info
-    await userProvider.setUser(name, phone, AutofillHints.email);
-
-    if (userProvider.name.isNotEmpty) {
-      if (await _isAdmin(name, phone)) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Admin()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Dashboard()),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Invalid name or phone number')),
+  Future<void> _signInWithEmailAndPassword() async {
+    try {
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
+
+      _handleSignInSuccess(userCredential.user);
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign-in failed: ${e.message}')),
+      );
+    }
+  }
+
+  Future<void> _handleSignInSuccess(User? user) async {
+    if (user != null) {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      final userDoc = await FirebaseFirestore.instance
+          .collection('user_bio_data')
+          .doc(user.uid)
+          .get();
+
+      if (userDoc.exists) {
+        final userData = userDoc.data()!;
+        await userProvider.setUser(userData['name'], _phoneController.text, userData['email']);
+
+        if (await _isAdmin(userData['name'], _phoneController.text)) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Admin()),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => Dashboard()),
+          );
+        }
+      }
     }
   }
 
@@ -56,9 +74,58 @@ class _LoginPageState extends State<LoginPage> {
     return adminQuerySnapshot.docs.isNotEmpty;
   }
 
+  Future<void> _signInWithGoogle() async {
+    final googleSignInService = GoogleSignInService();
+    final user = await googleSignInService.signInWithGoogle();
+
+    if (user != null) {
+      final userProvider = Provider.of<UserProvider>(context, listen: false);
+      await userProvider.setUser(user.displayName ?? '', _phoneController.text, user.email ?? '');
+
+      if (await _isAdmin(user.displayName ?? '', _phoneController.text)) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Admin()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Dashboard()),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google sign-in failed')),
+      );
+    }
+  }
+
+  Future<void> _resetPassword() async {
+    if (_emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please enter your email to reset password')),
+      );
+      return;
+    }
+
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: _emailController.text.trim(),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password reset email sent')),
+      );
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.message}')),
+      );
+    }
+  }
+
   @override
   void dispose() {
-    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     _phoneController.dispose();
     super.dispose();
   }
@@ -88,10 +155,11 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
-                    controller: _nameController,
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Name',
+                      hintText: 'Email',
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.teal),
                       ),
@@ -102,7 +170,32 @@ class _LoginPageState extends State<LoginPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: TextField(
-                    controller: _phoneController,
+                    controller: _passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      hintText: 'Password',
+                      focusedBorder: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.teal),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: TextField(
+                    controller: _phoneController, // Phone number field
                     keyboardType: TextInputType.phone,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
@@ -113,9 +206,23 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: _resetPassword,
+                      child: const Text(
+                        'Forgot Password?',
+                        style: TextStyle(color: Colors.teal),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
                 ElevatedButton(
-                  onPressed: _signIn,
+                  onPressed: _signInWithEmailAndPassword,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 173, 181, 180),
                     shape: RoundedRectangleBorder(
@@ -123,7 +230,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   ),
-                  child: const Text('Sign In'),
+                  child: const Text('Sign In '),
                 ),
                 const SizedBox(height: 20),
                 const Text('Or continue with'),
@@ -131,21 +238,11 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.account_circle),
-                      color: Colors.teal,
-                      onPressed: () {
-                        // Google sign-in logic
-                      },
+                    SignInButton(
+                      Buttons.Google,
+                      onPressed: _signInWithGoogle,
                     ),
                     const SizedBox(width: 10),
-                    IconButton(
-                      icon: const Icon(Icons.account_circle),
-                      color: Colors.teal,
-                      onPressed: () {
-                        // Apple sign-in logic
-                      },
-                    ),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -154,13 +251,13 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     const Text('Don’t have an account?'),
                     TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => UserBioDataForm()),
-                      );
-                    },
-                    child: const Text('Register now'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => UserBioDataForm()),
+                        );
+                      },
+                      child: const Text('Register now'),
                     ),
                   ],
                 ),

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/targetpage.dart';
@@ -17,6 +18,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
   final TextEditingController textFieldController = TextEditingController();
+  final user=FirebaseAuth.instance.currentUser;
 
   @override
   void dispose() {
@@ -70,8 +72,10 @@ TextButton(
                );
         },
          child: const Text(
-        'Update profile',
-         style: TextStyle(color: Colors.white),
+        'Edit profile',
+         style: TextStyle(
+          color: Colors.white,
+         ),
 
             ),
               ),
