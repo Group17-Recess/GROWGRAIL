@@ -27,7 +27,7 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
     // Example API call with your payment details
     const response = await axios.post('https://api.paymentprovider.com/charge', {
       amount,
-      currency: 'USD',
+      currency: 'UGX',
       public_key: publicKey,
       secret_key: secretKey,
       encryption_key: encryptionKey,
