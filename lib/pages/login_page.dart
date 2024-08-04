@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/dbscreen.dart'; // Import the Dashboard page
-
+import 'biodata.dart';
 
 import 'adminboard.dart'; // Import the Admin page
 
@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     // Validate user and set user info
-    await userProvider.setUser(name, phone, AutofillHints.email);
+    await userProvider.setUser(name, phone,AutofillHints.email);
 
     if (userProvider.name.isNotEmpty) {
       if (await _isAdmin(name, phone)) {
@@ -124,29 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: const Text('Sign In'),
                 ),
-                const SizedBox(height: 20),
-                const Text('Or continue with'),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.account_circle),
-                      color: Colors.teal,
-                      onPressed: () {
-                        // Google sign-in logic
-                      },
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon: const Icon(Icons.account_circle),
-                      color: Colors.teal,
-                      onPressed: () {
-                        // Apple sign-in logic
-                      },
-                    ),
-                  ],
-                ),
+
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -154,8 +132,10 @@ class _LoginPageState extends State<LoginPage> {
                     const Text('Don’t have an account?'),
                     TextButton(
                       onPressed: () {
-                        // Navigate to registration page
-                      },
+                      Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => UserBioDataForm()),);},
+                      // registration logic,
                       child: const Text('Register'),
                     ),
                   ],
