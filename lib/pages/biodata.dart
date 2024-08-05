@@ -17,6 +17,10 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
   final _ninController = TextEditingController();
   final _locationController = TextEditingController();
   final _passwordController = TextEditingController(); // Password controller
+  final _confirmPasswordController = TextEditingController(); // Confirm password controller
+
+  bool _passwordVisible = false; // Toggle for password visibility
+  bool _confirmPasswordVisible = false; // Toggle for confirm password visibility
 
   @override
   void dispose() {
@@ -26,6 +30,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
     _ninController.dispose();
     _locationController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -70,6 +75,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
         _ninController.clear();
         _locationController.clear();
         _passwordController.clear();
+        _confirmPasswordController.clear();
 
         // Redirect to login page
         Navigator.pushReplacement(
@@ -177,16 +183,41 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
                     },
                   ),
                   SizedBox(height: 16),
-                  _buildTextField(
+                  _buildPasswordField(
                     controller: _passwordController,
                     label: 'Password',
-                    obscureText: true,
+                    obscureText: !_passwordVisible,
+                    toggleVisibility: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter a password';
                       }
                       if (value.length < 6) {
                         return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildPasswordField(
+                    controller: _confirmPasswordController,
+                    label: 'Confirm Password',
+                    obscureText: !_confirmPasswordVisible,
+                    toggleVisibility: () {
+                      setState(() {
+                        _confirmPasswordVisible = !_confirmPasswordVisible;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'Passwords do not match';
                       }
                       return null;
                     },
@@ -230,6 +261,34 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
       validator: validator,
     );
   }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool obscureText,
+    required void Function() toggleVisibility,
+    required String? Function(String?) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: 'Enter your $label',
+        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        suffixIcon: IconButton(
+          icon: Icon(
+            obscureText ? Icons.visibility : Icons.visibility_off,
+          ),
+          onPressed: toggleVisibility,
+        ),
+      ),
+      validator: validator,
+    );
+  }
 }
-
-
