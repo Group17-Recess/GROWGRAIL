@@ -22,6 +22,10 @@ class _LoginPageState extends State<LoginPage> {
   final _phoneController = TextEditingController(); // Phone number controller
   bool _obscurePassword = true; // Variable to toggle password visibility
 
+  // Define the admin email and password
+  final String adminEmail = 'admin@gmail.com';
+  final String adminPassword = 'adminSecretPassword';
+
   Future<void> _signInWithEmailAndPassword() async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -49,7 +53,8 @@ class _LoginPageState extends State<LoginPage> {
         final userData = userDoc.data()!;
         await userProvider.setUser(userData['name'], _phoneController.text, userData['email']);
 
-        if (await _isAdmin(userData['name'], _phoneController.text)) {
+        // Check if the email and password match the admin credentials
+        if (_emailController.text.trim() == adminEmail && _passwordController.text.trim() == adminPassword) {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => Admin()),
@@ -64,16 +69,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  Future<bool> _isAdmin(String name, String phone) async {
-    final adminQuerySnapshot = await FirebaseFirestore.instance
-        .collection('admin_bio_data')
-        .where('name', isEqualTo: name)
-        .where('phone', isEqualTo: phone)
-        .get();
-
-    return adminQuerySnapshot.docs.isNotEmpty;
-  }
-
   Future<void> _signInWithGoogle() async {
     final googleSignInService = GoogleSignInService();
     final user = await googleSignInService.signInWithGoogle();
@@ -82,7 +77,8 @@ class _LoginPageState extends State<LoginPage> {
       final userProvider = Provider.of<UserProvider>(context, listen: false);
       await userProvider.setUser(user.displayName ?? '', _phoneController.text, user.email ?? '');
 
-      if (await _isAdmin(user.displayName ?? '', _phoneController.text)) {
+      // For Google sign-in, we need to check if the user is an admin in the Firestore database
+      if (await _isAdmin(user.email ?? '')) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => Admin()),
@@ -98,6 +94,15 @@ class _LoginPageState extends State<LoginPage> {
         const SnackBar(content: Text('Google sign-in failed')),
       );
     }
+  }
+
+  Future<bool> _isAdmin(String email) async {
+    final adminQuerySnapshot = await FirebaseFirestore.instance
+        .collection('admin_bio_data')
+        .where('email', isEqualTo: email)
+        .get();
+
+    return adminQuerySnapshot.docs.isNotEmpty;
   }
 
   Future<void> _resetPassword() async {
@@ -126,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _phoneController.dispose();
+        _phoneController.dispose();
     super.dispose();
   }
 
@@ -230,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                   ),
-                  child: const Text('Sign In '),
+                  child: const Text('Sign In'),
                 ),
                 const SizedBox(height: 20),
                 const Text('Or continue with'),
@@ -269,3 +274,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
