@@ -12,6 +12,7 @@ const publicKey = functions.config().payment.public_key || 'FLWPUBK_TEST-e931b80
 const secretKey = functions.config().payment.secret_key || 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X'; // secret key
 const encryptionKey = functions.config().payment.encryption_key || 'FLWSECK_TEST6350e5c551aa'; // encryption key
 
+// Function to process payments
 exports.processPayment = functions.https.onRequest(async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
@@ -33,10 +34,10 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
       encryption_key: encryptionKey,
     });
 
+    // Respond with a success message, keep it minimal
     res.status(200).send({
       status: 'success',
       message: 'Payment initiated successfully',
-      data: response.data,
     });
   } catch (error) {
     console.error('Error processing payment:', error);
@@ -48,6 +49,7 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
   }
 });
 
+// Function to handle payment webhook
 exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
@@ -69,20 +71,15 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
         return res.status(404).send('No goals found for user');
       }
 
-      // Log the fetched documents for debugging
-      console.log(`Found ${snapshot.size} goals for user ${phoneNumber}`);
-
-      // For simplicity, let's assume you want to update the first goal in the collection.
+      // Update the `Achieved` field in the first goal document
       const firstGoalDoc = snapshot.docs[0];
       const goalData = firstGoalDoc.data();
-      console.log(`Updating goal: ${firstGoalDoc.id}, current Achieved: ${goalData.Achieved}`);
-
       const newAchieved = (goalData.Achieved || 0) + amount;
 
-      // Update the `Achieved` field in the first goal
       await firstGoalDoc.ref.update({ Achieved: newAchieved });
 
-      res.status(200).send({
+      // Respond with a success message
+      res.status(200).json({
         status: 'success',
         message: 'Payment processed and Achieved field updated',
       });
