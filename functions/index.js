@@ -55,32 +55,36 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
 
   const payload = req.body;
 
-  console.log('Received payload:', JSON.stringify(payload));
-
   if (payload.event === 'charge.completed' && payload.data.status === 'successful') {
     const phoneNumber = payload.data.customer.phone_number;
     const amount = payload.data.amount;
 
-    console.log('Phone number from payload:', phoneNumber);
-    console.log('Amount from payload:', amount);
-
     try {
-      const userRef = db.collection('Users').doc(phoneNumber);
-      const userDoc = await userRef.get();
+      // Reference the specific goal document
+      const goalsRef = db.collection('Goals').doc(phoneNumber).collection('userGoals');
+      const snapshot = await goalsRef.get();
 
-      if (!userDoc.exists) {
-        console.error('User not found:', phoneNumber);
-        return res.status(404).send('User not found');
+      if (snapshot.empty) {
+        console.error('No goals found for user:', phoneNumber);
+        return res.status(404).send('No goals found for user');
       }
 
-      const userData = userDoc.data();
-      const newSavings = (userData.savings || 0) + amount;
+      // Log the fetched documents for debugging
+      console.log(`Found ${snapshot.size} goals for user ${phoneNumber}`);
 
-      await userRef.update({ savings: newSavings }); //this saves to the savings field
+      // For simplicity, let's assume you want to update the first goal in the collection.
+      const firstGoalDoc = snapshot.docs[0];
+      const goalData = firstGoalDoc.data();
+      console.log(`Updating goal: ${firstGoalDoc.id}, current Achieved: ${goalData.Achieved}`);
+
+      const newAchieved = (goalData.Achieved || 0) + amount;
+
+      // Update the `Achieved` field in the first goal
+      await firstGoalDoc.ref.update({ Achieved: newAchieved });
 
       res.status(200).send({
         status: 'success',
-        message: 'Payment processed and savings updated',
+        message: 'Payment processed and Achieved field updated',
       });
     } catch (error) {
       console.error('Error handling payment webhook:', error);
