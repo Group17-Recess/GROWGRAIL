@@ -12,7 +12,7 @@ const publicKey = functions.config().payment.public_key || 'FLWPUBK_TEST-e931b80
 const secretKey = functions.config().payment.secret_key || 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X'; // secret key
 const encryptionKey = functions.config().payment.encryption_key || 'FLWSECK_TEST6350e5c551aa'; // encryption key
 
-// Function to process payments
+// Function to process payment
 exports.processPayment = functions.https.onRequest(async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
@@ -34,10 +34,10 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
       encryption_key: encryptionKey,
     });
 
-    // Respond with a success message, keep it minimal
     res.status(200).send({
       status: 'success',
       message: 'Payment initiated successfully',
+      data: response.data,
     });
   } catch (error) {
     console.error('Error processing payment:', error);
@@ -58,8 +58,13 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
   const payload = req.body;
 
   if (payload.event === 'charge.completed' && payload.data.status === 'successful') {
-    const phoneNumber = payload.data.customer.phone_number;
+    let phoneNumber = payload.data.customer.phone_number;
     const amount = payload.data.amount;
+
+    // Ensure phone number format matches the database format
+    if (!phoneNumber.startsWith('+')) {
+      phoneNumber = `+${phoneNumber}`;
+    }
 
     try {
       // Reference the specific goal document
@@ -71,27 +76,27 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
         return res.status(404).send('No goals found for user');
       }
 
-      // Update the `Achieved` field in the first goal document
+      // Assume updating the first goal in the collection
       const firstGoalDoc = snapshot.docs[0];
       const goalData = firstGoalDoc.data();
       const newAchieved = (goalData.Achieved || 0) + amount;
 
+      // Update the `Achieved` field in the first goal
       await firstGoalDoc.ref.update({ Achieved: newAchieved });
 
-      // Respond with a success message
-      res.status(200).json({
+      return res.status(200).send({
         status: 'success',
         message: 'Payment processed and Achieved field updated',
       });
     } catch (error) {
       console.error('Error handling payment webhook:', error);
-      res.status(500).json({
+      return res.status(500).json({
         status: 'error',
         message: 'Failed to handle payment webhook',
         error: error.message,
       });
     }
   } else {
-    res.status(400).send('Invalid event or unsuccessful payment');
+    return res.status(400).send('Invalid event or unsuccessful payment');
   }
 });
