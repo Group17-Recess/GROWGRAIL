@@ -12,6 +12,7 @@ const publicKey = functions.config().payment.public_key || 'FLWPUBK_TEST-e931b80
 const secretKey = functions.config().payment.secret_key || 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X'; // secret key
 const encryptionKey = functions.config().payment.encryption_key || 'FLWSECK_TEST6350e5c551aa'; // encryption key
 
+// Function to process payment
 exports.processPayment = functions.https.onRequest(async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
@@ -48,6 +49,7 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
   }
 });
 
+// Function to handle payment webhook
 exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
@@ -55,42 +57,46 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
 
   const payload = req.body;
 
-  console.log('Received payload:', JSON.stringify(payload));
-
   if (payload.event === 'charge.completed' && payload.data.status === 'successful') {
-    const phoneNumber = payload.data.customer.phone_number;
+    let phoneNumber = payload.data.customer.phone_number;
     const amount = payload.data.amount;
 
-    console.log('Phone number from payload:', phoneNumber);
-    console.log('Amount from payload:', amount);
+    // Ensure phone number format matches the database format
+    if (!phoneNumber.startsWith('+')) {
+      phoneNumber = `+${phoneNumber}`;
+    }
 
     try {
-      const userRef = db.collection('Users').doc(phoneNumber);
-      const userDoc = await userRef.get();
+      // Reference the specific goal document
+      const goalsRef = db.collection('Goals').doc(phoneNumber).collection('userGoals');
+      const snapshot = await goalsRef.get();
 
-      if (!userDoc.exists) {
-        console.error('User not found:', phoneNumber);
-        return res.status(404).send('User not found');
+      if (snapshot.empty) {
+        console.error('No goals found for user:', phoneNumber);
+        return res.status(404).send('No goals found for user');
       }
 
-      const userData = userDoc.data();
-      const newSavings = (userData.savings || 0) + amount;
+      // Assume updating the first goal in the collection
+      const firstGoalDoc = snapshot.docs[0];
+      const goalData = firstGoalDoc.data();
+      const newAchieved = (goalData.Achieved || 0) + amount;
 
-      await userRef.update({ savings: newSavings }); //this saves to the savings field
+      // Update the `Achieved` field in the first goal
+      await firstGoalDoc.ref.update({ Achieved: newAchieved });
 
-      res.status(200).send({
+      return res.status(200).send({
         status: 'success',
-        message: 'Payment processed and savings updated',
+        message: 'Payment processed and Achieved field updated',
       });
     } catch (error) {
       console.error('Error handling payment webhook:', error);
-      res.status(500).json({
+      return res.status(500).json({
         status: 'error',
         message: 'Failed to handle payment webhook',
         error: error.message,
       });
     }
   } else {
-    res.status(400).send('Invalid event or unsuccessful payment');
+    return res.status(400).send('Invalid event or unsuccessful payment');
   }
 });
