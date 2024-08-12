@@ -11,7 +11,13 @@ class SummaryPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: Text('Summary'),
+        title: const Text(
+            'ANALYTICS',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ), // Bold font
+          ),
       ),
       body: FutureBuilder<TotalSummary>(
         future: goalSummaryService.calculateTotalSummary(),
