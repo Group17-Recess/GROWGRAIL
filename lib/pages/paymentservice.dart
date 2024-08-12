@@ -16,7 +16,7 @@ class PaymentService {
     required String phoneNumber,
   }) async {
     final Customer customer = Customer(
-      name: " User11",
+      name: " User1",
       phoneNumber: phoneNumber,
       email: email,
     );
@@ -30,7 +30,7 @@ class PaymentService {
       paymentOptions: "mobilemoneyuganda",
       customization: Customization(title: "Live Payment"),
       txRef: txRef,
-      isTestMode: true, // Change to false for live payments
+      isTestMode: false, // Change to false for live payments
       redirectUrl:
           "https://your-redirect-url.com", // You can use any URL for testing
     );
