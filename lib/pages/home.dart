@@ -19,12 +19,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final List<Map<String, String>> imgList = [
     {
-      'image': 'images/person3.webp',
+      'image': 'images/shopping.jpg',
       'caption': 'You are all set to build wealth',
       'progress': '40'
     },
     {
-      'image': 'images/person4.webp',
+      'image': 'images/tuition.jpg',
       'caption': 'Save consistently with ease',
       'progress': '20'
     },

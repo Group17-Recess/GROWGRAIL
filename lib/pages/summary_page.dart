@@ -10,6 +10,7 @@ class SummaryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         title: Text('Summary'),
       ),
       body: FutureBuilder<TotalSummary>(
