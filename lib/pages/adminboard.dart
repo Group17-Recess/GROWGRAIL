@@ -115,14 +115,6 @@ class _AdminState extends State<Admin> {
                       'Welcome,',
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
-<<<<<<< HEAD
-                    Text(
-                      userName,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-=======
                     const Text(
                       'ADMIN',
                       style: TextStyle(
@@ -130,7 +122,6 @@ class _AdminState extends State<Admin> {
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
->>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
                     ),
                   ],
                 ),

@@ -5,11 +5,8 @@ import 'package:growgrail/pages/splash.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/targetprovider.dart';
-<<<<<<< HEAD
-=======
 import 'pages/adminboard.dart';
 import 'pages/mainpage.dart';
->>>>>>> 195be64176c34f02b5a1702bf1f9a5fc946a4118
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -41,24 +41,11 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
       final phone = _phoneController.text.trim();
       final name = _nameController.text.trim();
 
-<<<<<<< HEAD
-      // Check if the phone number already exists
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('admin_bio_data')
-          .where('phone', isEqualTo: phone)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        // Phone number already exists
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sorry, phone number already used')),
-=======
       try {
         // Create admin with email and password using Firebase Auth
         UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: email,
           password: password,
->>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
         );
 
         // Get the user's UID from Firebase Auth
@@ -81,32 +68,6 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
           SnackBar(content: Text('Registration successful!')),
         );
 
-<<<<<<< HEAD
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Form submitted successfully!')),
-          );
-
-          // Optionally, clear the form fields
-          _nameController.clear();
-          _emailController.clear();
-          _phoneController.clear();
-          _ninController.clear();
-          _locationController.clear();
-
-          // Redirect to login page
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const LoginPage()),
-          );
-        } catch (e) {
-          // Handle errors
-          print('Error saving data to Firestore: $e');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to submit form.')),
-          );
-        }
-=======
         // Clear the form fields
         _nameController.clear();
         _emailController.clear();
@@ -127,7 +88,6 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Registration failed. Please try again.')),
         );
->>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
       }
     }
   }
@@ -222,9 +182,6 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-<<<<<<< HEAD
-                  const SizedBox(height: 20),
-=======
                   SizedBox(height: 16),
                   _buildPasswordField(
                     controller: _passwordController,
@@ -266,7 +223,6 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                     },
                   ),
                   SizedBox(height: 20),
->>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
                   ElevatedButton(
                     onPressed: _submitForm,
                     child: const Text('Submit'),
