@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/adminmodel.dart';
 import 'login_page.dart'; // Assuming you have a separate file for the login page
 
@@ -15,6 +16,11 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
   final _phoneController = TextEditingController();
   final _ninController = TextEditingController();
   final _locationController = TextEditingController();
+  final _passwordController = TextEditingController(); // Password controller
+  final _confirmPasswordController = TextEditingController(); // Confirm password controller
+
+  bool _passwordVisible = false; // Toggle for password visibility
+  bool _confirmPasswordVisible = false; // Toggle for confirm password visibility
 
   @override
   void dispose() {
@@ -23,13 +29,19 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
     _phoneController.dispose();
     _ninController.dispose();
     _locationController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      final phone = _phoneController.text;
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      final phone = _phoneController.text.trim();
+      final name = _nameController.text.trim();
 
+<<<<<<< HEAD
       // Check if the phone number already exists
       final querySnapshot = await FirebaseFirestore.instance
           .collection('admin_bio_data')
@@ -40,25 +52,36 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
         // Phone number already exists
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Sorry, phone number already used')),
+=======
+      try {
+        // Create admin with email and password using Firebase Auth
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+>>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
         );
-      } else {
-        // Phone number does not exist, proceed with form submission
+
+        // Get the user's UID from Firebase Auth
+        String uid = userCredential.user!.uid;
+
+        // Create admin bio data model
         final adminBioData = AdminBioData(
-          name: _nameController.text,
-          email: _emailController.text,
+          name: name,
+          email: email,
           phone: phone,
           nationalIdentificationNumber: _ninController.text,
           districtOfResidence: _locationController.text,
         );
 
-        try {
-          // Get a reference to the Firestore collection
-          final collection =
-              FirebaseFirestore.instance.collection('admin_bio_data');
+        // Save additional user information in Firestore using the UID as the document ID
+        await FirebaseFirestore.instance.collection('admin_bio_data').doc(uid).set(adminBioData.toJson());
 
-          // Add a new document with a generated ID
-          await collection.add(adminBioData.toJson());
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration successful!')),
+        );
 
+<<<<<<< HEAD
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Form submitted successfully!')),
@@ -83,6 +106,28 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
             const SnackBar(content: Text('Failed to submit form.')),
           );
         }
+=======
+        // Clear the form fields
+        _nameController.clear();
+        _emailController.clear();
+        _phoneController.clear();
+        _ninController.clear();
+        _locationController.clear();
+        _passwordController.clear();
+        _confirmPasswordController.clear();
+
+        // Redirect to login page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      } catch (e) {
+        // Handle errors
+        print('Error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed. Please try again.')),
+        );
+>>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
       }
     }
   }
@@ -177,7 +222,51 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
+<<<<<<< HEAD
                   const SizedBox(height: 20),
+=======
+                  SizedBox(height: 16),
+                  _buildPasswordField(
+                    controller: _passwordController,
+                    label: 'Password',
+                    obscureText: !_passwordVisible,
+                    toggleVisibility: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a password';
+                      }
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildPasswordField(
+                    controller: _confirmPasswordController,
+                    label: 'Confirm Password',
+                    obscureText: !_confirmPasswordVisible,
+                    toggleVisibility: () {
+                      setState(() {
+                        _confirmPasswordVisible = !_confirmPasswordVisible;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+>>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
                   ElevatedButton(
                     onPressed: _submitForm,
                     child: const Text('Submit'),
@@ -209,6 +298,36 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
         ),
         filled: true,
         fillColor: Colors.white,
+      ),
+      validator: validator,
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool obscureText,
+    required VoidCallback toggleVisibility,
+    required String? Function(String?) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: 'Enter your $label',
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        suffixIcon: IconButton(
+          icon: Icon(
+            obscureText ? Icons.visibility : Icons.visibility_off,
+          ),
+          onPressed: toggleVisibility,
+        ),
       ),
       validator: validator,
     );
