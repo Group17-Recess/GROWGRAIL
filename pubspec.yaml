@@ -29,22 +29,33 @@ dependencies:
   firebase_messaging: ^15.0.4
   flutter_dotenv: ^5.1.0
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   carousel_slider: ^5.0.0
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon" 
+  ios: true
+  image_path: "images/GGlogo.png"
 
 flutter:
   uses-material-design: true
 
   assets:
+
     - assets/images/money.jpg
     - assets/images/person4.webp
     - assets/images/person3.webp
     - assets/images/car.webp
     - assets/images/GGlogo.png
     - assets/images/moneygrow.jpg
+   
+    
+
 
   fonts:
     - family: Poppins

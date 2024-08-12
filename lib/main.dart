@@ -5,10 +5,10 @@ import 'package:growgrail/pages/splash.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/targetprovider.dart';
-import 'pages/adminboard.dart';
-import 'pages/mainpage.dart';
+
 
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   
   await Firebase.initializeApp(

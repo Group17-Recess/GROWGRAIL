@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // Define the admin email and password
   final String adminEmail = 'admin@gmail.com';
-  final String adminPassword = 'adminSecretPassword';
+  final String adminPassword = 'admin#26';
 
   Future<void> _signInWithEmailAndPassword() async {
     try {
@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-        _phoneController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -142,50 +142,55 @@ class _LoginPageState extends State<LoginPage> {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.lock,
-                  size: 100,
-                  color: Colors.teal,
-                ),
-                const SizedBox(height: 19),
-                const Text(
-                  'Welcome to Financial Freedom, we have missed you',
-                  style: TextStyle(fontSize: 20, color: Colors.teal),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: TextField(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 40),
+                  const Text(
+                    'Welcome To Financial Freedom,We Have Missed You!',
+                    style: TextStyle(
+                      fontSize: 28,
+                      color: Colors.teal,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 20),
+                  const Text(
+                    'Log in to continue your journey to financial wellness',
+                    style: TextStyle(fontSize: 18, color: Colors.teal),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 40),
+                  TextField(
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: const InputDecoration(
+                      labelText: 'Email',
+                      labelStyle: TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(),
-                      hintText: 'Email',
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.teal),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: TextField(
+                  const SizedBox(height: 20),
+                  TextField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
+                      labelText: 'Password',
+                      labelStyle: const TextStyle(color: Colors.grey),
                       border: const OutlineInputBorder(),
-                      hintText: 'Password',
                       focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.teal),
                       ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                          color: Colors.teal,
                         ),
                         onPressed: () {
                           setState(() {
@@ -195,26 +200,21 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: TextField(
-                    controller: _phoneController, // Phone number field
+                  const SizedBox(height: 20),
+                  TextField(
+                    controller: _phoneController,
                     keyboardType: TextInputType.phone,
                     decoration: const InputDecoration(
+                      labelText: 'Phone Number',
+                      labelStyle: TextStyle(color: Colors.grey),
                       border: OutlineInputBorder(),
-                      hintText: 'Phone Number',
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.teal),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Align(
+                  const SizedBox(height: 20),
+                  Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: _resetPassword,
@@ -224,49 +224,66 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: _signInWithEmailAndPassword,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 173, 181, 180),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _signInWithEmailAndPassword,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    child: const Text(
+                      'Sign In',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
-                  child: const Text('Sign In'),
-                ),
-                const SizedBox(height: 20),
-                const Text('Or continue with'),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SignInButton(
-                      Buttons.Google,
-                      onPressed: _signInWithGoogle,
-                    ),
-                    const SizedBox(width: 10),
-                  ],
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Don’t have an account?'),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => UserBioDataForm()),
-                        );
-                      },
-                      child: const Text('Register now'),
-                    ),
-                  ],
-                ),
-              ],
+                  const SizedBox(height: 30),
+                  const Text(
+                    'Or continue with',
+                    style: TextStyle(color: Colors.teal),
+                  ),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SignInButton(
+                        Buttons.Google,
+                        text: "Sign in with Google",
+                        onPressed: _signInWithGoogle,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 15.0),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Don’t have an account?',
+                        style: TextStyle(color: Colors.teal),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => UserBioDataForm()),
+                          );
+                        },
+                        child: const Text(
+                          'Register now',
+                          style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
         ),
