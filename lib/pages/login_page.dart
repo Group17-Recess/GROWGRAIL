@@ -27,13 +27,6 @@ class _LoginPageState extends State<LoginPage> {
   final String adminPassword = 'adminSecretPassword';
 
   Future<void> _signInWithEmailAndPassword() async {
-    if (!_agreeToTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must agree to the terms and conditions')),
-      );
-      return;
-    }
-
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
@@ -77,13 +70,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _signInWithGoogle() async {
-    if (!_agreeToTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('You must agree to the terms and conditions')),
-      );
-      return;
-    }
-
     final googleSignInService = GoogleSignInService();
     final user = await googleSignInService.signInWithGoogle();
 
@@ -228,38 +214,6 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 10),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                  child: Row(
-                    children: [
-                      Checkbox(
-                        value: _agreeToTerms,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _agreeToTerms = value ?? false;
-                          });
-                        },
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          // Navigate to Terms and Conditions page
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
-                          );
-                        },
-                        child: const Text(
-                          'I agree to the Terms and Conditions',
-                          style: TextStyle(
-                            color: Colors.teal,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 25.0),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
@@ -321,20 +275,3 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-class TermsAndConditionsPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Terms and Conditions'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(
-          'Here are the terms and conditions...',
-          // You can replace this with the actual terms and conditions text.
-        ),
-      ),
-    );
-  }
-}

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:growgrail/pages/target_edit.dart';
-import 'package:provider/provider.dart';
-import 'package:growgrail/pages/userprovider.dart';
 import 'admin_biodata.dart';
 import 'home.dart';
 import 'summary_page.dart';
@@ -109,13 +107,13 @@ class _AdminState extends State<Admin> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 40),
-                    const Text(
+                  children: const [
+                    SizedBox(height: 40),
+                    Text(
                       'Welcome,',
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
-                    const Text(
+                    Text(
                       'ADMIN',
                       style: TextStyle(
                         color: Colors.white,

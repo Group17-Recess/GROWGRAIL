@@ -45,8 +45,6 @@ flutter:
     - assets/images/car.webp
     - assets/images/GGlogo.png
     - assets/images/moneygrow.jpg
-    - assets/images/.env 
-    
 
   fonts:
     - family: Poppins
