@@ -6,8 +6,8 @@ import 'package:growgrail/pages/userprovider.dart';
 import '../models/goal.dart';
 import 'admin_biodata.dart';
 import 'home.dart';
+import 'summary_page.dart';
 import 'userlist.dart';
-
 
 class Admin extends StatefulWidget {
   @override
@@ -61,6 +61,21 @@ class _AdminState extends State<Admin> {
           MaterialPageRoute(builder: (context) => TargetEditPage()),
         );
         break;
+      case 'Analytics':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => SummaryPage()),
+        );
+        break;
+      case 'EditInterest':
+        // Add the corresponding page or action
+        break;
+      case 'DepositRecords':
+        // Add the corresponding page or action
+        break;
+      case 'WithdrawRecords':
+        // Add the corresponding page or action
+        break;
       default:
         // Handle other cases or show an error
         break;
@@ -69,12 +84,6 @@ class _AdminState extends State<Admin> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    final userName = userProvider.name.isEmpty ? 'Admin' : userProvider.name;
-    // final firstGoal = userProvider.goals.isNotEmpty
-    //     ? userProvider.goals.first
-    //     : Goal(target: '', amount: 0, achieved: 0, balance: 0);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -108,14 +117,14 @@ class _AdminState extends State<Admin> {
                       'Welcome,',
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
-                    Text(
-                      userName,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
+                    const Text(
+                      'ADMIN',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-
                   ],
                 ),
               ),
@@ -127,11 +136,8 @@ class _AdminState extends State<Admin> {
               children: [
                 _buildListItem(Icons.person, 'Users', 'Users'),
                 _buildListItem(Icons.analytics, 'Analytics', 'Analytics'),
-                _buildListItem(Icons.edit, 'Edit interest', 'EditInterest'),
                 _buildListItem(Icons.attach_money, 'Deposit records', 'DepositRecords'),
                 _buildListItem(Icons.money_off, 'Withdraw records', 'WithdrawRecords'),
-                _buildListItem(Icons.category, 'Add target category', 'AddTargetCategory'),
-                _buildListItem(Icons.admin_panel_settings, 'Add Admin', 'AddAdmin'),
               ],
             ),
           ),
