@@ -35,11 +35,18 @@ class HomeScreen extends StatelessWidget {
         title: Text(
           selectedGoal,
           style: TextStyle(
+            color: Colors.white,
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
         ),
+         shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30),
+          ),
+        ),
         centerTitle: true,
+      
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -51,6 +58,7 @@ class HomeScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.teal,
               ),
             ),
             SizedBox(height: 8),

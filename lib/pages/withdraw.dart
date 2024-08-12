@@ -27,35 +27,35 @@ class WithdrawSheetMy extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             'Withdraw to My Number',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           TextField(
             controller: TextEditingController(text: targetAmount.toStringAsFixed(2)),
             readOnly: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Amount',
               border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           TextField(
             controller: textFieldController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Phone Number',
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.phone,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               // Perform the withdraw operation here
               Navigator.pop(context);
             },
-            child: Text('Withdraw'),
+            child: const Text('Withdraw'),
           ),
         ],
       ),
@@ -83,34 +83,34 @@ class WithdrawSheet extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
+          const Text(
             'Withdraw to Other Number',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           TextField(
             controller: TextEditingController(text: targetAmount.toStringAsFixed(2)),
             readOnly: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Amount',
               border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           TextField(
             controller: textFieldController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Phone Number',
               border: OutlineInputBorder(),
             ),
             keyboardType: TextInputType.phone,
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               // Handle withdraw logic here
             },
-            child: Text('Withdraw'),
+            child: const Text('Withdraw'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.teal,
             ),

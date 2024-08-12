@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:growgrail/pages/terms_and_conditions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/biomodel.dart';
-import 'login_page.dart'; 
-
+import 'login_page.dart'; // Assuming you have a separate file for the login page
 
 class UserBioDataForm extends StatefulWidget {
   @override
@@ -17,7 +16,11 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
   final _phoneController = TextEditingController();
   final _ninController = TextEditingController();
   final _locationController = TextEditingController();
-  bool _agreedToTerms = false;
+  final _passwordController = TextEditingController(); // Password controller
+  final _confirmPasswordController = TextEditingController(); // Confirm password controller
+
+  bool _passwordVisible = false; // Toggle for password visibility
+  bool _confirmPasswordVisible = false; // Toggle for confirm password visibility
 
   @override
   void dispose() {
@@ -26,74 +29,65 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
     _phoneController.dispose();
     _ninController.dispose();
     _locationController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (!_agreedToTerms) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('You must agree to the terms and conditions')),
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+      final phone = _phoneController.text.trim();
+      final name = _nameController.text.trim();
+
+      try {
+        // Create user with email and password using Firebase Auth
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
         );
-        return;
-      }
 
-      final phone = _phoneController.text;
-      final name = _nameController.text;
+        // Get the user's UID from Firebase Auth
+        String uid = userCredential.user!.uid;
 
-      // Check if the phone number already exists
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('user_bio_data')
-          .where('phone', isEqualTo: phone)
-          .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        // Phone number already exists
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Sorry, phone number already used')),
-        );
-      } else {
-        // Phone number does not exist, proceed with form submission
+        // Create user bio data model
         final userBioData = UserBioData(
           name: name,
-          email: _emailController.text,
+          email: email,
           phone: phone,
           nationalIdentificationNumber: _ninController.text,
           districtOfResidence: _locationController.text,
         );
 
-        try {
-          // Get a reference to the Firestore collection
-          final collection =
-              FirebaseFirestore.instance.collection('user_bio_data');
+        // Save additional user information in Firestore using the UID as the document ID
+        await FirebaseFirestore.instance.collection('user_bio_data').doc(uid).set(userBioData.toJson());
 
-          // Add a new document with the user's name as the ID
-          await collection.doc(name).set(userBioData.toJson());
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration successful!')),
+        );
 
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Form submitted successfully!')),
-          );
+        // Clear the form fields
+        _nameController.clear();
+        _emailController.clear();
+        _phoneController.clear();
+        _ninController.clear();
+        _locationController.clear();
+        _passwordController.clear();
+        _confirmPasswordController.clear();
 
-          // Optionally, clear the form fields
-          _nameController.clear();
-          _emailController.clear();
-          _phoneController.clear();
-          _ninController.clear();
-          _locationController.clear();
-
-          // Redirect to login page
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          );
-        } catch (e) {
-          // Handle errors
-          print('Error saving data to Firestore: $e');
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to submit form.')),
-          );
-        }
+        // Redirect to login page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      } catch (e) {
+        // Handle errors
+        print('Error: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration failed. Please try again.')),
+        );
       }
     }
   }
@@ -189,31 +183,47 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
                     },
                   ),
                   SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Checkbox(
-                        value: _agreedToTerms,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            _agreedToTerms = value ?? false;
-                          });
-                        },
-                      ),
-                      const Expanded(
-                        child: Text('I agree to the Terms and Conditions'),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => TermsAndConditions()),
-                          );
-                        },
-                        child: const Text('View'),
-                      ),
-                    ],
+                  _buildPasswordField(
+                    controller: _passwordController,
+                    label: 'Password',
+                    obscureText: !_passwordVisible,
+                    toggleVisibility: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a password';
+                      }
+                      if (value.length < 6) {
+                        return 'Password must be at least 6 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  _buildPasswordField(
+                    controller: _confirmPasswordController,
+                    label: 'Confirm Password',
+                    obscureText: !_confirmPasswordVisible,
+                    toggleVisibility: () {
+                      setState(() {
+                        _confirmPasswordVisible = !_confirmPasswordVisible;
+                      });
+                    },
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please confirm your password';
+                      }
+                      if (value != _passwordController.text) {
+                        return 'Passwords do not match';
+                      }
+                      return null;
+                    },
                   ),
                   SizedBox(height: 20),
+
                   ElevatedButton(
                     onPressed: _submitForm,
                     child: Text('Submit'),
@@ -231,11 +241,13 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
     required TextEditingController controller,
     required String label,
     TextInputType keyboardType = TextInputType.text,
+    bool obscureText = false,
     required String? Function(String?) validator,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
         hintText: 'Enter your $label',
@@ -245,6 +257,36 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
         ),
         filled: true,
         fillColor: Colors.white,
+      ),
+      validator: validator,
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool obscureText,
+    required void Function() toggleVisibility,
+    required String? Function(String?) validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: 'Enter your $label',
+        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        filled: true,
+        fillColor: Colors.white,
+        suffixIcon: IconButton(
+          icon: Icon(
+            obscureText ? Icons.visibility : Icons.visibility_off,
+          ),
+          onPressed: toggleVisibility,
+        ),
       ),
       validator: validator,
     );

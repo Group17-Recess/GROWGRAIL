@@ -76,10 +76,10 @@ class _AdminState extends State<Admin> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: _logout,
           ),
         ],
@@ -101,14 +101,14 @@ class _AdminState extends State<Admin> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 40),
-                    Text(
+                    const SizedBox(height: 40),
+                    const Text(
                       'Welcome,',
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     Text(
                       userName,
-                      style: TextStyle(
+                      style: const TextStyle(
                           color: Colors.white,
                           fontSize: 24,
                           fontWeight: FontWeight.bold),
@@ -161,8 +161,8 @@ class _AdminState extends State<Admin> {
       elevation: 4,
       child: ListTile(
         leading: Icon(icon, color: Colors.blue),
-        title: Text(title, style: TextStyle(fontSize: 18)),
-        trailing: Icon(Icons.arrow_forward, color: Colors.blue),
+        title: Text(title, style: const TextStyle(fontSize: 18)),
+        trailing: const Icon(Icons.arrow_forward, color: Colors.blue),
         onTap: () => _navigateTo(route),
       ),
     );
