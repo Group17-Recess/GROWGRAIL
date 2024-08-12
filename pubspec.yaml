@@ -35,18 +35,18 @@ dev_dependencies:
     sdk: flutter
   carousel_slider: ^4.0.0
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon" 
+  ios: true
+  image_path: "images/GGlogo.png"
 
 flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/money.jpg
-    - assets/images/person4.webp
-    - assets/images/person3.webp
-    - assets/images/car.webp
-    - assets/images/GGlogo.png
-    - assets/images/moneygrow.jpg
-    - assets/images/.env 
+    - assets/images/
     
 
   fonts:
