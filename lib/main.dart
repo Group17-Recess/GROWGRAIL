@@ -5,11 +5,11 @@ import 'package:growgrail/pages/splash.dart';
 import 'package:provider/provider.dart';
 import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/targetprovider.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 
 
 void main() async {
-    await dotenv.load(fileName:"images/.env");
+  
 
   WidgetsFlutterBinding.ensureInitialized();
   

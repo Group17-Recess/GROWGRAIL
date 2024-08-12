@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'adminboard.dart';
-import 'login_page.dart'; // Import your login page here
-import 'dbscreen.dart'; // Import your dashboard page here
+import 'login_page.dart';
+import 'dbscreen.dart';
 
 import 'package:provider/provider.dart';
 import 'userprovider.dart';
@@ -17,19 +17,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Map<String, String>> imgList = [
+  final List<Map<String, String>> infoList = [
     {
-      'image': 'images/shopping.jpg',
       'caption': 'You are all set to build wealth',
       'progress': '40'
     },
     {
-      'image': 'images/tuition.jpg',
       'caption': 'Save consistently with ease',
       'progress': '20'
     },
     {
-      'image': 'images/moneygrow.jpg',
       'caption': 'Grow your money with ease',
       'progress': '10'
     },
@@ -99,83 +96,62 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             CarouselSlider(
               options: CarouselOptions(
-                height: 300.0,
+                height: 150.0,
                 autoPlay: true,
                 enlargeCenterPage: true,
                 aspectRatio: 16 / 9,
                 viewportFraction: 0.8,
               ),
-              items: imgList
-                  .map((item) => Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+              items: infoList.map((item) {
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        item['caption']!,
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        height: 10,
+                        width: 250,
+                        child: Stack(
                           children: [
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundImage: AssetImage(item['image']!),
-                            ),
-                            const SizedBox(height: 10),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 20),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      item['caption']!,
-                                      style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Container(
-                                      height: 10,
-                                      width: 250,
-                                      child: Stack(
-                                        children: [
-                                          Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(5),
-                                              color: Colors.grey.shade300,
-                                            ),
-                                          ),
-                                          LayoutBuilder(
-                                            builder: (context, constraints) {
-                                              return Container(
-                                                width: constraints.maxWidth *
-                                                    (double.parse(item[
-                                                            'progress']!) /
-                                                        100),
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(5),
-                                                  color: Colors.teal,
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Text(
-                                      "Today: ${item['progress']}%",
-                                      style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.grey),
-                                    ),
-                                  ],
-                                ),
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.grey.shade300,
                               ),
+                            ),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                return Container(
+                                  width: constraints.maxWidth *
+                                      (double.parse(item['progress']!) / 100),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.teal,
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
-                      ))
-                  .toList(),
+                      ),
+                      const SizedBox(height: 5),
+                      Text(
+                        "Today: ${item['progress']}%",
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
             ),
             Padding(
               padding: const EdgeInsets.all(20.0),
