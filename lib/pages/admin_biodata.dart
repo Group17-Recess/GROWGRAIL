@@ -115,7 +115,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
               horizontal: 16.0, vertical: 8.0), // Reduced top padding
           child: Form(
             key: _formKey,
-            child: Container(
+            child: SizedBox(
               width: 300, // Adjusted width
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -130,7 +130,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _emailController,
                     label: 'Email',
@@ -145,7 +145,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _phoneController,
                     label: 'Phone Number',
@@ -160,7 +160,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _ninController,
                     label: 'National Identification Number',
@@ -171,7 +171,7 @@ class _AdminBioDataFormState extends State<AdminBioDataForm> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   _buildTextField(
                     controller: _locationController,
                     label: 'District of Residence',

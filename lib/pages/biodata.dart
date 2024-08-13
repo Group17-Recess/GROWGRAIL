@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/biomodel.dart';
 import 'login_page.dart'; // Assuming you have a separate file for the login page
+import 'terms_and_conditions.dart'; // Import your Terms and Conditions page
 
 class UserBioDataForm extends StatefulWidget {
   @override
@@ -21,6 +22,7 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
 
   bool _passwordVisible = false; // Toggle for password visibility
   bool _confirmPasswordVisible = false; // Toggle for confirm password visibility
+  bool _agreeToTerms = false; // Checkbox for Terms and Conditions
 
   @override
   void dispose() {
@@ -36,6 +38,13 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
 
   Future<void> _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
+      if (!_agreeToTerms) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You must agree to the terms and conditions')),
+        );
+        return;
+      }
+
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
       final phone = _phoneController.text.trim();
@@ -222,8 +231,35 @@ class _UserBioDataFormState extends State<UserBioDataForm> {
                       return null;
                     },
                   ),
+                  SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: _agreeToTerms,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            _agreeToTerms = value ?? false;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => TermsAndConditionsPage()),
+                          );
+                        },
+                        child: const Text(
+                          'I agree to the Terms and Conditions',
+                          style: TextStyle(
+                            color: Colors.teal,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 20),
-
                   ElevatedButton(
                     onPressed: _submitForm,
                     child: Text('Submit'),

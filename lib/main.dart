@@ -7,9 +7,7 @@ import 'package:growgrail/pages/userprovider.dart';
 import 'package:growgrail/pages/targetprovider.dart';
 
 
-
 void main() async {
-  
 
   WidgetsFlutterBinding.ensureInitialized();
   
