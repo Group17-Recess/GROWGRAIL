@@ -155,6 +155,7 @@ class _AdminState extends State<Admin> {
                 _buildListItem(Icons.analytics, 'Analytics', 'Analytics'),
                 _buildListItem(Icons.attach_money, 'Deposit records', 'DepositRecords'),
                 _buildListItem(Icons.money_off, 'Withdraw records', 'WithdrawRecords'),
+                _buildListItem(Icons.dashboard, 'AddTargetCategory', 'AddTargetCategory'),
               ],
             ),
           ),
