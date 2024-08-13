@@ -4,9 +4,9 @@ import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
 
 class PaymentService {
-  final String publicKey = 'FLWPUBK-ef107e156b3df873824cf60a405a85e6-X';
+  final String publicKey = 'FLWPUBK-9ce7b23d3b7c7f2be3d752304199b602-X';
   final String secretKey =
-      'FLWSECK-26009a3a1beacd6dac0e570727e0a445-1914824d7a1vt-X';
+      'FLWSECK-d3f9e33a6f0e2e50042e547601072af0-1914c1e5e78vt-X';
 
   Future<bool> initiatePayment({
     required BuildContext context,
