@@ -7,8 +7,8 @@ import 'amount.dart';
 import 'home.dart';
 import 'profile.dart';
 import 'withdraw.dart';
-import 'package:growgrail/models/goal.dart'; 
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:growgrail/models/goal.dart'; // Ensure you import the Goal model
 
 class Dashboard extends StatefulWidget {
   @override
@@ -18,11 +18,12 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   int _selectedIndex = 0;
   final TextEditingController textFieldController = TextEditingController();
-  final user=FirebaseAuth.instance.currentUser;
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   void dispose() {
-    textFieldController.dispose(); 
+    textFieldController
+        .dispose(); // Dispose the controller when the widget is disposed
     super.dispose();
   }
 
@@ -33,15 +34,20 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _logout(BuildContext context, UserProvider userProvider) {
+    // Clear user data and cancel goal subscription
     userProvider.clearUserData();
 
-  
-  Navigator.pushReplacement(
-    context,
-    MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
-  );
-}
+    // Add your additional logout logic here (e.g., clearing tokens, etc.)
 
+    // Navigate to MyHomePage after logging out
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+          builder: (context) => MyHomePage(
+                title: '',
+              )),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,36 +57,38 @@ class _DashboardState extends State<Dashboard> {
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           TextButton(
-  onPressed: () {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    _logout(context, userProvider);
-  },
-  child: const Text(
-    'Logout',
-    style: TextStyle(color: Colors.white),
-  ),
-),
-
-TextButton(
- onPressed: () {
- Navigator.push(
-    context,
-      MaterialPageRoute(builder: (context) => ProfilePage()), // Navigate to Profile Page
-               );
-        },
-         child: const Text(
-        'Edit profile',
-         style: TextStyle(
-          color: Colors.white,
-         ),
-
+            onPressed: () {
+              final userProvider =
+                  Provider.of<UserProvider>(context, listen: false);
+              _logout(context, userProvider);
+            },
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.white),
             ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ProfilePage()), // Navigate to Profile Page
+              );
+            },
+            child: const Text(
+              'Edit profile',
+              style: TextStyle(
+                color: Colors.white,
               ),
+            ),
+          ),
         ],
       ),
       body: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
-          final userName = userProvider.name.isEmpty ? 'Guest' : userProvider.name;
+          final userName =
+              userProvider.name.isEmpty ? 'Guest' : userProvider.name;
 
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -111,7 +119,6 @@ TextButton(
                               fontSize: 24,
                               fontWeight: FontWeight.bold),
                         ),
-                            
                         const SizedBox(height: 16.0),
                         Card(
                           color: Colors.teal[400],
@@ -125,7 +132,8 @@ TextButton(
                               children: [
                                 const Text(
                                   'Total Target',
-                                  style: TextStyle(color: Colors.white, fontSize: 16),
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
                                 ),
                                 const SizedBox(height: 8.0),
                                 Text(
@@ -137,15 +145,18 @@ TextButton(
                                 ),
                                 const SizedBox(height: 16.0),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'Savings',
                                           style: TextStyle(
-                                              color: Colors.white70, fontSize: 16),
+                                              color: Colors.white70,
+                                              fontSize: 16),
                                         ),
                                         Text(
                                           'UGX ${userProvider.totalAchieved.toStringAsFixed(0)}',
@@ -157,12 +168,14 @@ TextButton(
                                       ],
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'Balance',
                                           style: TextStyle(
-                                              color: Colors.white70, fontSize: 16),
+                                              color: Colors.white70,
+                                              fontSize: 16),
                                         ),
                                         Text(
                                           'UGX ${userProvider.totalBalance.toStringAsFixed(0)}',
@@ -174,12 +187,14 @@ TextButton(
                                       ],
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         const Text(
                                           'Interest',
                                           style: TextStyle(
-                                              color: Colors.white70, fontSize: 16),
+                                              color: Colors.white70,
+                                              fontSize: 16),
                                         ),
                                         Text(
                                           'UGX ${userProvider.goals.fold<double>(0, (prev, goal) => prev + goal.interest).toStringAsFixed(0)}',
@@ -238,7 +253,10 @@ TextButton(
               // Navigate to HomeScreen
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+                MaterialPageRoute(
+                    builder: (context) => MyHomePage(
+                          title: '',
+                        )),
               );
               break;
             case 1:
@@ -294,8 +312,7 @@ class UpperClipper extends CustomClipper<Path> {
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }
 
-
- // Ensure you import the Goal model
+// Ensure you import the Goal model
 
 class GoalCard extends StatelessWidget {
   final TextEditingController textFieldController;
@@ -308,14 +325,17 @@ class GoalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double progress = goal.amount > 0 ? goal.achieved / goal.amount : 0.0; // Avoid division by zero
+    double progress = goal.amount > 0
+        ? goal.achieved / goal.amount
+        : 0.0; // Avoid division by zero
 
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16.0),
       ),
       elevation: 4,
-      margin: const EdgeInsets.symmetric(vertical: 8.0), 
+      margin: const EdgeInsets.symmetric(
+          vertical: 8.0), // Add margin for spacing between cards
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -329,11 +349,13 @@ class GoalCard extends StatelessWidget {
                     children: [
                       Text(
                         goal.target,
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         'UGX ${goal.amount.toStringAsFixed(2)}',
-                        style: const TextStyle(fontSize: 14, color: Colors.black),
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.black),
                       ),
                     ],
                   ),
@@ -399,7 +421,8 @@ class GoalCard extends StatelessWidget {
     );
   }
 
-  void _showDepositOptions(BuildContext context, TextEditingController textFieldController) {
+  void _showDepositOptions(
+      BuildContext context, TextEditingController textFieldController) {
     showDialog(
       context: context,
       builder: (context) {
@@ -429,7 +452,8 @@ class GoalCard extends StatelessWidget {
     );
   }
 
-  void _showWithdrawOptions(BuildContext context, TextEditingController textFieldController) {
+  void _showWithdrawOptions(
+      BuildContext context, TextEditingController textFieldController) {
     showDialog(
       context: context,
       builder: (context) {
@@ -442,7 +466,7 @@ class GoalCard extends StatelessWidget {
                 title: const Text('My Number'),
                 onTap: () {
                   Navigator.pop(context);
-                  _showWithdrawModalMy(context, textFieldController);
+                  _showWithdrawModalMy(context, textFieldController, goal);
                 },
               ),
               ListTile(
@@ -459,9 +483,11 @@ class GoalCard extends StatelessWidget {
     );
   }
 
-  void _showWithdrawModalMy(BuildContext context, TextEditingController textFieldController) {
+  void _showWithdrawModalMy(BuildContext context,
+      TextEditingController textFieldController, Goal goal) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final defaultPhoneNumber = userProvider.phoneNumber; // Get the default phone number
+    final defaultPhoneNumber =
+        userProvider.phoneNumber; // Get the default phone number
 
     showModalBottomSheet(
       context: context,
@@ -470,13 +496,13 @@ class GoalCard extends StatelessWidget {
         textFieldController: textFieldController, // Pass the controller
         targetAmount: goal.amount, // Pass the goal amount as targetAmount
         defaultPhoneNumber: defaultPhoneNumber, // Pass the default phone number
-        selectedGoals: null, 
-        phoneNumber: '', 
+        goalId: goal.id, phoneNumber: '', // Pass the goalId to WithdrawSheetMy
       ),
     );
   }
 
-  void _showWithdrawModal(BuildContext context, TextEditingController textFieldController) {
+  void _showWithdrawModal(
+      BuildContext context, TextEditingController textFieldController) {
     showModalBottomSheet(
       context: context,
       builder: (context) => WithdrawSheet(
@@ -488,7 +514,8 @@ class GoalCard extends StatelessWidget {
     );
   }
 
-  void _showDepositModalMy(BuildContext context, TextEditingController textFieldController) {
+  void _showDepositModalMy(
+      BuildContext context, TextEditingController textFieldController) {
     showModalBottomSheet(
       context: context,
       builder: (context) => DepositSheetMy(
@@ -499,7 +526,8 @@ class GoalCard extends StatelessWidget {
     );
   }
 
-  void _showDepositModal(BuildContext context, TextEditingController textFieldController) {
+  void _showDepositModal(
+      BuildContext context, TextEditingController textFieldController) {
     showModalBottomSheet(
       context: context,
       builder: (context) => DepositSheet(
@@ -510,8 +538,10 @@ class GoalCard extends StatelessWidget {
   }
 
   void _showEditDialog(BuildContext context, Goal goal) {
-    final TextEditingController targetController = TextEditingController(text: goal.target);
-    final TextEditingController amountController = TextEditingController(text: goal.amount.toString());
+    final TextEditingController targetController =
+        TextEditingController(text: goal.target);
+    final TextEditingController amountController =
+        TextEditingController(text: goal.amount.toString());
 
     showDialog(
       context: context,
@@ -539,7 +569,8 @@ class GoalCard extends StatelessWidget {
                 final newAmount = double.tryParse(amountController.text) ?? 0.0;
 
                 // Update the goal in the database
-                await _updateGoalInDatabase(context, goal, newTarget, newAmount);
+                await _updateGoalInDatabase(
+                    context, goal, newTarget, newAmount);
 
                 Navigator.pop(context); // Close the dialog
               },
@@ -563,14 +594,14 @@ class GoalCard extends StatelessWidget {
     );
   }
 
-  Future<void> _updateGoalInDatabase(BuildContext context, Goal oldGoal, String newTarget, double newAmount) async {
+  Future<void> _updateGoalInDatabase(BuildContext context, Goal oldGoal,
+      String newTarget, double newAmount) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     // Update the goal in the user's goals list
     await userProvider.updateGoal(oldGoal.id, newTarget, newAmount);
 
     // Notify listeners to refresh the UI
-    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     userProvider.notifyListeners();
   }
 }

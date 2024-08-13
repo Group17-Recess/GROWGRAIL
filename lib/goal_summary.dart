@@ -73,24 +73,26 @@ class GoalSummaryService {
     final userGoalsCollection = firestore.collection('Goals');
     final querySnapshot = await userGoalsCollection.get();
 
-    Map<String, double> districtSavings = {};
+    // Use a map to count the number of clients per district
+    Map<String, int> districtCount = {};
 
     for (var doc in querySnapshot.docs) {
-      final goal = Goal.fromJson(doc.data());
       final district = doc.data()['district'] as String? ?? 'Unknown';
-      if (districtSavings.containsKey(district)) {
-        districtSavings[district] = districtSavings[district]! + goal.amount;
+      // Increment the count for the district
+      if (districtCount.containsKey(district)) {
+        districtCount[district] = districtCount[district]! + 1;
       } else {
-        districtSavings[district] = goal.amount;
+        districtCount[district] = 1;
       }
     }
 
-    String topDistrict = '';
-    double maxSavings = 0.0;
+    // Find the district with the most clients
+    String topDistrict = 'Unknown';
+    int maxCount = 0;
 
-    districtSavings.forEach((district, savings) {
-      if (savings > maxSavings) {
-        maxSavings = savings;
+    districtCount.forEach((district, count) {
+      if (count > maxCount) {
+        maxCount = count;
         topDistrict = district;
       }
     });
@@ -113,7 +115,7 @@ class GoalSummaryService {
       }
     }
 
-    String topGoal = '';
+    String topGoal = 'Unknown';
     double maxSavings = 0.0;
 
     goalSavings.forEach((goal, savings) {

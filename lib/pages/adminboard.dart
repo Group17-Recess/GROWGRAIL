@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:growgrail/pages/target_edit.dart';
-import 'admin_biodata.dart';
-import 'home.dart';
-import 'summary_page.dart';
-import 'userlist.dart';
+import 'package:growgrail/pages/targetpage.dart';
+import 'package:growgrail/pages/userprovider.dart';
+import 'package:growgrail/pages/admin_biodata.dart';
+import 'package:growgrail/pages/home.dart';
+import 'package:growgrail/pages/summary_page.dart';
+import 'package:growgrail/pages/userlist.dart';
 
 class Admin extends StatefulWidget {
   @override
@@ -30,11 +34,25 @@ class _AdminState extends State<Admin> {
     });
   }
 
-  void _logout() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
-    );
+  void _logout(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    // Clear user data
+    userProvider.clearUserData();
+
+    // Sign out from Firebase
+    FirebaseAuth.instance.signOut().then((_) {
+      // Navigate to MyHomePage after logging out
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MyHomePage(title: '',)),
+      );
+    }).catchError((error) {
+      // Handle errors if any
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Logout failed: ${error.toString()}')),
+      );
+    });
   }
 
   void _navigateTo(String route) {
@@ -85,9 +103,12 @@ class _AdminState extends State<Admin> {
         backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _logout,
+          TextButton(
+            onPressed: () => _logout(context),
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -107,13 +128,13 @@ class _AdminState extends State<Admin> {
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    SizedBox(height: 40),
-                    Text(
+                  children: [
+                    const SizedBox(height: 40),
+                    const Text(
                       'Welcome,',
                       style: TextStyle(color: Colors.white, fontSize: 20),
                     ),
-                    Text(
+                    const Text(
                       'ADMIN',
                       style: TextStyle(
                         color: Colors.white,
@@ -138,21 +159,6 @@ class _AdminState extends State<Admin> {
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Account',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
       ),
     );
   }

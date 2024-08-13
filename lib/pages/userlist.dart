@@ -185,55 +185,64 @@ class UserDetailPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20),
-          StreamBuilder<DocumentSnapshot>(
+          StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance
                 .collection('Goals')
                 .doc(user.phone)
+                .collection('userGoals') // Correctly access the subcollection
                 .snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               }
-              if (!snapshot.hasData || !snapshot.data!.exists) {
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                 return Center(child: Text('No goals found'));
               }
 
-              final goalData = snapshot.data!.data() as Map<String, dynamic>;
-              final goal = Goal.fromJson(goalData);
+              final goals = snapshot.data!.docs.map((doc) {
+                return Goal.fromJson(doc.data() as Map<String, dynamic>);
+              }).toList();
 
-              return Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                elevation: 5,
-                margin: EdgeInsets.symmetric(vertical: 10),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Goal: ${goal.target}',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              return ListView.builder(
+                shrinkWrap: true, // To make sure ListView doesn't overflow
+                itemCount: goals.length,
+                itemBuilder: (context, index) {
+                  final goal = goals[index];
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 5,
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Goal: ${goal.target}',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Amount: UGX ${goal.amount}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Achieved: UGX ${goal.achieved}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            'Balance: UGX ${goal.balance}',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Amount: UGX ${goal.amount}',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Achieved: UGX ${goal.achieved}',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        'Balance: UGX ${goal.balance}',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             },
           ),
