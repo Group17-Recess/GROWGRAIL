@@ -8,14 +8,11 @@ admin.initializeApp();
 const db = admin.firestore();
 
 // Access environment variables
-const publicKey = functions.config().payment.public_key || 'FLWPUBK_TEST-e931b80b1f9dc244f8f9466593f25269-X'; // public key
-const secretKey = functions.config().payment.secret_key || 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X'; // secret key
-const encryptionKey = functions.config().payment.encryption_key || 'FLWSECK_TEST6350e5c551aa'; // encryption key
+const publicKey = functions.config().payment.public_key || 'FLWPUBK-ef107e156b3df873824cf60a405a85e6-X'; // public key
+const secretKey = functions.config().payment.secret_key || 'FLWSECK-26009a3a1beacd6dac0e570727e0a445-1914824d7a1vt-X'; // secret key
+const encryptionKey = functions.config().payment.encryption_key || '26009a3a1bea5a0b9dcb541a'; // encryption key
 
-<<<<<<< HEAD
-=======
 // Function to process payment
->>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
 exports.processPayment = functions.https.onRequest(async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
@@ -52,10 +49,7 @@ exports.processPayment = functions.https.onRequest(async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-=======
 // Function to handle payment webhook
->>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
 exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
@@ -63,38 +57,6 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
 
   const payload = req.body;
 
-<<<<<<< HEAD
-  console.log('Received payload:', JSON.stringify(payload));
-
-  if (payload.event === 'charge.completed' && payload.data.status === 'successful') {
-    const phoneNumber = payload.data.customer.phone_number;
-    const amount = payload.data.amount;
-
-    console.log('Phone number from payload:', phoneNumber);
-    console.log('Amount from payload:', amount);
-
-    try {
-      const userRef = db.collection('Users').doc(phoneNumber);
-      const userDoc = await userRef.get();
-
-      if (!userDoc.exists) {
-        console.error('User not found:', phoneNumber);
-        return res.status(404).send('User not found');
-      }
-
-      const userData = userDoc.data();
-      const newSavings = (userData.savings || 0) + amount;
-
-      await userRef.update({ savings: newSavings }); //this saves to the savings field
-
-      res.status(200).send({
-        status: 'success',
-        message: 'Payment processed and savings updated',
-      });
-    } catch (error) {
-      console.error('Error handling payment webhook:', error);
-      res.status(500).json({
-=======
   if (payload.event === 'charge.completed' && payload.data.status === 'successful') {
     let phoneNumber = payload.data.customer.phone_number;
     const amount = payload.data.amount;
@@ -129,17 +91,12 @@ exports.handlePaymentWebhook = functions.https.onRequest(async (req, res) => {
     } catch (error) {
       console.error('Error handling payment webhook:', error);
       return res.status(500).json({
->>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
         status: 'error',
         message: 'Failed to handle payment webhook',
         error: error.message,
       });
     }
   } else {
-<<<<<<< HEAD
-    res.status(400).send('Invalid event or unsuccessful payment');
-=======
     return res.status(400).send('Invalid event or unsuccessful payment');
->>>>>>> b4b22079cfb606cec10768ee010b79537da49f92
   }
 });
