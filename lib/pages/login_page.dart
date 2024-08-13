@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
 
   // Define the admin email and password
   final String adminEmail = 'admin@gmail.com';
-  final String adminPassword = 'admin#26';
+  final String adminPassword = 'adminSecretPassword';
 
   Future<void> _signInWithEmailAndPassword() async {
     try {
