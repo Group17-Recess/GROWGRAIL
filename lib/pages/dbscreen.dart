@@ -33,6 +33,8 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void _logout(BuildContext context, UserProvider userProvider) {
+    userProvider.clearUserData();
+
   
   Navigator.pushReplacement(
     context,

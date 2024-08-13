@@ -47,12 +47,7 @@ flutter:
 
   assets:
 
-    - assets/images/money.jpg
-    - assets/images/person4.webp
-    - assets/images/person3.webp
-    - assets/images/car.webp
-    - assets/images/GGlogo.png
-    - assets/images/moneygrow.jpg
+    - assets/images/
    
     
 
