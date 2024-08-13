@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Image.asset(
-              'images/GGlogo.png', // Replace with your logo asset path
+              'assets/images/GGlogo.png', // Replace with your logo asset path
               width: 100, // Adjust size as needed
               height: 100,
             ),
