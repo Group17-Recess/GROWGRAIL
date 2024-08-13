@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:growgrail/models/goal.dart';
-import 'package:provider/provider.dart';
-import 'userprovider.dart';
 
 
 class WithdrawSheetMy extends StatelessWidget {

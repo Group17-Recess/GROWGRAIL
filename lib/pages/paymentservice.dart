@@ -31,13 +31,14 @@ class PaymentService {
       paymentOptions: "mobilemoneyuganda",
       customization: Customization(title: "Live Payment"),
       txRef: txRef,
-      isTestMode: true, // Change to false for live payments
+      isTestMode: false, // Change to false for live payments
       redirectUrl:
           "https://your-redirect-url.com", // You can use any URL for testing
     );
 
     try {
       final ChargeResponse response = await flutterwave.charge();
+      // ignore: unnecessary_null_comparison
       if (response != null && response.status == "successful") {
         return true;
       } else {
