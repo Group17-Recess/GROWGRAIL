@@ -4,6 +4,7 @@ import 'package:flutterwave_standard/models/requests/customer.dart';
 import 'package:flutterwave_standard/models/responses/charge_response.dart';
 
 class PaymentService {
+<<<<<<< Updated upstream
   final String publicKey = 'FLWPUBK_TEST-e931b80b1f9dc244f8f9466593f25269-X';
   final String secretKey = 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X';
 

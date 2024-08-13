@@ -8,9 +8,6 @@ admin.initializeApp();
 const db = admin.firestore();
 
 // Access environment variables
-const publicKey = functions.config().payment.public_key || 'FLWPUBK_TEST-e931b80b1f9dc244f8f9466593f25269-X'; // public key
-const secretKey = functions.config().payment.secret_key || 'FLWSECK_TEST-2765a8ccd0ebbe629792bb9314f4e1ef-X'; // secret key
-const encryptionKey = functions.config().payment.encryption_key || 'FLWSECK_TEST6350e5c551aa'; // encryption key
 
 // Function to process payment
 exports.processPayment = functions.https.onRequest(async (req, res) => {
