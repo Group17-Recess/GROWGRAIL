@@ -19,32 +19,43 @@ dependencies:
   flutterwave_standard: ^1.0.8
   provider: ^6.0.0
   shared_preferences: ^2.0.11
-  uuid: ^3.0.5
   firebase_authentication: ^0.0.28
   firebase_auth: ^5.1.3
   google_sign_in: ^6.2.1
   flutter_signin_button: ^2.0.0
-  
+  uuid: ^4.4.2
+  googleapis: ^13.2.0
+  googleapis_auth: ^1.6.0
+  firebase_messaging: ^15.0.4
+  flutter_dotenv: ^5.1.0
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  carousel_slider: ^4.0.0
+  carousel_slider: ^5.0.0
   flutter_lints: ^4.0.0
   flutter_launcher_icons: ^0.13.1
 
 flutter_launcher_icons:
   android: "launcher_icon" 
   ios: true
-  image_path: "images/GGlogo.png"
+  image_path: "assets/images/GGlogo.png"
 
 flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
+
+    - assets/images/money.jpg
+    - assets/images/person4.webp
+    - assets/images/person3.webp
+    - assets/images/car.webp
+    - assets/images/GGlogo.png
+    - assets/images/moneygrow.jpg
+   
     
+
 
   fonts:
     - family: Poppins

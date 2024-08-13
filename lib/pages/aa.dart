@@ -38,6 +38,7 @@ class PaymentService {
 
     try {
       final ChargeResponse response = await flutterwave.charge();
+      // ignore: unnecessary_null_comparison
       if (response != null && response.status == "successful") {
         return true;
       } else {
